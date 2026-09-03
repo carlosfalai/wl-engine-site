@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin</title>
+<link rel="stylesheet" href="../shared/ui.css">
+</head>
+<body>
+<div class="wl-app">
+  <header class="wl-header">
+    <div class="wl-brand">
+      <div class="wl-brand-name">Admin — Coach + Panier</div>
+    </div>
+    <nav class="wl-nav">
+      <a href="../" data-i18n="home">Accueil</a>
+      <span id="wl-user-info" class="wl-hidden">
+        &nbsp;<a href="#" id="wl-signout" data-i18n="sign_out">Déconnexion</a>
+      </span>
+      <button class="wl-lang-toggle" id="wl-lang-btn" type="button">EN / FR</button>
+    </nav>
+  </header>
+
+  <section id="wl-signin-section" class="wl-signin-box">
+    <h1 data-i18n="admin_login">Connexion admin</h1>
+    <div id="wl-gsi-btn"></div>
+    <p style="margin-top:24px;opacity:0.7">— ou —</p>
+    <form id="wl-code-form" class="wl-form" style="margin:0 auto;max-width:320px">
+      <div class="wl-field">
+        <label data-i18n="admin_code">Code admin</label>
+        <input type="password" name="code" required>
+      </div>
+      <button type="submit" class="wl-btn wl-btn-block" data-i18n="admin_login">Connexion admin</button>
+    </form>
+    <div id="wl-signin-error"></div>
+  </section>
+
+  <section id="wl-app-section" class="wl-hidden">
+    <div class="wl-section">
+      <h2>Partenaires</h2>
+      <div id="wl-partners-table"></div>
+    </div>
+
+    <div class="wl-section">
+      <h2 id="wl-partner-form-title" data-i18n="new_partner">Nouveau partenaire</h2>
+      <div id="wl-new-partner-result"></div>
+      <form id="wl-new-partner-form" class="wl-form">
+        <div class="wl-form-grid">
+          <div class="wl-field">
+            <label>Nom</label>
+            <input type="text" name="name" required>
+          </div>
+          <div class="wl-field">
+            <label>Type</label>
+            <select name="type" required>
+              <option value="both">Coach + Panier</option>
+              <option value="coach">Coach seulement</option>
+              <option value="panier">Panier seulement</option>
+            </select>
+          </div>
+          <div class="wl-field">
+            <label>Slogan</label>
+            <input type="text" name="tagline">
+          </div>
+          <div class="wl-field full">
+            <label>URL du logo</label>
+            <input type="url" name="logo_url">
+          </div>
+          <div class="wl-field">
+            <label>Couleur primaire</label>
+            <input type="color" name="primary" value="#117743">
+          </div>
+          <div class="wl-field">
+            <label>Couleur accent</label>
+            <input type="color" name="accent" value="#0d5a33">
+          </div>
+          <div class="wl-field">
+            <label>Couleur foncée</label>
+            <input type="color" name="dark" value="#1a2744">
+          </div>
+          <div class="wl-field">
+            <label><input type="checkbox" name="demo"> Démo</label>
+          </div>
+        </div>
+        <button type="submit" class="wl-btn" id="wl-partner-submit-btn" data-i18n="create">Créer</button>
+        <button type="button" class="wl-btn wl-btn-outline wl-hidden" id="wl-partner-cancel-btn" data-i18n="cancel_edit">Annuler</button>
+      </form>
+    </div>
+
+    <div class="wl-section">
+      <h2 data-i18n="finance">Finances</h2>
+      <div id="wl-finance-panel"></div>
+    </div>
+  </section>
+</div>
+
+<script src="../shared/config.js"></script>
+<script src="../shared/app.js"></script>
+<script>
+  WLApp.applyI18n();
+
+  document.getElementById('wl-lang-btn').addEventListener('click', function () {
+    var next = WLApp.lang === 'fr' ? 'en' : 'fr';
+    var url = new URL(location.href);
+    url.searchParams.set('lang', next);
+    location.href = url.toString();
+  });
+
+  var signinSection = document.getElementById('wl-signin-section');
+  var appSection = document.getElementById('wl-app-section');
+  var userInfo = document.getElementById('wl-user-info');
+  var adminCode = null;
+
+  document.getElementById('wl-signout').addEventListener('click', function (e) {
+    e.preventDefault();
+    WLApp.clearToken();
+    adminCode = null;
+    try { sessionStorage.removeItem('wl_admin_code'); } catch (err) {}
+    location.reload();
+  });
+
+  function adminHeaders() {
+    if (adminCode) return { 'x-admin-code': adminCode };
+    return {};
+  }
+
+  function loadState() {
+    WLApp.api('/admin/state', { headers: adminHeaders() }).then(function (data) {
+      signinSection.classList.add('wl-hidden');
+      appSection.classList.remove('wl-hidden');
+      userInfo.classList.remove('wl-hidden');
+
+      var partners = data.partners || [];
+      var tableEl = document.getElementById('wl-partners-table');
+      if (!partners.length) {
+        tableEl.innerHTML = '<p>' + WLApp.t('no_plans_yet') + '</p>';
+      } else {
+        var partnersByCode = {};
+        var rows = partners.map(function (p) {
+          partnersByCode[p.code] = p;
+          var month = p.month || {};
+          return '<tr>' +
+            '<td>' + p.code + '</td>' +
+            '<td>' + p.name + '</td>' +
+            '<td>' + p.type + '</td>' +
+            '<td>' + (p.demo ? 'Oui' : 'Non') + '</td>' +
+            '<td>' + (p.billing_active ? 'Actif' : 'Inactif') + '</td>' +
+            '<td>' + (month.plans || 0) + '</td>' +
+            '<td>' + WLApp.centsToDollars(month.amount_cents || 0) + '</td>' +
+            '<td>' + (p.members || 0) + '</td>' +
+            '<td>' +
+              '<button class="wl-btn wl-btn-outline wl-edit-btn" data-code="' + p.code + '" data-i18n="edit_partner">Modifier</button>' +
+              (p.billing_active ? '' : ' <button class="wl-btn wl-btn-outline wl-activate-btn" data-code="' + p.code + '" data-i18n="activate_billing">Activer la facturation</button>') +
+            '</td>' +
+            '</tr>';
+        }).join('');
+        tableEl.innerHTML = '<table class="wl-table"><thead><tr><th>Code</th><th>Nom</th><th>Type</th><th>Démo</th><th>Facturation</th><th data-i18n="plans_this_month">Plans</th><th data-i18n="estimated_amount">Montant</th><th data-i18n="members">Membres</th><th></th></tr></thead><tbody>' + rows + '</tbody></table>';
+        tableEl.querySelectorAll('.wl-activate-btn').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            var code = btn.getAttribute('data-code');
+            var email = prompt('Courriel de facturation pour ' + code + ' :');
+            if (!email) return;
+            WLApp.api('/admin/billing/activate', { method: 'POST', headers: adminHeaders(), body: { code: code, email: email } })
+              .then(function () { loadState(); })
+              .catch(function () { alert(WLApp.t('error_generic')); });
+          });
+        });
+        tableEl.querySelectorAll('.wl-edit-btn').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            var code = btn.getAttribute('data-code');
+            startEditPartner(partnersByCode[code]);
+          });
+        });
+      }
+    }).catch(function () {
+      var hadCode = !!adminCode;
+      WLApp.clearToken();
+      adminCode = null;
+      try { sessionStorage.removeItem('wl_admin_code'); } catch (e2) {}
+      if (hadCode) {
+        WLApp.showError(document.getElementById('wl-signin-error'), WLApp.t('invalid_code'));
+      }
+    });
+
+    WLApp.api('/admin/finance', { headers: adminHeaders() }).then(function (data) {
+      var months = data.months || [];
+      var financeEl = document.getElementById('wl-finance-panel');
+      var rows = months.map(function (m) {
+        return '<tr><td>' + m.month + '</td><td>' + WLApp.centsToDollars(m.paid_cents) + '</td></tr>';
+      }).join('');
+      financeEl.innerHTML = '<p>Abonnements actifs : <strong>' + (data.active_subscriptions || 0) + '</strong></p>' +
+        '<table class="wl-table"><thead><tr><th>Mois</th><th>Payé</th></tr></thead><tbody>' + rows + '</tbody></table>';
+    }).catch(function () {});
+  }
+
+  try {
+    var savedCode = sessionStorage.getItem('wl_admin_code');
+    if (savedCode) adminCode = savedCode;
+  } catch (e) {}
+
+  if (WLApp.getToken() || adminCode) {
+    loadState();
+  } else {
+    WLApp.initGoogleSignIn(document.getElementById('wl-gsi-btn'), function (credential) {
+      WLApp.api('/admin/login/google', { method: 'POST', body: { credential: credential } })
+        .then(function (data) {
+          WLApp.setToken(data.token);
+          loadState();
+        })
+        .catch(function () {
+          WLApp.showError(document.getElementById('wl-signin-error'), WLApp.t('error_generic'));
+        });
+    });
+
+    document.getElementById('wl-code-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      adminCode = new FormData(e.target).get('code');
+      try { sessionStorage.setItem('wl_admin_code', adminCode); } catch (err) {}
+      loadState();
+    });
+  }
+
+  var editingCode = null;
+
+  function startEditPartner(p) {
+    if (!p) return;
+    editingCode = p.code;
+    var form = document.getElementById('wl-new-partner-form');
+    form.name.value = p.name || '';
+    form.type.value = p.type || 'both';
+    form.tagline.value = '';
+    form.logo_url.value = '';
+    form.primary.value = '#117743';
+    form.accent.value = '#0d5a33';
+    form.dark.value = '#1a2744';
+    form.demo.checked = !!p.demo;
+    document.getElementById('wl-partner-form-title').textContent =
+      (WLApp.lang === 'en' ? 'Edit partner: ' : 'Modifier le partenaire : ') + p.code;
+    document.getElementById('wl-partner-submit-btn').textContent = WLApp.t('save');
+    document.getElementById('wl-partner-cancel-btn').classList.remove('wl-hidden');
+    form.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function resetPartnerForm() {
+    editingCode = null;
+    document.getElementById('wl-new-partner-form').reset();
+    document.getElementById('wl-partner-form-title').textContent = WLApp.t('new_partner');
+    document.getElementById('wl-partner-submit-btn').textContent = WLApp.t('create');
+    document.getElementById('wl-partner-cancel-btn').classList.add('wl-hidden');
+  }
+
+  document.getElementById('wl-partner-cancel-btn').addEventListener('click', resetPartnerForm);
+
+  document.getElementById('wl-new-partner-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var fd = new FormData(e.target);
+    var resultEl = document.getElementById('wl-new-partner-result');
+    resultEl.innerHTML = '';
+    var body = {
+      name: fd.get('name'),
+      type: fd.get('type'),
+      tagline: fd.get('tagline'),
+      logo_url: fd.get('logo_url'),
+      colors: { primary: fd.get('primary'), accent: fd.get('accent'), dark: fd.get('dark') },
+      demo: fd.get('demo') === 'on'
+    };
+
+    if (editingCode) {
+      body.code = editingCode;
+      WLApp.api('/admin/partner/update', { method: 'POST', headers: adminHeaders(), body: body })
+        .then(function () {
+          resultEl.innerHTML = '<div class="wl-alert wl-alert-success">' + WLApp.t('saved') + '</div>';
+          resetPartnerForm();
+          loadState();
+        })
+        .catch(function () {
+          WLApp.showError(resultEl, WLApp.t('error_generic'));
+        });
+      return;
+    }
+
+    WLApp.api('/admin/partner', {
+      method: 'POST',
+      headers: adminHeaders(),
+      body: body
+    }).then(function (data) {
+      var link = 'https://app.healthyplan.ca/?p=' + encodeURIComponent(data.partner.code);
+      resultEl.innerHTML = '<div class="wl-alert wl-alert-success">Lien : <a href="' + link + '" target="_blank">' + link + '</a></div>';
+      e.target.reset();
+      loadState();
+    }).catch(function () {
+      WLApp.showError(resultEl, WLApp.t('error_generic'));
+    });
+  });
+</script>
+</body>
+</html>

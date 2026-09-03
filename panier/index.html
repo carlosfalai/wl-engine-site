@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Panier</title>
+<link rel="stylesheet" href="../shared/ui.css">
+</head>
+<body>
+<div class="wl-app">
+  <header class="wl-header">
+    <div class="wl-brand">
+      <img data-brand-logo style="display:none" alt="logo">
+      <div>
+        <div class="wl-brand-name" data-brand-name>Panier</div>
+      </div>
+    </div>
+    <nav class="wl-nav">
+      <a href="../" data-i18n="home">Accueil</a>
+      <span id="wl-user-info" class="wl-hidden">
+        <span data-i18n="signed_in_as">Connecté en tant que</span> <strong id="wl-user-email"></strong>
+        &nbsp;·&nbsp;<a href="#" id="wl-signout" data-i18n="sign_out">Déconnexion</a>
+      </span>
+      <button class="wl-lang-toggle" id="wl-lang-btn" type="button">EN / FR</button>
+    </nav>
+  </header>
+
+  <div id="wl-config-error"></div>
+
+  <section id="wl-signin-section" class="wl-signin-box">
+    <h1 data-i18n="panier_title">Panier</h1>
+    <p data-i18n="panier_desc">Le panier d'épicerie parfait selon votre budget, livré en PDF.</p>
+    <div id="wl-gsi-btn"></div>
+    <div id="wl-signin-error"></div>
+  </section>
+
+  <section id="wl-app-section" class="wl-hidden">
+    <div class="wl-section">
+      <h2 data-i18n="panier_title">Panier</h2>
+      <div id="wl-form-error"></div>
+      <form id="wl-panier-form" class="wl-form">
+        <div class="wl-form-grid">
+          <div class="wl-field">
+            <label>Code postal</label>
+            <input type="text" name="postal_code" required>
+          </div>
+          <div class="wl-field">
+            <label>Budget / semaine</label>
+            <input type="number" name="budget" required min="0" step="1">
+          </div>
+          <div class="wl-field">
+            <label>Nombre de personnes</label>
+            <input type="number" name="people" required min="1" max="20">
+          </div>
+          <div class="wl-field full">
+            <label>Objectifs santé (facultatif)</label>
+            <textarea name="goals" placeholder="ex. moins de sucre, plus de protéines"></textarea>
+          </div>
+          <div class="wl-field full">
+            <label>Préférences / restrictions (facultatif)</label>
+            <textarea name="preferences" placeholder="ex. végétarien, sans gluten, allergies"></textarea>
+          </div>
+        </div>
+        <button type="submit" class="wl-btn" id="wl-generate-btn" data-i18n="generate_plan">Générer mon plan</button>
+      </form>
+
+      <div id="wl-progress" class="wl-progress wl-hidden">
+        <div class="wl-spinner"></div>
+        <div data-i18n="generating">Analyse en cours, 30 à 90 secondes...</div>
+      </div>
+
+      <div id="wl-result" class="wl-hidden">
+        <div class="wl-alert wl-alert-success">
+          <a id="wl-pdf-link" class="wl-btn" href="#" target="_blank" data-i18n="open_pdf">Ouvrir le PDF</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="wl-section">
+      <h2 data-i18n="my_plans">Mes plans</h2>
+      <div id="wl-plans-list"></div>
+    </div>
+  </section>
+</div>
+
+<script src="../shared/config.js"></script>
+<script src="../shared/brand.js"></script>
+<script src="../shared/app.js"></script>
+<script>
+  WLApp.applyI18n();
+
+  document.getElementById('wl-lang-btn').addEventListener('click', function () {
+    var next = WLApp.lang === 'fr' ? 'en' : 'fr';
+    var url = new URL(location.href);
+    url.searchParams.set('lang', next);
+    location.href = url.toString();
+  });
+
+  WLApp.fetchConfig().then(function (config) {
+    applyBrand(config);
+  }).catch(function () {
+    WLApp.showError(document.getElementById('wl-config-error'), WLApp.t('service_unavailable'));
+  });
+
+  var signinSection = document.getElementById('wl-signin-section');
+  var appSection = document.getElementById('wl-app-section');
+  var userInfo = document.getElementById('wl-user-info');
+  var userEmail = document.getElementById('wl-user-email');
+
+  function showApp(user) {
+    signinSection.classList.add('wl-hidden');
+    appSection.classList.remove('wl-hidden');
+    userInfo.classList.remove('wl-hidden');
+    userEmail.textContent = (user && user.email) || '';
+    loadPlans();
+  }
+
+  document.getElementById('wl-signout').addEventListener('click', function (e) {
+    e.preventDefault();
+    WLApp.clearToken();
+    location.reload();
+  });
+
+  if (WLApp.getToken()) {
+    WLApp.api('/me').then(function (data) {
+      showApp(data.user);
+    }).catch(function () {
+      WLApp.clearToken();
+    });
+  } else {
+    WLApp.initGoogleSignIn(document.getElementById('wl-gsi-btn'), function (credential) {
+      WLApp.api('/auth/google', { method: 'POST', body: { credential: credential, partner: WLApp.getPartner() } })
+        .then(function (data) {
+          WLApp.setToken(data.token);
+          showApp(data.user);
+        })
+        .catch(function () {
+          WLApp.showError(document.getElementById('wl-signin-error'), WLApp.t('error_generic'));
+        });
+    });
+  }
+
+  document.getElementById('wl-panier-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var form = e.target;
+    var fd = new FormData(form);
+    var payload = {
+      postal_code: fd.get('postal_code'),
+      budget: Number(fd.get('budget')),
+      people: Number(fd.get('people')),
+      goals: fd.get('goals') || '',
+      preferences: fd.get('preferences') || '',
+      language: WLApp.lang
+    };
+
+    var errorEl = document.getElementById('wl-form-error');
+    errorEl.innerHTML = '';
+    var btn = document.getElementById('wl-generate-btn');
+    btn.disabled = true;
+    document.getElementById('wl-progress').classList.remove('wl-hidden');
+    document.getElementById('wl-result').classList.add('wl-hidden');
+
+    WLApp.api('/panier/generate', { method: 'POST', body: payload })
+      .then(function (data) {
+        document.getElementById('wl-progress').classList.add('wl-hidden');
+        document.getElementById('wl-result').classList.remove('wl-hidden');
+        document.getElementById('wl-pdf-link').href = data.pdf_url;
+        loadPlans();
+      })
+      .catch(function () {
+        document.getElementById('wl-progress').classList.add('wl-hidden');
+        WLApp.showError(errorEl, WLApp.t('error_generic'));
+      })
+      .finally(function () {
+        btn.disabled = false;
+      });
+  });
+
+  function loadPlans() {
+    var listEl = document.getElementById('wl-plans-list');
+    WLApp.api('/plans').then(function (data) {
+      var plans = (data.plans || []).filter(function (p) { return p.product === 'panier'; });
+      if (!plans.length) {
+        listEl.innerHTML = '<p>' + WLApp.t('no_plans_yet') + '</p>';
+        return;
+      }
+      var rows = plans.map(function (p) {
+        return '<tr><td>' + new Date(p.created_at).toLocaleDateString() + '</td>' +
+          '<td><a href="#" data-plan-id="' + p.id + '" class="wl-open-plan">' + WLApp.t('open_pdf') + '</a></td></tr>';
+      }).join('');
+      listEl.innerHTML = '<table class="wl-table"><thead><tr><th>Date</th><th></th></tr></thead><tbody>' + rows + '</tbody></table>';
+      listEl.querySelectorAll('.wl-open-plan').forEach(function (a) {
+        a.addEventListener('click', function (e) {
+          e.preventDefault();
+          WLApp.api('/plans/' + a.getAttribute('data-plan-id') + '/pdf').then(function (d) {
+            window.open(d.url, '_blank');
+          });
+        });
+      });
+    }).catch(function () {
+      listEl.innerHTML = '<p>' + WLApp.t('no_plans_yet') + '</p>';
+    });
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Coach</title>
+<link rel="stylesheet" href="../shared/ui.css">
+</head>
+<body>
+<div class="wl-app">
+  <header class="wl-header">
+    <div class="wl-brand">
+      <img data-brand-logo style="display:none" alt="logo">
+      <div>
+        <div class="wl-brand-name" data-brand-name>Coach</div>
+      </div>
+    </div>
+    <nav class="wl-nav">
+      <a href="../" data-i18n="home">Accueil</a>
+      <span id="wl-user-info" class="wl-hidden">
+        <span data-i18n="signed_in_as">Connecté en tant que</span> <strong id="wl-user-email"></strong>
+        &nbsp;·&nbsp;<a href="#" id="wl-signout" data-i18n="sign_out">Déconnexion</a>
+      </span>
+      <button class="wl-lang-toggle" id="wl-lang-btn" type="button">EN / FR</button>
+    </nav>
+  </header>
+
+  <div id="wl-config-error"></div>
+
+  <!-- Sign-in state -->
+  <section id="wl-signin-section" class="wl-signin-box">
+    <h1 data-i18n="coach_title">Coach</h1>
+    <p data-i18n="coach_desc">Plan d'entraînement hebdomadaire personnalisé, livré en PDF.</p>
+    <div id="wl-gsi-btn"></div>
+    <div id="wl-signin-error"></div>
+  </section>
+
+  <!-- Profile + generate state -->
+  <section id="wl-app-section" class="wl-hidden">
+    <div class="wl-section">
+      <h2 data-i18n="coach_title">Coach</h2>
+      <div id="wl-form-error"></div>
+      <form id="wl-profile-form" class="wl-form">
+        <div class="wl-form-grid">
+          <div class="wl-field">
+            <label>Taille (cm)</label>
+            <input type="number" name="height_cm" required min="100" max="250">
+          </div>
+          <div class="wl-field">
+            <label>Poids (kg)</label>
+            <input type="number" name="weight_kg" required min="30" max="300" step="0.1">
+          </div>
+          <div class="wl-field">
+            <label>Âge</label>
+            <input type="number" name="age" required min="13" max="100">
+          </div>
+          <div class="wl-field">
+            <label>Sexe</label>
+            <select name="gender" required>
+              <option value="male">Homme</option>
+              <option value="female">Femme</option>
+              <option value="other">Autre</option>
+            </select>
+          </div>
+          <div class="wl-field">
+            <label>Objectif</label>
+            <select name="fitness_goal" required>
+              <option value="fat_loss">Perte de gras</option>
+              <option value="muscle_gain">Gain musculaire</option>
+              <option value="maintenance">Maintien</option>
+            </select>
+          </div>
+          <div class="wl-field">
+            <label>Jours par semaine</label>
+            <input type="number" name="days_per_week" required min="1" max="7">
+          </div>
+          <div class="wl-field">
+            <label>Poids cible (kg)</label>
+            <input type="number" name="target_weight_kg" min="30" max="300" step="0.1">
+          </div>
+          <div class="wl-field">
+            <label>Budget épicerie / semaine</label>
+            <input type="number" name="weekly_food_budget" min="0" step="1">
+          </div>
+          <div class="wl-field">
+            <label>Code postal</label>
+            <input type="text" name="postal_code" required>
+          </div>
+          <div class="wl-field">
+            <label>Gym le plus proche</label>
+            <input type="text" name="nearest_gym">
+          </div>
+          <div class="wl-field full">
+            <label>Blessures (facultatif)</label>
+            <textarea name="injuries_text" placeholder="ex. genou gauche, léger, depuis 2024"></textarea>
+          </div>
+          <div class="wl-field full">
+            <label>Photo (facultatif)</label>
+            <input type="file" name="photo" accept="image/*">
+          </div>
+        </div>
+        <button type="submit" class="wl-btn" id="wl-generate-btn" data-i18n="generate_plan">Générer mon plan</button>
+      </form>
+
+      <div id="wl-progress" class="wl-progress wl-hidden">
+        <div class="wl-spinner"></div>
+        <div data-i18n="generating">Analyse en cours, 30 à 90 secondes...</div>
+      </div>
+
+      <div id="wl-result" class="wl-hidden">
+        <div class="wl-alert wl-alert-success">
+          <a id="wl-pdf-link" class="wl-btn" href="#" target="_blank" data-i18n="open_pdf">Ouvrir le PDF</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="wl-section">
+      <h2 data-i18n="my_plans">Mes plans</h2>
+      <div id="wl-plans-list"></div>
+    </div>
+  </section>
+</div>
+
+<script src="../shared/config.js"></script>
+<script src="../shared/brand.js"></script>
+<script src="../shared/app.js"></script>
+<script>
+  WLApp.applyI18n();
+
+  document.getElementById('wl-lang-btn').addEventListener('click', function () {
+    var next = WLApp.lang === 'fr' ? 'en' : 'fr';
+    var url = new URL(location.href);
+    url.searchParams.set('lang', next);
+    location.href = url.toString();
+  });
+
+  WLApp.fetchConfig().then(function (config) {
+    applyBrand(config);
+  }).catch(function () {
+    WLApp.showError(document.getElementById('wl-config-error'), WLApp.t('service_unavailable'));
+  });
+
+  var signinSection = document.getElementById('wl-signin-section');
+  var appSection = document.getElementById('wl-app-section');
+  var userInfo = document.getElementById('wl-user-info');
+  var userEmail = document.getElementById('wl-user-email');
+
+  function showApp(user) {
+    signinSection.classList.add('wl-hidden');
+    appSection.classList.remove('wl-hidden');
+    userInfo.classList.remove('wl-hidden');
+    userEmail.textContent = (user && user.email) || '';
+    loadPlans();
+  }
+
+  document.getElementById('wl-signout').addEventListener('click', function (e) {
+    e.preventDefault();
+    WLApp.clearToken();
+    location.reload();
+  });
+
+  if (WLApp.getToken()) {
+    WLApp.api('/me').then(function (data) {
+      showApp(data.user);
+    }).catch(function () {
+      WLApp.clearToken();
+    });
+  } else {
+    WLApp.initGoogleSignIn(document.getElementById('wl-gsi-btn'), function (credential) {
+      WLApp.api('/auth/google', { method: 'POST', body: { credential: credential, partner: WLApp.getPartner() } })
+        .then(function (data) {
+          WLApp.setToken(data.token);
+          showApp(data.user);
+        })
+        .catch(function () {
+          WLApp.showError(document.getElementById('wl-signin-error'), WLApp.t('error_generic'));
+        });
+    });
+  }
+
+  document.getElementById('wl-profile-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var form = e.target;
+    var fd = new FormData(form);
+    var injuries = [];
+    var injuriesText = (fd.get('injuries_text') || '').trim();
+    if (injuriesText) {
+      injuries.push({ body_zone: injuriesText, severity: 'mild', description: injuriesText });
+    }
+    var profile = {
+      height_cm: Number(fd.get('height_cm')),
+      weight_kg: Number(fd.get('weight_kg')),
+      age: Number(fd.get('age')),
+      gender: fd.get('gender'),
+      fitness_goal: fd.get('fitness_goal'),
+      days_per_week: Number(fd.get('days_per_week')),
+      target_weight_kg: fd.get('target_weight_kg') ? Number(fd.get('target_weight_kg')) : undefined,
+      weekly_food_budget: fd.get('weekly_food_budget') ? Number(fd.get('weekly_food_budget')) : undefined,
+      postal_code: fd.get('postal_code'),
+      nearest_gym: fd.get('nearest_gym') || undefined,
+      injuries: injuries
+    };
+
+    var errorEl = document.getElementById('wl-form-error');
+    errorEl.innerHTML = '';
+    var btn = document.getElementById('wl-generate-btn');
+    btn.disabled = true;
+
+    WLApp.api('/coach/profile', { method: 'POST', body: profile })
+      .then(function () {
+        document.getElementById('wl-progress').classList.remove('wl-hidden');
+        document.getElementById('wl-result').classList.add('wl-hidden');
+
+        var genFd = new FormData();
+        var photo = fd.get('photo');
+        if (photo && photo.size > 0) genFd.append('photo', photo);
+
+        return WLApp.api('/coach/generate', { method: 'POST', formData: genFd });
+      })
+      .then(function (data) {
+        document.getElementById('wl-progress').classList.add('wl-hidden');
+        document.getElementById('wl-result').classList.remove('wl-hidden');
+        document.getElementById('wl-pdf-link').href = data.pdf_url;
+        loadPlans();
+      })
+      .catch(function () {
+        document.getElementById('wl-progress').classList.add('wl-hidden');
+        WLApp.showError(errorEl, WLApp.t('error_generic'));
+      })
+      .finally(function () {
+        btn.disabled = false;
+      });
+  });
+
+  function loadPlans() {
+    var listEl = document.getElementById('wl-plans-list');
+    WLApp.api('/plans').then(function (data) {
+      var plans = (data.plans || []).filter(function (p) { return p.product === 'coach'; });
+      if (!plans.length) {
+        listEl.innerHTML = '<p>' + WLApp.t('no_plans_yet') + '</p>';
+        return;
+      }
+      var rows = plans.map(function (p) {
+        return '<tr><td>' + new Date(p.created_at).toLocaleDateString() + '</td>' +
+          '<td><a href="#" data-plan-id="' + p.id + '" class="wl-open-plan">' + WLApp.t('open_pdf') + '</a></td></tr>';
+      }).join('');
+      listEl.innerHTML = '<table class="wl-table"><thead><tr><th>Date</th><th></th></tr></thead><tbody>' + rows + '</tbody></table>';
+      listEl.querySelectorAll('.wl-open-plan').forEach(function (a) {
+        a.addEventListener('click', function (e) {
+          e.preventDefault();
+          WLApp.api('/plans/' + a.getAttribute('data-plan-id') + '/pdf').then(function (d) {
+            window.open(d.url, '_blank');
+          });
+        });
+      });
+    }).catch(function () {
+      listEl.innerHTML = '<p>' + WLApp.t('no_plans_yet') + '</p>';
+    });
+  }
+</script>
+</body>
+</html>

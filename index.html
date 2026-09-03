@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Coach + Panier — Accueil</title>
+<link rel="stylesheet" href="shared/ui.css">
+</head>
+<body>
+<div class="wl-app">
+  <header class="wl-header">
+    <div class="wl-brand">
+      <img data-brand-logo style="display:none" alt="logo">
+      <div>
+        <div class="wl-brand-name" data-brand-name>Coach + Panier</div>
+        <div class="wl-brand-tagline" data-brand-tagline></div>
+      </div>
+    </div>
+    <nav class="wl-nav">
+      <a href="partenaire/" data-i18n="partners">Partenaires</a>
+      <button class="wl-lang-toggle" id="wl-lang-btn" type="button">EN / FR</button>
+    </nav>
+  </header>
+
+  <section class="wl-hero">
+    <h1 data-brand-name>Coach + Panier</h1>
+    <p data-brand-tagline></p>
+  </section>
+
+  <div id="wl-config-error"></div>
+
+  <section class="wl-grid">
+    <div class="wl-card">
+      <span class="wl-badge" data-i18n="coach_title">Coach</span>
+      <h2 data-i18n="coach_title">Coach</h2>
+      <p data-i18n="coach_desc">Plan d'entraînement hebdomadaire personnalisé, livré en PDF.</p>
+      <video controls poster="" preload="none" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+        <source src="videos/coach-fr.mp4" type="video/mp4">
+      </video>
+      <div class="wl-video-fallback" style="display:none">Coach</div>
+      <a class="wl-btn wl-btn-block" id="wl-coach-link" href="coach/" data-i18n="signin">Se connecter avec Google</a>
+    </div>
+    <div class="wl-card">
+      <span class="wl-badge" data-i18n="panier_title">Panier</span>
+      <h2 data-i18n="panier_title">Panier</h2>
+      <p data-i18n="panier_desc">Le panier d'épicerie parfait selon votre budget, livré en PDF.</p>
+      <video controls poster="" preload="none" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+        <source src="videos/panier-fr.mp4" type="video/mp4">
+      </video>
+      <div class="wl-video-fallback" style="display:none">Panier</div>
+      <a class="wl-btn wl-btn-block" id="wl-panier-link" href="panier/" data-i18n="signin">Se connecter avec Google</a>
+    </div>
+  </section>
+
+  <footer class="wl-footer">
+    <a href="admin/">admin</a>
+  </footer>
+</div>
+
+<script src="shared/config.js"></script>
+<script src="shared/brand.js"></script>
+<script src="shared/app.js"></script>
+<script>
+  WLApp.applyI18n();
+
+  document.getElementById('wl-lang-btn').addEventListener('click', function () {
+    var next = WLApp.lang === 'fr' ? 'en' : 'fr';
+    var url = new URL(location.href);
+    url.searchParams.set('lang', next);
+    location.href = url.toString();
+  });
+
+  ['wl-coach-link', 'wl-panier-link'].forEach(function (id) {
+    var el = document.getElementById(id);
+    el.href = WLApp.withPartnerParam(el.getAttribute('href'));
+  });
+
+  WLApp.fetchConfig().then(function (config) {
+    applyBrand(config);
+  }).catch(function () {
+    WLApp.showError(document.getElementById('wl-config-error'), WLApp.t('service_unavailable'));
+  });
+</script>
+</body>
+</html>
