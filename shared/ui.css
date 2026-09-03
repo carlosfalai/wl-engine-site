@@ -261,3 +261,35 @@ img { max-width: 100%; }
 
 .wl-section { margin-top: calc(var(--spacing-unit) * 10); }
 .wl-section h2 { color: var(--color-primary); }
+
+/* Consumer editions — tiers, sponsors, tier badge */
+.wl-tier-price { font-size: 1.6rem; font-weight: 700; color: var(--color-primary); margin: 0 0 calc(var(--spacing-unit) * 2); }
+.wl-card ul { padding-left: calc(var(--spacing-unit) * 5); margin: calc(var(--spacing-unit) * 3) 0; }
+.wl-card ul li { margin-bottom: calc(var(--spacing-unit) * 1.5); font-size: 0.92rem; }
+
+.wl-sponsors-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(var(--spacing-unit) * 5);
+  margin: calc(var(--spacing-unit) * 5) 0;
+}
+.wl-sponsor-item {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing-unit) * 3);
+  background: var(--card-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: calc(var(--spacing-unit) * 3) calc(var(--spacing-unit) * 4);
+  min-width: 220px;
+}
+.wl-sponsor-item img { height: 32px; width: auto; border-radius: var(--radius-sm); }
+.wl-sponsor-item .wl-sponsor-name { font-weight: 700; font-size: 0.9rem; }
+.wl-sponsor-item .wl-sponsor-message { font-size: 0.78rem; opacity: 0.75; }
+
+.wl-tier-badge-row { display: flex; align-items: center; gap: calc(var(--spacing-unit) * 3); flex-wrap: wrap; margin-bottom: calc(var(--spacing-unit) * 4); }
+.wl-remaining { font-size: 0.85rem; opacity: 0.75; }
+.wl-country-hint { font-size: 0.85rem; opacity: 0.75; }
+
+.wl-upgrade-card { border: 2px dashed var(--color-primary); text-align: center; }
+.wl-upgrade-card h3 { margin-top: 0; color: var(--color-primary); }

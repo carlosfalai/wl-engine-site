@@ -91,6 +91,50 @@
       <h2 data-i18n="finance">Finances</h2>
       <div id="wl-finance-panel"></div>
     </div>
+
+    <div class="wl-section">
+      <h2 data-i18n="sponsors_panel">Commanditaires</h2>
+      <div class="wl-field">
+        <label data-i18n="partner_label">Partenaire</label>
+        <select id="wl-sponsor-partner-select"></select>
+      </div>
+      <div id="wl-sponsors-table"></div>
+
+      <h3 id="wl-sponsor-form-title" data-i18n="add_sponsor">Ajouter un commanditaire</h3>
+      <div id="wl-sponsor-form-result"></div>
+      <form id="wl-sponsor-form" class="wl-form">
+        <div class="wl-form-grid">
+          <div class="wl-field">
+            <label data-i18n="sponsor_name">Nom</label>
+            <input type="text" name="name" required>
+          </div>
+          <div class="wl-field full">
+            <label data-i18n="sponsor_logo">URL du logo</label>
+            <input type="url" name="logo_url">
+          </div>
+          <div class="wl-field full">
+            <label data-i18n="sponsor_message">Message (120 car. max)</label>
+            <input type="text" name="message" maxlength="120">
+          </div>
+          <div class="wl-field">
+            <label data-i18n="sponsor_product">Produit</label>
+            <select name="product" required>
+              <option value="coach">Coach</option>
+              <option value="panier">Panier</option>
+            </select>
+          </div>
+          <div class="wl-field">
+            <label data-i18n="sponsor_email">Courriel de facturation</label>
+            <input type="email" name="email">
+          </div>
+          <div class="wl-field">
+            <label><input type="checkbox" name="active" checked> <span data-i18n="sponsor_active">Actif</span></label>
+          </div>
+        </div>
+        <button type="submit" class="wl-btn" id="wl-sponsor-submit-btn" data-i18n="create">Créer</button>
+        <button type="button" class="wl-btn wl-btn-outline wl-hidden" id="wl-sponsor-cancel-btn" data-i18n="cancel_edit">Annuler</button>
+      </form>
+    </div>
   </section>
 </div>
 
@@ -131,30 +175,48 @@
       userInfo.classList.remove('wl-hidden');
 
       var partners = data.partners || [];
+      populateSponsorPartnerSelect(partners);
       var tableEl = document.getElementById('wl-partners-table');
       if (!partners.length) {
         tableEl.innerHTML = '<p>' + WLApp.t('no_plans_yet') + '</p>';
       } else {
         var partnersByCode = {};
-        var rows = partners.map(function (p) {
+        tableEl.innerHTML = '<table class="wl-table"><thead><tr><th>Code</th><th>Nom</th><th>Type</th><th>Démo</th><th>Facturation</th><th data-i18n="plans_this_month">Plans</th><th data-i18n="estimated_amount">Montant</th><th data-i18n="members">Membres</th><th></th></tr></thead></table>';
+        var tbody = document.createElement('tbody');
+        partners.forEach(function (p) {
           partnersByCode[p.code] = p;
           var month = p.month || {};
-          return '<tr>' +
-            '<td>' + p.code + '</td>' +
-            '<td>' + p.name + '</td>' +
-            '<td>' + p.type + '</td>' +
-            '<td>' + (p.demo ? 'Oui' : 'Non') + '</td>' +
-            '<td>' + (p.billing_active ? 'Actif' : 'Inactif') + '</td>' +
-            '<td>' + (month.plans || 0) + '</td>' +
-            '<td>' + WLApp.centsToDollars(month.amount_cents || 0) + '</td>' +
-            '<td>' + (p.members || 0) + '</td>' +
-            '<td>' +
-              '<button class="wl-btn wl-btn-outline wl-edit-btn" data-code="' + p.code + '" data-i18n="edit_partner">Modifier</button>' +
-              (p.billing_active ? '' : ' <button class="wl-btn wl-btn-outline wl-activate-btn" data-code="' + p.code + '" data-i18n="activate_billing">Activer la facturation</button>') +
-            '</td>' +
-            '</tr>';
-        }).join('');
-        tableEl.innerHTML = '<table class="wl-table"><thead><tr><th>Code</th><th>Nom</th><th>Type</th><th>Démo</th><th>Facturation</th><th data-i18n="plans_this_month">Plans</th><th data-i18n="estimated_amount">Montant</th><th data-i18n="members">Membres</th><th></th></tr></thead><tbody>' + rows + '</tbody></table>';
+          var tr = document.createElement('tr');
+          function addTd(text) { var el = document.createElement('td'); el.textContent = text; tr.appendChild(el); }
+          // partner name/code/type are admin-submitted API data — always textContent, never innerHTML.
+          addTd(p.code);
+          addTd(p.name);
+          addTd(p.type);
+          addTd(p.demo ? 'Oui' : 'Non');
+          addTd(p.billing_active ? 'Actif' : 'Inactif');
+          addTd(month.plans || 0);
+          addTd(WLApp.centsToDollars(month.amount_cents || 0));
+          addTd(p.members || 0);
+          var actionsTd = document.createElement('td');
+          var editBtn = document.createElement('button');
+          editBtn.type = 'button';
+          editBtn.className = 'wl-btn wl-btn-outline wl-edit-btn';
+          editBtn.dataset.code = p.code;
+          editBtn.textContent = WLApp.t('edit_partner');
+          actionsTd.appendChild(editBtn);
+          if (!p.billing_active) {
+            actionsTd.appendChild(document.createTextNode(' '));
+            var activateBtn = document.createElement('button');
+            activateBtn.type = 'button';
+            activateBtn.className = 'wl-btn wl-btn-outline wl-activate-btn';
+            activateBtn.dataset.code = p.code;
+            activateBtn.textContent = WLApp.t('activate_billing');
+            actionsTd.appendChild(activateBtn);
+          }
+          tr.appendChild(actionsTd);
+          tbody.appendChild(tr);
+        });
+        tableEl.querySelector('table').appendChild(tbody);
         tableEl.querySelectorAll('.wl-activate-btn').forEach(function (btn) {
           btn.addEventListener('click', function () {
             var code = btn.getAttribute('data-code');
@@ -185,11 +247,30 @@
     WLApp.api('/admin/finance', { headers: adminHeaders() }).then(function (data) {
       var months = data.months || [];
       var financeEl = document.getElementById('wl-finance-panel');
-      var rows = months.map(function (m) {
-        return '<tr><td>' + m.month + '</td><td>' + WLApp.centsToDollars(m.paid_cents) + '</td></tr>';
-      }).join('');
-      financeEl.innerHTML = '<p>Abonnements actifs : <strong>' + (data.active_subscriptions || 0) + '</strong></p>' +
-        '<table class="wl-table"><thead><tr><th>Mois</th><th>Payé</th></tr></thead><tbody>' + rows + '</tbody></table>';
+      // month/paid_cents/active_subscriptions are API data - build via DOM, never innerHTML.
+      financeEl.innerHTML = '';
+      var summary = document.createElement('p');
+      summary.appendChild(document.createTextNode('Abonnements actifs : '));
+      var strong = document.createElement('strong');
+      strong.textContent = data.active_subscriptions || 0;
+      summary.appendChild(strong);
+      financeEl.appendChild(summary);
+      var table = document.createElement('table');
+      table.className = 'wl-table';
+      table.innerHTML = '<thead><tr><th>Mois</th><th>Payé</th></tr></thead>';
+      var tbody = document.createElement('tbody');
+      months.forEach(function (m) {
+        var tr = document.createElement('tr');
+        var monthTd = document.createElement('td');
+        monthTd.textContent = m.month;
+        tr.appendChild(monthTd);
+        var paidTd = document.createElement('td');
+        paidTd.textContent = WLApp.centsToDollars(m.paid_cents);
+        tr.appendChild(paidTd);
+        tbody.appendChild(tr);
+      });
+      table.appendChild(tbody);
+      financeEl.appendChild(table);
     }).catch(function () {});
   }
 
@@ -251,6 +332,130 @@
 
   document.getElementById('wl-partner-cancel-btn').addEventListener('click', resetPartnerForm);
 
+  // ---------- sponsors panel ----------
+  var sponsorPartnerSelect = document.getElementById('wl-sponsor-partner-select');
+  var editingSponsorId = null;
+  var sponsorsByPartnerCache = [];
+
+  function populateSponsorPartnerSelect(partners) {
+    var current = sponsorPartnerSelect.value;
+    sponsorPartnerSelect.innerHTML = partners.map(function (p) {
+      return '<option value="' + p.code + '">' + p.code + ' — ' + p.name + '</option>';
+    }).join('');
+    if (current && partners.some(function (p) { return p.code === current; })) {
+      sponsorPartnerSelect.value = current;
+    }
+    if (sponsorPartnerSelect.value) loadSponsors(sponsorPartnerSelect.value);
+  }
+
+  sponsorPartnerSelect.addEventListener('change', function () {
+    if (sponsorPartnerSelect.value) loadSponsors(sponsorPartnerSelect.value);
+  });
+
+  function loadSponsors(code) {
+    WLApp.api('/admin/sponsors?partner=' + encodeURIComponent(code), { headers: adminHeaders() }).then(function (data) {
+      sponsorsByPartnerCache = data.sponsors || [];
+      var tableEl = document.getElementById('wl-sponsors-table');
+      if (!sponsorsByPartnerCache.length) {
+        tableEl.innerHTML = '<p>' + WLApp.t('no_sponsors_yet') + '</p>';
+        return;
+      }
+      tableEl.innerHTML = '<table class="wl-table"><thead><tr><th data-i18n="sponsor_name">Nom</th><th data-i18n="sponsor_product">Produit</th><th data-i18n="sponsor_message">Message</th><th data-i18n="sponsor_active">Actif</th><th></th></tr></thead></table>';
+      var sponsorsTbody = document.createElement('tbody');
+      sponsorsByPartnerCache.forEach(function (s) {
+        // sponsor name/message/product are partner-submitted API data — textContent only, never innerHTML.
+        var tr = document.createElement('tr');
+        function addTd(text) { var el = document.createElement('td'); el.textContent = text; tr.appendChild(el); }
+        addTd(s.name || '');
+        addTd(s.product || '');
+        addTd(s.message || '');
+        addTd(s.active ? 'Oui' : 'Non');
+        var actionsTd = document.createElement('td');
+        var editBtn = document.createElement('button');
+        editBtn.type = 'button';
+        editBtn.className = 'wl-btn wl-btn-outline wl-sponsor-edit-btn';
+        editBtn.dataset.id = s.id;
+        editBtn.textContent = WLApp.t('edit_partner');
+        actionsTd.appendChild(editBtn);
+        tr.appendChild(actionsTd);
+        sponsorsTbody.appendChild(tr);
+      });
+      tableEl.querySelector('table').appendChild(sponsorsTbody);
+      tableEl.querySelectorAll('.wl-sponsor-edit-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var id = btn.getAttribute('data-id');
+          var s = sponsorsByPartnerCache.filter(function (x) { return String(x.id) === String(id); })[0];
+          startEditSponsor(s);
+        });
+      });
+    }).catch(function () {
+      document.getElementById('wl-sponsors-table').innerHTML = '<p>' + WLApp.t('no_sponsors_yet') + '</p>';
+    });
+  }
+
+  function startEditSponsor(s) {
+    if (!s) return;
+    editingSponsorId = s.id;
+    var form = document.getElementById('wl-sponsor-form');
+    form.name.value = s.name || '';
+    form.logo_url.value = s.logo_url || '';
+    form.message.value = s.message || '';
+    form.product.value = s.product || 'coach';
+    form.email.value = s.email || '';
+    form.active.checked = !!s.active;
+    document.getElementById('wl-sponsor-form-title').textContent = WLApp.t('edit_partner') + ': ' + (s.name || '');
+    document.getElementById('wl-sponsor-submit-btn').textContent = WLApp.t('save');
+    document.getElementById('wl-sponsor-cancel-btn').classList.remove('wl-hidden');
+    form.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function resetSponsorForm() {
+    editingSponsorId = null;
+    document.getElementById('wl-sponsor-form').reset();
+    document.getElementById('wl-sponsor-form-title').textContent = WLApp.t('add_sponsor');
+    document.getElementById('wl-sponsor-submit-btn').textContent = WLApp.t('create');
+    document.getElementById('wl-sponsor-cancel-btn').classList.add('wl-hidden');
+  }
+
+  document.getElementById('wl-sponsor-cancel-btn').addEventListener('click', resetSponsorForm);
+
+  document.getElementById('wl-sponsor-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var fd = new FormData(e.target);
+    var resultEl = document.getElementById('wl-sponsor-form-result');
+    resultEl.innerHTML = '';
+    var messageValue = fd.get('message') || '';
+    if (messageValue.length > 120) {
+      WLApp.showError(resultEl, WLApp.t('sponsor_message_too_long'));
+      return;
+    }
+    var body = {
+      partner_code: sponsorPartnerSelect.value,
+      name: fd.get('name'),
+      logo_url: fd.get('logo_url'),
+      message: messageValue,
+      product: fd.get('product'),
+      email: fd.get('email'),
+      active: fd.get('active') === 'on'
+    };
+
+    var endpoint = '/admin/sponsor';
+    if (editingSponsorId) {
+      endpoint = '/admin/sponsor/update';
+      body.id = editingSponsorId;
+    }
+
+    WLApp.api(endpoint, { method: 'POST', headers: adminHeaders(), body: body })
+      .then(function () {
+        resultEl.innerHTML = '<div class="wl-alert wl-alert-success">' + WLApp.t('saved') + '</div>';
+        resetSponsorForm();
+        loadSponsors(sponsorPartnerSelect.value);
+      })
+      .catch(function () {
+        WLApp.showError(resultEl, WLApp.t('error_generic'));
+      });
+  });
+
   document.getElementById('wl-new-partner-form').addEventListener('submit', function (e) {
     e.preventDefault();
     var fd = new FormData(e.target);
@@ -285,7 +490,17 @@
       body: body
     }).then(function (data) {
       var link = 'https://app.healthyplan.ca/?p=' + encodeURIComponent(data.partner.code);
-      resultEl.innerHTML = '<div class="wl-alert wl-alert-success">Lien : <a href="' + link + '" target="_blank">' + link + '</a></div>';
+      // data.partner.code is API data - build the link via DOM, never innerHTML.
+      resultEl.innerHTML = '';
+      var alertDiv = document.createElement('div');
+      alertDiv.className = 'wl-alert wl-alert-success';
+      alertDiv.appendChild(document.createTextNode('Lien : '));
+      var linkA = document.createElement('a');
+      linkA.href = link;
+      linkA.target = '_blank';
+      linkA.textContent = link;
+      alertDiv.appendChild(linkA);
+      resultEl.appendChild(alertDiv);
       e.target.reset();
       loadState();
     }).catch(function () {

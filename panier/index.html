@@ -26,6 +26,7 @@
   </header>
 
   <div id="wl-config-error"></div>
+  <div id="wl-checkout-banner"></div>
 
   <section id="wl-signin-section" class="wl-signin-box">
     <h1 data-i18n="panier_title">Panier</h1>
@@ -35,14 +36,33 @@
   </section>
 
   <section id="wl-app-section" class="wl-hidden">
+    <div class="wl-section" id="wl-tier-section" style="margin-top:0">
+      <div class="wl-tier-badge-row">
+        <span class="wl-badge" id="wl-tier-badge"></span>
+        <span class="wl-remaining" id="wl-remaining-label"></span>
+        <button class="wl-btn wl-btn-outline wl-hidden" id="wl-manage-sub-btn" type="button" data-i18n="manage_subscription">Gérer mon abonnement</button>
+      </div>
+      <div class="wl-card wl-upgrade-card wl-hidden" id="wl-upgrade-card">
+        <h3 data-i18n="upgrade_card_title">Passez au forfait Membre</h3>
+        <p data-i18n="upgrade_card_body">Plus de plans, analyse photo et historique complet.</p>
+        <p class="wl-tier-price" id="wl-upgrade-price"></p>
+        <button class="wl-btn" id="wl-upgrade-btn" type="button" data-i18n="become_member">Devenir membre</button>
+      </div>
+    </div>
+
     <div class="wl-section">
       <h2 data-i18n="panier_title">Panier</h2>
       <div id="wl-form-error"></div>
       <form id="wl-panier-form" class="wl-form">
         <div class="wl-form-grid">
           <div class="wl-field">
-            <label>Code postal</label>
-            <input type="text" name="postal_code" required>
+            <label data-i18n="postal_label">Code postal</label>
+            <input type="text" name="postal_code" id="wl-postal-input" required>
+          </div>
+          <div class="wl-field wl-hidden" id="wl-country-field">
+            <label data-i18n="country_label">Pays</label>
+            <select name="country" id="wl-country-select"></select>
+            <span class="wl-country-hint wl-hidden" id="wl-country-hint" data-i18n="country_other_hint"></span>
           </div>
           <div class="wl-field">
             <label>Budget / semaine</label>
@@ -89,14 +109,50 @@
 <script>
   WLApp.applyI18n();
 
+  var countrySelect = document.getElementById('wl-country-select');
+  countrySelect.innerHTML = WLApp.countries.map(function (c) {
+    return '<option value="' + c[0] + '">' + c[1] + '</option>';
+  }).join('');
+  countrySelect.value = 'CA';
+
+  var countryHint = document.getElementById('wl-country-hint');
+  countrySelect.addEventListener('change', function () {
+    countryHint.classList.toggle('wl-hidden', countrySelect.value !== '');
+  });
+
+  var postalInput = document.getElementById('wl-postal-input');
+  var countryField = document.getElementById('wl-country-field');
+  function checkPostal() {
+    if (postalInput.value && !WLApp.looksLikeCaOrUs(postalInput.value)) {
+      countryField.classList.remove('wl-hidden');
+    } else {
+      countryField.classList.add('wl-hidden');
+      countryHint.classList.add('wl-hidden');
+    }
+  }
+  postalInput.addEventListener('input', checkPostal);
+  postalInput.addEventListener('blur', checkPostal);
+
   document.getElementById('wl-lang-btn').addEventListener('click', function () {
     var next = WLApp.lang === 'fr' ? 'en' : 'fr';
+    if (WLApp.getToken()) {
+      WLApp.api('/me/preferences', { method: 'POST', body: { language: next } }).catch(function () {});
+    }
     var url = new URL(location.href);
     url.searchParams.set('lang', next);
     location.href = url.toString();
   });
 
+  if (new URLSearchParams(location.search).get('checkout') === 'success') {
+    document.getElementById('wl-checkout-banner').innerHTML =
+      '<div class="wl-alert wl-alert-success">' + WLApp.t('checkout_thanks') + '</div>';
+    var cleanUrl = location.pathname + (WLApp.getPartner() ? '?p=' + encodeURIComponent(WLApp.getPartner()) : '');
+    history.replaceState(null, '', cleanUrl);
+  }
+
+  var siteConfig = null;
   WLApp.fetchConfig().then(function (config) {
+    siteConfig = config;
     applyBrand(config);
   }).catch(function () {
     WLApp.showError(document.getElementById('wl-config-error'), WLApp.t('service_unavailable'));
@@ -107,12 +163,56 @@
   var userInfo = document.getElementById('wl-user-info');
   var userEmail = document.getElementById('wl-user-email');
 
+  function startCheckout() {
+    var returnUrl = location.origin + location.pathname + '?checkout=success' + (WLApp.getPartner() ? '&p=' + encodeURIComponent(WLApp.getPartner()) : '');
+    WLApp.api('/billing/checkout', { method: 'POST', body: { success_url: returnUrl, cancel_url: location.origin + location.pathname } })
+      .then(function (data) { if (data.url) location.href = data.url; })
+      .catch(function () { WLApp.showError(document.getElementById('wl-form-error'), WLApp.t('error_generic')); });
+  }
+
+  function applyTierUI(me) {
+    var tier = me.tier || 'free';
+    var remaining = me.remaining || {};
+    var badge = document.getElementById('wl-tier-badge');
+    badge.textContent = WLApp.t('your_tier') + ': ' + (tier === 'member' ? WLApp.t('tier_member') : WLApp.t('tier_free'));
+
+    var remainingLabel = document.getElementById('wl-remaining-label');
+    var manageBtn = document.getElementById('wl-manage-sub-btn');
+    var upgradeCard = document.getElementById('wl-upgrade-card');
+
+    if (tier === 'member') {
+      var remainingCount = (remaining.today !== undefined) ? remaining.today : remaining.month;
+      var remainingWord = (remaining.today !== undefined) ? WLApp.t('plans_remaining_today') : WLApp.t('plans_remaining_month');
+      remainingLabel.textContent = (remainingCount !== undefined ? remainingCount + ' ' + remainingWord : '');
+      manageBtn.classList.remove('wl-hidden');
+      upgradeCard.classList.add('wl-hidden');
+    } else {
+      remainingLabel.textContent = (remaining.month !== undefined ? remaining.month + ' ' + WLApp.t('plans_remaining_month') : '');
+      manageBtn.classList.add('wl-hidden');
+      upgradeCard.classList.remove('wl-hidden');
+      document.getElementById('wl-upgrade-price').textContent = (siteConfig && siteConfig.member_price_label) || '';
+    }
+  }
+
+  document.getElementById('wl-manage-sub-btn').addEventListener('click', function () {
+    WLApp.api('/billing/portal', { method: 'POST', body: { return_url: location.href } })
+      .then(function (data) { if (data.url) location.href = data.url; })
+      .catch(function () {});
+  });
+  document.getElementById('wl-upgrade-btn').addEventListener('click', startCheckout);
+
   function showApp(user) {
     signinSection.classList.add('wl-hidden');
     appSection.classList.remove('wl-hidden');
     userInfo.classList.remove('wl-hidden');
     userEmail.textContent = (user && user.email) || '';
     loadPlans();
+    WLApp.api('/me').then(function (data) {
+      applyTierUI(data.user || data);
+      if (new URLSearchParams(location.search).get('upgrade') === '1' && (data.user || data).tier !== 'member') {
+        startCheckout();
+      }
+    }).catch(function () {});
   }
 
   document.getElementById('wl-signout').addEventListener('click', function (e) {
@@ -146,6 +246,7 @@
     var fd = new FormData(form);
     var payload = {
       postal_code: fd.get('postal_code'),
+      country: countryField.classList.contains('wl-hidden') ? undefined : fd.get('country'),
       budget: Number(fd.get('budget')),
       people: Number(fd.get('people')),
       goals: fd.get('goals') || '',
@@ -166,10 +267,11 @@
         document.getElementById('wl-result').classList.remove('wl-hidden');
         document.getElementById('wl-pdf-link').href = data.pdf_url;
         loadPlans();
+        WLApp.api('/me').then(function (d) { applyTierUI(d.user || d); }).catch(function () {});
       })
-      .catch(function () {
+      .catch(function (err) {
         document.getElementById('wl-progress').classList.add('wl-hidden');
-        WLApp.showError(errorEl, WLApp.t('error_generic'));
+        WLApp.showError(errorEl, WLApp.genErrorMessage(err));
       })
       .finally(function () {
         btn.disabled = false;
@@ -184,11 +286,25 @@
         listEl.innerHTML = '<p>' + WLApp.t('no_plans_yet') + '</p>';
         return;
       }
-      var rows = plans.map(function (p) {
-        return '<tr><td>' + new Date(p.created_at).toLocaleDateString() + '</td>' +
-          '<td><a href="#" data-plan-id="' + p.id + '" class="wl-open-plan">' + WLApp.t('open_pdf') + '</a></td></tr>';
-      }).join('');
-      listEl.innerHTML = '<table class="wl-table"><thead><tr><th>Date</th><th></th></tr></thead><tbody>' + rows + '</tbody></table>';
+      // plan id/created_at are API data - build rows via DOM, never innerHTML.
+      listEl.innerHTML = '<table class="wl-table"><thead><tr><th>Date</th><th></th></tr></thead></table>';
+      var tbody = document.createElement('tbody');
+      plans.forEach(function (p) {
+        var tr = document.createElement('tr');
+        var dateTd = document.createElement('td');
+        dateTd.textContent = new Date(p.created_at).toLocaleDateString();
+        tr.appendChild(dateTd);
+        var linkTd = document.createElement('td');
+        var a = document.createElement('a');
+        a.href = '#';
+        a.className = 'wl-open-plan';
+        a.dataset.planId = p.id;
+        a.textContent = WLApp.t('open_pdf');
+        linkTd.appendChild(a);
+        tr.appendChild(linkTd);
+        tbody.appendChild(tr);
+      });
+      listEl.querySelector('table').appendChild(tbody);
       listEl.querySelectorAll('.wl-open-plan').forEach(function (a) {
         a.addEventListener('click', function (e) {
           e.preventDefault();

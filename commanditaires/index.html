@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Commanditaires</title>
+<link rel="stylesheet" href="../shared/ui.css">
+</head>
+<body>
+<div class="wl-app">
+  <header class="wl-header">
+    <div class="wl-brand">
+      <img data-brand-logo style="display:none" alt="logo">
+      <div>
+        <div class="wl-brand-name" data-brand-name>Coach + Panier</div>
+      </div>
+    </div>
+    <nav class="wl-nav">
+      <a href="../" data-i18n="home">Accueil</a>
+      <button class="wl-lang-toggle" id="wl-lang-btn" type="button">EN / FR</button>
+    </nav>
+  </header>
+
+  <div id="wl-config-error"></div>
+
+  <section class="wl-hero">
+    <h1 data-i18n="sponsor_pitch_title">Devenez commanditaire</h1>
+    <p data-i18n="sponsor_pitch_body">500 $ par mois pour soutenir cette communauté gratuitement pour tous.</p>
+  </section>
+
+  <section class="wl-card">
+    <h2 data-i18n="sponsor_pitch_gets_title">Ce que vous recevez</h2>
+    <ul>
+      <li data-i18n="sponsor_name">Nom</li>
+      <li data-i18n="sponsor_logo">URL du logo</li>
+      <li data-i18n="sponsor_message">Message (120 car. max)</li>
+    </ul>
+    <p class="wl-tier-price" data-i18n="sponsor_price_500">500 $ par mois</p>
+    <a id="wl-contact-btn" class="wl-btn wl-hidden" href="#" data-i18n="contact_us">Nous joindre</a>
+  </section>
+
+  <section class="wl-section">
+    <h2 data-i18n="current_sponsors">Commanditaires actuels</h2>
+    <div id="wl-sponsors-strip" class="wl-sponsors-strip"></div>
+  </section>
+</div>
+
+<script src="../shared/config.js"></script>
+<script src="../shared/brand.js"></script>
+<script src="../shared/app.js"></script>
+<script>
+  WLApp.applyI18n();
+
+  document.getElementById('wl-lang-btn').addEventListener('click', function () {
+    var next = WLApp.lang === 'fr' ? 'en' : 'fr';
+    var url = new URL(location.href);
+    url.searchParams.set('lang', next);
+    location.href = url.toString();
+  });
+
+  WLApp.fetchConfig().then(function (config) {
+    applyBrand(config);
+
+    if (config.contact_email) {
+      var btn = document.getElementById('wl-contact-btn');
+      btn.href = 'mailto:' + config.contact_email;
+      btn.classList.remove('wl-hidden');
+    }
+
+    var product = config.type === 'panier' ? 'panier' : 'coach';
+    var params = new URLSearchParams();
+    if (WLApp.getPartner()) params.set('partner', WLApp.getPartner());
+    params.set('product', product);
+    WLApp.api('/sponsors?' + params.toString()).then(function (data) {
+      WLApp.renderSponsors(document.getElementById('wl-sponsors-strip'), data.sponsors || []);
+    }).catch(function () {});
+  }).catch(function () {
+    WLApp.showError(document.getElementById('wl-config-error'), WLApp.t('service_unavailable'));
+  });
+</script>
+</body>
+</html>

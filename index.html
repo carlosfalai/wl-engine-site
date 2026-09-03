@@ -22,34 +22,80 @@
     </nav>
   </header>
 
-  <section class="wl-hero">
-    <h1 data-brand-name>Coach + Panier</h1>
-    <p data-brand-tagline></p>
+  <div id="wl-config-error"></div>
+  <div id="wl-checkout-banner"></div>
+
+  <!-- Partner (agency-billed) landing: default, shown unless billing_mode === 'member' -->
+  <section id="wl-partner-landing">
+    <section class="wl-hero">
+      <h1 data-brand-name>Coach + Panier</h1>
+      <p data-brand-tagline></p>
+    </section>
+
+    <section class="wl-grid">
+      <div class="wl-card">
+        <span class="wl-badge" data-i18n="coach_title">Coach</span>
+        <h2 data-i18n="coach_title">Coach</h2>
+        <p data-i18n="coach_desc">Plan d'entraînement hebdomadaire personnalisé, livré en PDF.</p>
+        <video controls poster="videos/coach-fr.jpg" preload="none" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+          <source src="videos/coach-fr.mp4" type="video/mp4">
+        </video>
+        <div class="wl-video-fallback" style="display:none">Coach</div>
+        <a class="wl-btn wl-btn-block" id="wl-coach-link" href="coach/" data-i18n="signin">Se connecter avec Google</a>
+      </div>
+      <div class="wl-card">
+        <span class="wl-badge" data-i18n="panier_title">Panier</span>
+        <h2 data-i18n="panier_title">Panier</h2>
+        <p data-i18n="panier_desc">Le panier d'épicerie parfait selon votre budget, livré en PDF.</p>
+        <video controls poster="videos/panier-fr.jpg" preload="none" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+          <source src="videos/panier-fr.mp4" type="video/mp4">
+        </video>
+        <div class="wl-video-fallback" style="display:none">Panier</div>
+        <a class="wl-btn wl-btn-block" id="wl-panier-link" href="panier/" data-i18n="signin">Se connecter avec Google</a>
+      </div>
+    </section>
   </section>
 
-  <div id="wl-config-error"></div>
+  <!-- Consumer landing: shown when /config says billing_mode === 'member' -->
+  <section id="wl-consumer-landing" class="wl-hidden">
+    <section class="wl-hero">
+      <h1 data-brand-name>Coach + Panier</h1>
+      <p data-brand-tagline></p>
+      <video id="wl-consumer-video" controls preload="none" onerror="this.style.display='none'; document.getElementById('wl-consumer-video-fallback').style.display='flex'">
+        <source id="wl-consumer-video-src" src="" type="video/mp4">
+      </video>
+      <div class="wl-video-fallback" id="wl-consumer-video-fallback" style="display:none"></div>
+    </section>
 
-  <section class="wl-grid">
-    <div class="wl-card">
-      <span class="wl-badge" data-i18n="coach_title">Coach</span>
-      <h2 data-i18n="coach_title">Coach</h2>
-      <p data-i18n="coach_desc">Plan d'entraînement hebdomadaire personnalisé, livré en PDF.</p>
-      <video controls poster="videos/coach-fr.jpg" preload="none" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
-        <source src="videos/coach-fr.mp4" type="video/mp4">
-      </video>
-      <div class="wl-video-fallback" style="display:none">Coach</div>
-      <a class="wl-btn wl-btn-block" id="wl-coach-link" href="coach/" data-i18n="signin">Se connecter avec Google</a>
-    </div>
-    <div class="wl-card">
-      <span class="wl-badge" data-i18n="panier_title">Panier</span>
-      <h2 data-i18n="panier_title">Panier</h2>
-      <p data-i18n="panier_desc">Le panier d'épicerie parfait selon votre budget, livré en PDF.</p>
-      <video controls poster="videos/panier-fr.jpg" preload="none" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
-        <source src="videos/panier-fr.mp4" type="video/mp4">
-      </video>
-      <div class="wl-video-fallback" style="display:none">Panier</div>
-      <a class="wl-btn wl-btn-block" id="wl-panier-link" href="panier/" data-i18n="signin">Se connecter avec Google</a>
-    </div>
+    <section class="wl-grid">
+      <div class="wl-card">
+        <span class="wl-badge" data-i18n="tier_free">Gratuit</span>
+        <h2 data-i18n="tier_free">Gratuit</h2>
+        <ul>
+          <li data-i18n="per_month_plan">1 plan par mois</li>
+          <li data-i18n="no_photo_scan">Sans analyse photo</li>
+          <li id="wl-free-sponsor-line" class="wl-hidden" data-i18n="sponsor_line">Offert grâce à un commanditaire</li>
+        </ul>
+        <a class="wl-btn wl-btn-outline wl-btn-block" id="wl-free-cta" href="#" data-i18n="start_free">Commencer gratuitement</a>
+      </div>
+      <div class="wl-card">
+        <span class="wl-badge" data-i18n="tier_member">Membre</span>
+        <h2 data-i18n="tier_member">Membre</h2>
+        <p class="wl-tier-price" id="wl-member-price"></p>
+        <ul>
+          <li data-i18n="per_day_plans">3 plans par jour</li>
+          <li data-i18n="photo_scan_included">Analyse photo incluse</li>
+          <li data-i18n="history_included">Historique complet</li>
+        </ul>
+        <a class="wl-btn wl-btn-block" id="wl-member-cta" href="#" data-i18n="become_member">Devenir membre</a>
+      </div>
+    </section>
+
+    <section class="wl-section" id="wl-sponsors-section">
+      <h2 data-i18n="sponsors_strip_title">Offert grâce à nos commanditaires</h2>
+      <div id="wl-sponsors-strip" class="wl-sponsors-strip"></div>
+      <p><a href="commanditaires/" data-i18n="become_sponsor">Devenir commanditaire</a></p>
+    </section>
   </section>
 
   <footer class="wl-footer">
@@ -75,8 +121,57 @@
     el.href = WLApp.withPartnerParam(el.getAttribute('href'));
   });
 
+  if (new URLSearchParams(location.search).get('checkout') === 'success') {
+    document.getElementById('wl-checkout-banner').innerHTML =
+      '<div class="wl-alert wl-alert-success">' + WLApp.t('checkout_thanks') + '</div>';
+    var cleanUrl = location.pathname + (WLApp.getPartner() ? '?p=' + encodeURIComponent(WLApp.getPartner()) : '');
+    history.replaceState(null, '', cleanUrl);
+  }
+
   WLApp.fetchConfig().then(function (config) {
     applyBrand(config);
+
+    if (config.billing_mode === 'member') {
+      document.getElementById('wl-partner-landing').classList.add('wl-hidden');
+      var consumer = document.getElementById('wl-consumer-landing');
+      consumer.classList.remove('wl-hidden');
+
+      // product type drives which product page + video is shown
+      var product = config.type === 'panier' ? 'panier' : 'coach';
+      var videoBase = product === 'panier' ? 'panier-public' : 'gymbro';
+      var videoSrc = 'videos/' + videoBase + '-' + WLApp.lang + '.mp4';
+      document.getElementById('wl-consumer-video-src').src = videoSrc;
+      document.getElementById('wl-consumer-video').load();
+      document.getElementById('wl-consumer-video-fallback').textContent = config.name || '';
+
+      var productPath = (product === 'panier' ? 'panier/' : 'coach/');
+      var freeCta = document.getElementById('wl-free-cta');
+      var memberCta = document.getElementById('wl-member-cta');
+      freeCta.href = WLApp.withPartnerParam(productPath);
+      memberCta.href = WLApp.withPartnerParam(productPath + '?upgrade=1');
+
+      document.getElementById('wl-member-price').textContent = config.member_price_label || '';
+
+      if (config.sponsors_enabled) {
+        var params = new URLSearchParams();
+        if (WLApp.getPartner()) params.set('partner', WLApp.getPartner());
+        params.set('product', product);
+        WLApp.api('/sponsors?' + params.toString()).then(function (data) {
+          var sponsors = data.sponsors || [];
+          var stripEl = document.getElementById('wl-sponsors-strip');
+          if (!sponsors.length) {
+            document.getElementById('wl-sponsors-section').classList.add('wl-hidden');
+            return;
+          }
+          document.getElementById('wl-free-sponsor-line').classList.remove('wl-hidden');
+          WLApp.renderSponsors(stripEl, sponsors);
+        }).catch(function () {
+          document.getElementById('wl-sponsors-section').classList.add('wl-hidden');
+        });
+      } else {
+        document.getElementById('wl-sponsors-section').classList.add('wl-hidden');
+      }
+    }
   }).catch(function () {
     WLApp.showError(document.getElementById('wl-config-error'), WLApp.t('service_unavailable'));
   });
