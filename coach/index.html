@@ -182,10 +182,23 @@
   });
 
   if (new URLSearchParams(location.search).get('checkout') === 'success') {
-    document.getElementById('wl-checkout-banner').innerHTML =
-      '<div class="wl-alert wl-alert-success">' + WLApp.t('checkout_thanks') + '</div>';
+    var checkoutBanner = document.getElementById('wl-checkout-banner');
     var cleanUrl = location.pathname + (WLApp.getPartner() ? '?p=' + encodeURIComponent(WLApp.getPartner()) : '');
     history.replaceState(null, '', cleanUrl);
+    if (WLApp.getToken()) {
+      // The Stripe webhook that flips tier to 'member' can land after the
+      // browser redirect back — show "activating" and poll /me until the
+      // tier is actually member instead of claiming success too early.
+      checkoutBanner.innerHTML = '<div class="wl-alert wl-alert-success">' + WLApp.t('checkout_activating') + '</div>';
+      WLApp.pollForMembership(function (user) {
+        applyTierUI(user);
+        if (user.tier === 'member') {
+          checkoutBanner.innerHTML = '<div class="wl-alert wl-alert-success">' + WLApp.t('checkout_thanks') + '</div>';
+        }
+      });
+    } else {
+      checkoutBanner.innerHTML = '<div class="wl-alert wl-alert-success">' + WLApp.t('checkout_thanks') + '</div>';
+    }
   }
 
   var siteConfig = null;

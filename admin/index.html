@@ -339,9 +339,15 @@
 
   function populateSponsorPartnerSelect(partners) {
     var current = sponsorPartnerSelect.value;
-    sponsorPartnerSelect.innerHTML = partners.map(function (p) {
-      return '<option value="' + p.code + '">' + p.code + ' — ' + p.name + '</option>';
-    }).join('');
+    // partner code/name are admin-submitted API data — build options via
+    // DOM (createElement/textContent), never innerHTML.
+    sponsorPartnerSelect.innerHTML = '';
+    partners.forEach(function (p) {
+      var opt = document.createElement('option');
+      opt.value = p.code;
+      opt.textContent = p.code + ' — ' + p.name;
+      sponsorPartnerSelect.appendChild(opt);
+    });
     if (current && partners.some(function (p) { return p.code === current; })) {
       sponsorPartnerSelect.value = current;
     }

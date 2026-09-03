@@ -79,6 +79,7 @@
       upgrade_required_msg: 'L’analyse photo est réservée aux membres. Devenez membre pour l’utiliser.',
       rate_limited_msg: 'Trop de demandes. Veuillez patienter un instant.',
       checkout_thanks: 'Merci ! Votre abonnement est actif.',
+      checkout_activating: 'Paiement reçu, activation en cours...',
       country_label: 'Pays',
       postal_label: 'Code postal',
       sponsor_pitch_title: 'Devenez commanditaire',
@@ -161,6 +162,7 @@
       upgrade_required_msg: 'Photo scan is a member feature. Become a member to use it.',
       rate_limited_msg: 'Too many requests. Please wait a moment.',
       checkout_thanks: 'Thank you! Your subscription is active.',
+      checkout_activating: 'Payment received, activating...',
       country_label: 'Country',
       postal_label: 'Postal / ZIP code',
       sponsor_pitch_title: 'Become a sponsor',
@@ -262,6 +264,34 @@
         return data;
       });
     });
+  }
+
+  // After a Stripe checkout redirect (?checkout=success), the member webhook
+  // that flips tier to 'member' can land a few seconds after the browser
+  // returns — poll /me every 5s (up to 60s) until the tier updates instead
+  // of showing "active" before it actually is. onUpdate(user) is called on
+  // every poll (including the first, immediate one) so the caller can
+  // refresh its own UI; polling stops once tier === 'member' or the 60s
+  // budget runs out.
+  function pollForMembership(onUpdate) {
+    var attempts = 0;
+    var maxAttempts = 12; // 12 * 5s = 60s
+    function poll() {
+      api('/me').then(function (data) {
+        var user = data.user || data;
+        onUpdate(user);
+        if (user.tier !== 'member' && attempts < maxAttempts) {
+          attempts++;
+          setTimeout(poll, 5000);
+        }
+      }).catch(function () {
+        if (attempts < maxAttempts) {
+          attempts++;
+          setTimeout(poll, 5000);
+        }
+      });
+    }
+    poll();
   }
 
   function fetchConfig() {
@@ -413,6 +443,7 @@
     api: api,
     apiUrl: apiUrl,
     fetchConfig: fetchConfig,
+    pollForMembership: pollForMembership,
     initGoogleSignIn: initGoogleSignIn,
     maskEmail: maskEmail,
     centsToDollars: centsToDollars,
