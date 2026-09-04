@@ -63,27 +63,27 @@
       <form id="wl-branding-form" class="wl-form">
         <div class="wl-form-grid">
           <div class="wl-field">
-            <label>Nom</label>
+            <label data-i18n="sponsor_name">Nom</label>
             <input type="text" name="name" required>
           </div>
           <div class="wl-field">
-            <label>Slogan</label>
+            <label data-i18n="tagline_label">Slogan</label>
             <input type="text" name="tagline">
           </div>
           <div class="wl-field full">
-            <label>URL du logo</label>
+            <label data-i18n="sponsor_logo">URL du logo</label>
             <input type="url" name="logo_url">
           </div>
           <div class="wl-field">
-            <label>Couleur primaire</label>
+            <label data-i18n="primary_color_label">Couleur primaire</label>
             <input type="color" name="primary" value="#117743">
           </div>
           <div class="wl-field">
-            <label>Couleur accent</label>
+            <label data-i18n="accent_color_label">Couleur accent</label>
             <input type="color" name="accent" value="#0d5a33">
           </div>
           <div class="wl-field">
-            <label>Couleur foncée</label>
+            <label data-i18n="dark_color_label">Couleur foncée</label>
             <input type="color" name="dark" value="#1a2744">
           </div>
         </div>
@@ -108,7 +108,7 @@
         <code id="wl-partner-link"></code>
         <button class="wl-btn wl-btn-outline" id="wl-copy-link" data-i18n="copy">Copier</button>
       </div>
-      <p style="font-size:0.85rem;opacity:0.7;margin-top:8px">Snippet d'intégration :</p>
+      <p style="font-size:0.85rem;opacity:0.7;margin-top:8px" data-i18n="embed_snippet_label">Snippet d'intégration :</p>
       <div class="wl-copy-box">
         <code id="wl-embed-snippet"></code>
         <button class="wl-btn wl-btn-outline" id="wl-copy-embed" data-i18n="copy">Copier</button>
@@ -162,7 +162,7 @@
         recentEl.innerHTML = '<p>' + WLApp.t('no_plans_yet') + '</p>';
       } else {
         // date/product/user_email are API data - build rows via DOM, never innerHTML.
-        recentEl.innerHTML = '<table class="wl-table"><thead><tr><th>Date</th><th>Produit</th><th>Membre</th></tr></thead></table>';
+        recentEl.innerHTML = '<table class="wl-table"><thead><tr><th>' + WLApp.t('date_label') + '</th><th>' + WLApp.t('sponsor_product') + '</th><th>' + WLApp.t('tier_member') + '</th></tr></thead></table>';
         var recentTbody = document.createElement('tbody');
         recent.forEach(function (r) {
           var tr = document.createElement('tr');

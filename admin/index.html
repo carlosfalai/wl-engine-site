@@ -37,7 +37,7 @@
 
   <section id="wl-app-section" class="wl-hidden">
     <div class="wl-section">
-      <h2>Partenaires</h2>
+      <h2 data-i18n="partners">Partenaires</h2>
       <div id="wl-partners-table"></div>
     </div>
 
@@ -47,39 +47,39 @@
       <form id="wl-new-partner-form" class="wl-form">
         <div class="wl-form-grid">
           <div class="wl-field">
-            <label>Nom</label>
+            <label data-i18n="sponsor_name">Nom</label>
             <input type="text" name="name" required>
           </div>
           <div class="wl-field">
-            <label>Type</label>
+            <label data-i18n="partner_type_label">Type</label>
             <select name="type" required>
-              <option value="both">Coach + Panier</option>
-              <option value="coach">Coach seulement</option>
-              <option value="panier">Panier seulement</option>
+              <option value="both" data-i18n="product_type_both">Coach + Panier</option>
+              <option value="coach" data-i18n="product_type_coach_only">Coach seulement</option>
+              <option value="panier" data-i18n="product_type_panier_only">Panier seulement</option>
             </select>
           </div>
           <div class="wl-field">
-            <label>Slogan</label>
+            <label data-i18n="tagline_label">Slogan</label>
             <input type="text" name="tagline">
           </div>
           <div class="wl-field full">
-            <label>URL du logo</label>
+            <label data-i18n="sponsor_logo">URL du logo</label>
             <input type="url" name="logo_url">
           </div>
           <div class="wl-field">
-            <label>Couleur primaire</label>
+            <label data-i18n="primary_color_label">Couleur primaire</label>
             <input type="color" name="primary" value="#117743">
           </div>
           <div class="wl-field">
-            <label>Couleur accent</label>
+            <label data-i18n="accent_color_label">Couleur accent</label>
             <input type="color" name="accent" value="#0d5a33">
           </div>
           <div class="wl-field">
-            <label>Couleur foncée</label>
+            <label data-i18n="dark_color_label">Couleur foncée</label>
             <input type="color" name="dark" value="#1a2744">
           </div>
           <div class="wl-field">
-            <label><input type="checkbox" name="demo"> Démo</label>
+            <label><input type="checkbox" name="demo"> <span data-i18n="demo_label">Démo</span></label>
           </div>
         </div>
         <button type="submit" class="wl-btn" id="wl-partner-submit-btn" data-i18n="create">Créer</button>
@@ -119,8 +119,8 @@
           <div class="wl-field">
             <label data-i18n="sponsor_product">Produit</label>
             <select name="product" required>
-              <option value="coach">Coach</option>
-              <option value="panier">Panier</option>
+              <option value="coach" data-i18n="coach_title">Coach</option>
+              <option value="panier" data-i18n="panier_title">Panier</option>
             </select>
           </div>
           <div class="wl-field">
@@ -176,7 +176,7 @@
         tableEl.innerHTML = '<p>' + WLApp.t('no_plans_yet') + '</p>';
       } else {
         var partnersByCode = {};
-        tableEl.innerHTML = '<table class="wl-table"><thead><tr><th>Code</th><th>Nom</th><th>Type</th><th>Démo</th><th>Facturation</th><th data-i18n="plans_this_month">Plans</th><th data-i18n="estimated_amount">Montant</th><th data-i18n="members">Membres</th><th></th></tr></thead></table>';
+        tableEl.innerHTML = '<table class="wl-table"><thead><tr><th>' + WLApp.t('code_label') + '</th><th>' + WLApp.t('sponsor_name') + '</th><th>' + WLApp.t('partner_type_label') + '</th><th>' + WLApp.t('demo_label') + '</th><th>' + WLApp.t('billing_label') + '</th><th>' + WLApp.t('plans_this_month') + '</th><th>' + WLApp.t('estimated_amount') + '</th><th>' + WLApp.t('members') + '</th><th></th></tr></thead></table>';
         var tbody = document.createElement('tbody');
         partners.forEach(function (p) {
           partnersByCode[p.code] = p;
@@ -245,14 +245,14 @@
       // month/paid_cents/active_subscriptions are API data - build via DOM, never innerHTML.
       financeEl.innerHTML = '';
       var summary = document.createElement('p');
-      summary.appendChild(document.createTextNode('Abonnements actifs : '));
+      summary.appendChild(document.createTextNode(WLApp.t('active_subscriptions_label')));
       var strong = document.createElement('strong');
       strong.textContent = data.active_subscriptions || 0;
       summary.appendChild(strong);
       financeEl.appendChild(summary);
       var table = document.createElement('table');
       table.className = 'wl-table';
-      table.innerHTML = '<thead><tr><th>Mois</th><th>Payé</th></tr></thead>';
+      table.innerHTML = '<thead><tr><th>' + WLApp.t('month_label') + '</th><th>' + WLApp.t('paid_label') + '</th></tr></thead>';
       var tbody = document.createElement('tbody');
       months.forEach(function (m) {
         var tr = document.createElement('tr');
@@ -495,7 +495,7 @@
       resultEl.innerHTML = '';
       var alertDiv = document.createElement('div');
       alertDiv.className = 'wl-alert wl-alert-success';
-      alertDiv.appendChild(document.createTextNode('Lien : '));
+      alertDiv.appendChild(document.createTextNode(WLApp.t('link_colon_label')));
       var linkA = document.createElement('a');
       linkA.href = link;
       linkA.target = '_blank';

@@ -67,20 +67,20 @@
             <span class="wl-country-hint wl-hidden" id="wl-country-hint" data-i18n="country_other_hint"></span>
           </div>
           <div class="wl-field">
-            <label>Budget / semaine</label>
+            <label data-i18n="panier_budget_label">Budget / semaine</label>
             <input type="number" name="budget" required min="0" step="1">
           </div>
           <div class="wl-field">
-            <label>Nombre de personnes</label>
+            <label data-i18n="people_label">Nombre de personnes</label>
             <input type="number" name="people" required min="1" max="20">
           </div>
           <div class="wl-field full">
-            <label>Objectifs santé (facultatif)</label>
-            <textarea name="goals" placeholder="ex. moins de sucre, plus de protéines"></textarea>
+            <label data-i18n="goals_label">Objectifs santé (facultatif)</label>
+            <textarea name="goals" data-i18n-placeholder="goals_placeholder" placeholder="ex. moins de sucre, plus de protéines"></textarea>
           </div>
           <div class="wl-field full">
-            <label>Préférences / restrictions (facultatif)</label>
-            <textarea name="preferences" placeholder="ex. végétarien, sans gluten, allergies"></textarea>
+            <label data-i18n="preferences_label">Préférences / restrictions (facultatif)</label>
+            <textarea name="preferences" data-i18n-placeholder="preferences_placeholder" placeholder="ex. végétarien, sans gluten, allergies"></textarea>
           </div>
         </div>
         <button type="submit" class="wl-btn" id="wl-generate-btn" data-i18n="generate_plan">Générer mon plan</button>
