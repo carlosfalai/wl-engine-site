@@ -291,7 +291,7 @@
     userEmail.textContent = (user && user.email) || '';
     loadPlans();
     WLApp.api('/me').then(function (data) {
-      applyTierUI(data.user || data);
+      applyTierUI(data);
       prefillCoachProfile((data.user || data).profile, data.profile_complete && data.profile_complete.coach);
       if (new URLSearchParams(location.search).get('upgrade') === '1' && (data.user || data).tier !== 'member') {
         startCheckout();
@@ -374,7 +374,7 @@
         document.getElementById('wl-result').classList.remove('wl-hidden');
         document.getElementById('wl-pdf-link').href = data.pdf_url;
         loadPlans();
-        WLApp.api('/me').then(function (d) { applyTierUI(d.user || d); }).catch(function () {});
+        WLApp.api('/me').then(function (d) { applyTierUI(d); }).catch(function () {});
       })
       .catch(function (err) {
         document.getElementById('wl-progress').classList.add('wl-hidden');
