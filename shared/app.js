@@ -99,6 +99,9 @@
       sponsor_price_500: '500 $ par mois',
       country_other_hint: 'Pays non listé — nous traiterons votre demande manuellement.',
       sponsor_message_too_long: 'Le message ne doit pas dépasser 120 caractères.',
+      profile_saved: 'Profil enregistré',
+      diet_restrictions_label: 'Restrictions alimentaires (séparées par des virgules)',
+      generate_with_profile: 'Générer avec mon profil',
     },
     en: {
       signin: 'Sign in with Google',
@@ -182,6 +185,9 @@
       sponsor_price_500: '$500 per month',
       country_other_hint: 'Country not listed — we will handle your request manually.',
       sponsor_message_too_long: 'Message must be at most 120 characters.',
+      profile_saved: 'Profile saved',
+      diet_restrictions_label: 'Dietary restrictions (comma-separated)',
+      generate_with_profile: 'Generate with my profile',
     }
   };
 

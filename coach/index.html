@@ -54,6 +54,7 @@
 
     <div class="wl-section">
       <h2 data-i18n="coach_title">Coach</h2>
+      <div id="wl-profile-saved-line" class="wl-hidden" style="margin:0 0 12px;color:var(--wl-muted,#666);font-size:0.9em"></div>
       <div id="wl-form-error"></div>
       <form id="wl-profile-form" class="wl-form">
         <div class="wl-form-grid">
@@ -113,6 +114,10 @@
           <div class="wl-field full">
             <label>Blessures (facultatif)</label>
             <textarea name="injuries_text" placeholder="ex. genou gauche, léger, depuis 2024"></textarea>
+          </div>
+          <div class="wl-field full">
+            <label data-i18n="diet_restrictions_label">Restrictions alimentaires (séparées par des virgules)</label>
+            <input type="text" name="diet_restrictions_text" placeholder="ex. sans gluten, sans arachides">
           </div>
           <div class="wl-field full wl-hidden" id="wl-photo-field">
             <label>Photo (facultatif)</label>
@@ -256,6 +261,29 @@
   });
   document.getElementById('wl-upgrade-btn').addEventListener('click', startCheckout);
 
+  function prefillCoachProfile(profile, complete) {
+    if (!profile) return;
+    var form = document.getElementById('wl-profile-form');
+    ['height_cm', 'weight_kg', 'age', 'gender', 'fitness_goal', 'days_per_week', 'target_weight_kg', 'weekly_food_budget', 'postal_code', 'nearest_gym'].forEach(function (name) {
+      if (profile[name] === undefined || profile[name] === null) return;
+      var field = form.elements[name];
+      if (field) field.value = profile[name];
+    });
+    if (profile.postal_code) checkPostal();
+    if (profile.country) countrySelect.value = profile.country;
+    if (Array.isArray(profile.injuries) && profile.injuries.length) {
+      form.elements.injuries_text.value = profile.injuries.map(function (i) { return i.description || i.body_zone || ''; }).filter(Boolean).join('; ');
+    }
+    if (Array.isArray(profile.diet_restrictions) && profile.diet_restrictions.length) {
+      form.elements.diet_restrictions_text.value = profile.diet_restrictions.join(', ');
+    }
+    var savedLine = document.getElementById('wl-profile-saved-line');
+    if (complete) {
+      savedLine.textContent = WLApp.t('profile_saved') + (profile.saved_at ? ' (' + new Date(profile.saved_at).toLocaleDateString() + ')' : '');
+      savedLine.classList.remove('wl-hidden');
+    }
+  }
+
   function showApp(user) {
     signinSection.classList.add('wl-hidden');
     appSection.classList.remove('wl-hidden');
@@ -264,6 +292,7 @@
     loadPlans();
     WLApp.api('/me').then(function (data) {
       applyTierUI(data.user || data);
+      prefillCoachProfile((data.user || data).profile, data.profile_complete && data.profile_complete.coach);
       if (new URLSearchParams(location.search).get('upgrade') === '1' && (data.user || data).tier !== 'member') {
         startCheckout();
       }
@@ -304,6 +333,8 @@
     if (injuriesText) {
       injuries.push({ body_zone: injuriesText, severity: 'mild', description: injuriesText });
     }
+    var dietText = (fd.get('diet_restrictions_text') || '').trim();
+    var dietRestrictions = dietText ? dietText.split(',').map(function (s) { return s.trim(); }).filter(Boolean).slice(0, 10) : undefined;
     var profile = {
       height_cm: Number(fd.get('height_cm')),
       weight_kg: Number(fd.get('weight_kg')),
@@ -317,7 +348,8 @@
       country: countryField.classList.contains('wl-hidden') ? undefined : fd.get('country'),
       nearest_gym: fd.get('nearest_gym') || undefined,
       language: WLApp.lang,
-      injuries: injuries
+      injuries: injuries,
+      diet_restrictions: dietRestrictions
     };
 
     var errorEl = document.getElementById('wl-form-error');

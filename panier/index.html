@@ -52,6 +52,8 @@
 
     <div class="wl-section">
       <h2 data-i18n="panier_title">Panier</h2>
+      <div id="wl-profile-saved-line" class="wl-hidden" style="margin:0 0 12px;color:var(--wl-muted,#666);font-size:0.9em"></div>
+      <button type="button" class="wl-btn wl-btn-outline wl-hidden" id="wl-generate-with-profile-btn" style="margin-bottom:16px" data-i18n="generate_with_profile">Générer avec mon profil</button>
       <div id="wl-form-error"></div>
       <form id="wl-panier-form" class="wl-form">
         <div class="wl-form-grid">
@@ -214,6 +216,36 @@
   });
   document.getElementById('wl-upgrade-btn').addEventListener('click', startCheckout);
 
+  function prefillPanierProfile(profile, complete) {
+    var panier = profile && profile.panier;
+    var genBtn = document.getElementById('wl-generate-with-profile-btn');
+    if (!panier) {
+      genBtn.classList.add('wl-hidden');
+      return;
+    }
+    var form = document.getElementById('wl-panier-form');
+    ['postal_code', 'budget', 'people', 'goals', 'preferences'].forEach(function (name) {
+      if (panier[name] === undefined || panier[name] === null) return;
+      var field = form.elements[name];
+      if (field) field.value = panier[name];
+    });
+    if (panier.postal_code) checkPostal();
+    if (panier.country) countrySelect.value = panier.country;
+
+    var savedLine = document.getElementById('wl-profile-saved-line');
+    if (complete) {
+      savedLine.textContent = WLApp.t('profile_saved') + (panier.saved_at ? ' (' + new Date(panier.saved_at).toLocaleDateString() + ')' : '');
+      savedLine.classList.remove('wl-hidden');
+      genBtn.classList.remove('wl-hidden');
+    } else {
+      genBtn.classList.add('wl-hidden');
+    }
+  }
+
+  document.getElementById('wl-generate-with-profile-btn').addEventListener('click', function () {
+    document.getElementById('wl-panier-form').requestSubmit();
+  });
+
   function showApp(user) {
     signinSection.classList.add('wl-hidden');
     appSection.classList.remove('wl-hidden');
@@ -222,6 +254,7 @@
     loadPlans();
     WLApp.api('/me').then(function (data) {
       applyTierUI(data.user || data);
+      prefillPanierProfile((data.user || data).profile, data.profile_complete && data.profile_complete.panier);
       if (new URLSearchParams(location.search).get('upgrade') === '1' && (data.user || data).tier !== 'member') {
         startCheckout();
       }
