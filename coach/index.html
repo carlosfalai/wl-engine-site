@@ -386,7 +386,7 @@
         return;
       }
       // plan id/created_at are API data - build rows via DOM, never innerHTML.
-      listEl.innerHTML = '<table class="wl-table"><thead><tr><th>Date</th><th></th></tr></thead></table>';
+      listEl.innerHTML = '<table class="wl-table"><thead><tr><th>' + WLApp.t('date_label') + '</th><th></th></tr></thead></table>';
       var tbody = document.createElement('tbody');
       plans.forEach(function (p) {
         var tr = document.createElement('tr');
