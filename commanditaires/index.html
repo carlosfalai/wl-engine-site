@@ -17,7 +17,7 @@
     </div>
     <nav class="wl-nav">
       <a href="../" data-i18n="home">Accueil</a>
-      <button class="wl-lang-toggle" id="wl-lang-btn" type="button">EN / FR</button>
+      <button class="wl-lang-toggle" id="wl-lang-btn" type="button">FR | EN | ES</button>
     </nav>
   </header>
 
@@ -26,8 +26,8 @@
   <section class="wl-hero">
     <h1 data-i18n="sponsor_pitch_title">Devenez commanditaire</h1>
     <p data-i18n="sponsor_pitch_body">500 $ par mois pour soutenir cette communauté gratuitement pour tous.</p>
-    <video controls poster="../videos/sponsor-fr.jpg" preload="none" style="width:100%;max-width:640px;border-radius:8px;margin-top:16px" onerror="this.style.display='none'">
-      <source src="../videos/sponsor-fr.mp4" type="video/mp4">
+    <video id="wl-sponsor-video" controls poster="../videos/sponsor-fr.jpg" preload="none" style="width:100%;max-width:640px;border-radius:8px;margin-top:16px">
+      <source id="wl-sponsor-video-src" src="../videos/sponsor-fr.mp4" type="video/mp4">
     </video>
   </section>
 
@@ -54,12 +54,14 @@
 <script>
   WLApp.applyI18n();
 
-  document.getElementById('wl-lang-btn').addEventListener('click', function () {
-    var next = WLApp.lang === 'fr' ? 'en' : 'fr';
-    var url = new URL(location.href);
-    url.searchParams.set('lang', next);
-    location.href = url.toString();
-  });
+  WLApp.initLangToggle(document.getElementById('wl-lang-btn'));
+
+  WLApp.initLocalizedVideo(
+    document.getElementById('wl-sponsor-video'),
+    document.getElementById('wl-sponsor-video-src'),
+    'sponsor',
+    '../videos/'
+  );
 
   WLApp.fetchConfig().then(function (config) {
     applyBrand(config);

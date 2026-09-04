@@ -3,15 +3,17 @@
   'use strict';
 
   // ---------- language ----------
+  var LANGS = ['fr', 'en', 'es'];
+
   function getLang() {
     var q = new URLSearchParams(location.search).get('lang');
-    if (q === 'fr' || q === 'en') {
+    if (LANGS.indexOf(q) !== -1) {
       try { localStorage.setItem('wl_lang', q); } catch (e) {}
       return q;
     }
     try {
       var stored = localStorage.getItem('wl_lang');
-      if (stored) return stored;
+      if (LANGS.indexOf(stored) !== -1) return stored;
     } catch (e) {}
     return 'fr';
   }
@@ -188,6 +190,92 @@
       profile_saved: 'Profile saved',
       diet_restrictions_label: 'Dietary restrictions (comma-separated)',
       generate_with_profile: 'Generate with my profile',
+    },
+    es: {
+      signin: 'Iniciar sesión con Google',
+      partners: 'Socios',
+      home: 'Inicio',
+      no_prices: '',
+      coach_title: 'Coach',
+      coach_desc: 'Plan de entrenamiento semanal personalizado, entregado en PDF.',
+      panier_title: 'Canasta',
+      panier_desc: 'La canasta de compras perfecta según tu presupuesto, entregada en PDF.',
+      generate_plan: 'Generar mi plan',
+      generating: 'Analizando, de 30 a 90 segundos...',
+      open_pdf: 'Abrir el PDF',
+      my_plans: 'Mis planes',
+      service_unavailable: 'Servicio temporalmente no disponible. Inténtalo de nuevo más tarde.',
+      error_generic: 'Ocurrió un error. Inténtalo de nuevo.',
+      signed_in_as: 'Sesión iniciada como',
+      sign_out: 'Cerrar sesión',
+      no_plans_yet: 'Aún no se ha generado ningún plan.',
+      billing_portal: 'Facturación y pago',
+      your_link: 'Tu enlace',
+      copy: 'Copiar',
+      copied: '¡Copiado!',
+      plans_this_month: 'Planes este mes',
+      estimated_amount: 'Monto estimado',
+      members: 'Miembros',
+      recent_generations: 'Generaciones recientes',
+      branding: 'Imagen de marca',
+      save: 'Guardar',
+      saved: '¡Guardado!',
+      admin_login: 'Acceso de administrador',
+      admin_code: 'Código de administrador',
+      invalid_code: 'Código inválido.',
+      edit_partner: 'Editar',
+      cancel_edit: 'Cancelar',
+      partner_label: 'Socio',
+      new_partner: 'Nuevo socio',
+      create: 'Crear',
+      activate_billing: 'Activar facturación',
+      finance: 'Finanzas',
+      loading: 'Cargando...',
+      tier_free: 'Gratis',
+      tier_member: 'Miembro',
+      per_month_plan: '1 plan por mes',
+      per_day_plans: '3 planes por día',
+      photo_scan_included: 'Análisis de foto incluido',
+      no_photo_scan: 'Sin análisis de foto',
+      history_included: 'Historial completo',
+      sponsor_line: 'Ofrecido gracias a un patrocinador',
+      start_free: 'Comenzar gratis',
+      become_member: 'Hazte miembro',
+      sponsors_strip_title: 'Ofrecido gracias a nuestros patrocinadores',
+      become_sponsor: 'Conviértete en patrocinador',
+      your_tier: 'Tu plan',
+      plans_remaining_today: 'planes restantes hoy',
+      plans_remaining_month: 'planes restantes este mes',
+      manage_subscription: 'Administrar mi suscripción',
+      upgrade_card_title: 'Pasa al plan Miembro',
+      upgrade_card_body: 'Más planes, análisis de foto e historial completo.',
+      quota_exceeded_msg: 'Límite alcanzado para tu plan. Vuelve más tarde o hazte miembro.',
+      upgrade_required_msg: 'El análisis de foto es exclusivo para miembros. Hazte miembro para usarlo.',
+      rate_limited_msg: 'Demasiadas solicitudes. Espera un momento, por favor.',
+      checkout_thanks: '¡Gracias! Tu suscripción está activa.',
+      checkout_activating: 'Pago recibido, activando...',
+      country_label: 'País',
+      postal_label: 'Código postal',
+      sponsor_pitch_title: 'Conviértete en patrocinador',
+      sponsor_pitch_body: '500 $ al mes para mantener esta comunidad gratuita para todos. Tu nombre, tu logo y un mensaje corto aparecen ante cada usuario del plan gratuito, y recibes un informe de impacto mensual.',
+      sponsor_pitch_gets_title: 'Lo que recibes',
+      contact_us: 'Contáctanos',
+      current_sponsors: 'Patrocinadores actuales',
+      sponsors_panel: 'Patrocinadores',
+      add_sponsor: 'Agregar un patrocinador',
+      sponsor_name: 'Nombre',
+      sponsor_logo: 'URL del logo',
+      sponsor_message: 'Mensaje (máx. 120 caracteres)',
+      sponsor_product: 'Producto',
+      sponsor_active: 'Activo',
+      sponsor_email: 'Correo de facturación',
+      no_sponsors_yet: 'Aún no hay patrocinadores.',
+      sponsor_price_500: '500 $ al mes',
+      country_other_hint: 'País no listado — procesaremos tu solicitud manualmente.',
+      sponsor_message_too_long: 'El mensaje no debe superar los 120 caracteres.',
+      profile_saved: 'Perfil guardado',
+      diet_restrictions_label: 'Restricciones alimentarias (separadas por comas)',
+      generate_with_profile: 'Generar con mi perfil',
     }
   };
 
@@ -202,6 +290,63 @@
     document.querySelectorAll('[data-i18n-placeholder]').forEach(function (el) {
       el.placeholder = t(el.getAttribute('data-i18n-placeholder'));
     });
+  }
+
+  // ---------- language toggle (FR -> EN -> ES cycling) ----------
+  function nextLang(current) {
+    var idx = LANGS.indexOf(current);
+    return LANGS[(idx + 1) % LANGS.length];
+  }
+
+  function langToggleLabel(current) {
+    return LANGS.map(function (l) {
+      var up = l.toUpperCase();
+      return l === current ? '<strong>' + up + '</strong>' : up;
+    }).join(' | ');
+  }
+
+  function initLangToggle(btn, opts) {
+    if (!btn) return;
+    opts = opts || {};
+    btn.innerHTML = langToggleLabel(lang);
+    btn.addEventListener('click', function () {
+      var next = nextLang(lang);
+      if (opts.postPreference && getToken()) {
+        api('/me/preferences', { method: 'POST', body: { language: next } }).catch(function () {});
+      }
+      var url = new URL(location.href);
+      url.searchParams.set('lang', next);
+      location.href = url.toString();
+    });
+  }
+
+  // ---------- localized video with graceful fallback to French ----------
+  // Tries videos/<dir><baseName>-<lang>.mp4 first; if that source errors
+  // (the file does not exist yet, e.g. Spanish not recorded), falls back to
+  // the French file, then finally shows the sibling .wl-video-fallback text
+  // node (existing inline behavior) by letting the error bubble untouched.
+  function initLocalizedVideo(videoEl, sourceEl, baseName, dir) {
+    if (!videoEl || !sourceEl) return;
+    dir = dir || 'videos/';
+    var candidates = [lang];
+    if (lang !== 'fr') candidates.push('fr');
+    var i = 0;
+    function tryNext() {
+      if (i >= candidates.length) return;
+      sourceEl.src = dir + baseName + '-' + candidates[i] + '.mp4';
+      videoEl.poster = dir + baseName + '-' + candidates[i] + '.jpg';
+      videoEl.load();
+    }
+    videoEl.addEventListener('error', function () {
+      i++;
+      if (i < candidates.length) {
+        tryNext();
+      } else if (videoEl.nextElementSibling) {
+        videoEl.style.display = 'none';
+        videoEl.nextElementSibling.style.display = 'flex';
+      }
+    });
+    tryNext();
   }
 
   // ---------- partner resolution ----------
@@ -345,7 +490,7 @@
         if (buttonEl) {
           global.google.accounts.id.renderButton(buttonEl, {
             theme: 'outline', size: 'large', text: 'signin_with',
-            locale: lang === 'fr' ? 'fr' : 'en'
+            locale: lang === 'fr' ? 'fr' : (lang === 'es' ? 'es' : 'en')
           });
         }
       } catch (e) {
@@ -364,7 +509,7 @@
   }
 
   function centsToDollars(cents) {
-    return ((cents || 0) / 100).toLocaleString(lang === 'fr' ? 'fr-CA' : 'en-CA', {
+    return ((cents || 0) / 100).toLocaleString(lang === 'fr' ? 'fr-CA' : (lang === 'es' ? 'es-MX' : 'en-CA'), {
       style: 'currency', currency: 'CAD'
     });
   }
@@ -387,7 +532,8 @@
     ['CA', 'Canada'], ['US', 'United States'], ['FR', 'France'], ['GB', 'United Kingdom'],
     ['BE', 'Belgium'], ['CH', 'Switzerland'], ['DE', 'Germany'], ['MX', 'Mexico'],
     ['HT', 'Haïti'], ['MA', 'Maroc'], ['SN', 'Sénégal'], ['CI', "Côte d'Ivoire"],
-    ['DZ', 'Algérie'], ['TN', 'Tunisie'], ['AU', 'Australia'], ['', lang === 'fr' ? 'Autre' : 'Other']
+    ['DZ', 'Algérie'], ['TN', 'Tunisie'], ['AU', 'Australia'],
+    ['', lang === 'fr' ? 'Autre' : (lang === 'es' ? 'Otro' : 'Other')]
   ];
 
   // ---------- generation error mapping ----------
@@ -441,6 +587,8 @@
     lang: lang,
     t: t,
     applyI18n: applyI18n,
+    initLangToggle: initLangToggle,
+    initLocalizedVideo: initLocalizedVideo,
     getPartner: getPartner,
     withPartnerParam: withPartnerParam,
     getToken: getToken,

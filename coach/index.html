@@ -21,7 +21,7 @@
         <span data-i18n="signed_in_as">Connecté en tant que</span> <strong id="wl-user-email"></strong>
         &nbsp;·&nbsp;<a href="#" id="wl-signout" data-i18n="sign_out">Déconnexion</a>
       </span>
-      <button class="wl-lang-toggle" id="wl-lang-btn" type="button">EN / FR</button>
+      <button class="wl-lang-toggle" id="wl-lang-btn" type="button">FR | EN | ES</button>
     </nav>
   </header>
 
@@ -176,15 +176,7 @@
   postalInput.addEventListener('input', checkPostal);
   postalInput.addEventListener('blur', checkPostal);
 
-  document.getElementById('wl-lang-btn').addEventListener('click', function () {
-    var next = WLApp.lang === 'fr' ? 'en' : 'fr';
-    if (WLApp.getToken()) {
-      WLApp.api('/me/preferences', { method: 'POST', body: { language: next } }).catch(function () {});
-    }
-    var url = new URL(location.href);
-    url.searchParams.set('lang', next);
-    location.href = url.toString();
-  });
+  WLApp.initLangToggle(document.getElementById('wl-lang-btn'), { postPreference: true });
 
   if (new URLSearchParams(location.search).get('checkout') === 'success') {
     var checkoutBanner = document.getElementById('wl-checkout-banner');

@@ -21,7 +21,7 @@
         <span data-i18n="partner_label">Partenaire</span> : <strong id="wl-user-email"></strong>
         &nbsp;·&nbsp;<a href="#" id="wl-signout" data-i18n="sign_out">Déconnexion</a>
       </span>
-      <button class="wl-lang-toggle" id="wl-lang-btn" type="button">EN / FR</button>
+      <button class="wl-lang-toggle" id="wl-lang-btn" type="button">FR | EN | ES</button>
     </nav>
   </header>
 
@@ -123,12 +123,7 @@
 <script>
   WLApp.applyI18n();
 
-  document.getElementById('wl-lang-btn').addEventListener('click', function () {
-    var next = WLApp.lang === 'fr' ? 'en' : 'fr';
-    var url = new URL(location.href);
-    url.searchParams.set('lang', next);
-    location.href = url.toString();
-  });
+  WLApp.initLangToggle(document.getElementById('wl-lang-btn'));
 
   WLApp.fetchConfig().then(function (config) {
     applyBrand(config);
