@@ -130,6 +130,9 @@
       preferences_label: 'Préférences / restrictions (facultatif)',
       preferences_placeholder: 'ex. végétarien, sans gluten, allergies',
       tagline_label: 'Slogan',
+      tagline_label_fr: 'Slogan (français)',
+      tagline_label_en: 'Slogan (anglais)',
+      tagline_label_es: 'Slogan (espagnol)',
       primary_color_label: 'Couleur primaire',
       accent_color_label: 'Couleur accent',
       dark_color_label: 'Couleur foncée',
@@ -258,6 +261,9 @@
       preferences_label: 'Preferences / restrictions (optional)',
       preferences_placeholder: 'e.g. vegetarian, gluten-free, allergies',
       tagline_label: 'Tagline',
+      tagline_label_fr: 'Tagline (French)',
+      tagline_label_en: 'Tagline (English)',
+      tagline_label_es: 'Tagline (Spanish)',
       primary_color_label: 'Primary color',
       accent_color_label: 'Accent color',
       dark_color_label: 'Dark color',
@@ -386,6 +392,9 @@
       preferences_label: 'Preferencias / restricciones (opcional)',
       preferences_placeholder: 'ej. vegetariano, sin gluten, alergias',
       tagline_label: 'Eslogan',
+      tagline_label_fr: 'Eslogan (francés)',
+      tagline_label_en: 'Eslogan (inglés)',
+      tagline_label_es: 'Eslogan (español)',
       primary_color_label: 'Color primario',
       accent_color_label: 'Color de acento',
       dark_color_label: 'Color oscuro',
@@ -576,6 +585,7 @@
     var params = new URLSearchParams();
     if (partner) params.set('partner', partner);
     params.set('host', location.hostname);
+    params.set('lang', lang);
     return api('/config?' + params.toString()).catch(function (err) {
       // fallback brand per spec — apply it directly here, then re-throw so each
       // page's own .catch() still runs and shows the "service unavailable" banner.

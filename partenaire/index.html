@@ -67,8 +67,16 @@
             <input type="text" name="name" required>
           </div>
           <div class="wl-field">
-            <label data-i18n="tagline_label">Slogan</label>
-            <input type="text" name="tagline">
+            <label data-i18n="tagline_label_fr">Slogan (français)</label>
+            <input type="text" name="tagline_fr" maxlength="120">
+          </div>
+          <div class="wl-field">
+            <label data-i18n="tagline_label_en">Slogan (anglais)</label>
+            <input type="text" name="tagline_en" maxlength="120">
+          </div>
+          <div class="wl-field">
+            <label data-i18n="tagline_label_es">Slogan (espagnol)</label>
+            <input type="text" name="tagline_es" maxlength="120">
           </div>
           <div class="wl-field full">
             <label data-i18n="sponsor_logo">URL du logo</label>
@@ -177,7 +185,10 @@
 
       var form = document.getElementById('wl-branding-form');
       form.name.value = partner.name || '';
-      form.tagline.value = partner.tagline || '';
+      var pTagline = partner.tagline_i18n || {};
+      form.tagline_fr.value = pTagline.fr || '';
+      form.tagline_en.value = pTagline.en || '';
+      form.tagline_es.value = pTagline.es || '';
       form.logo_url.value = partner.logo_url || '';
       if (partner.colors) {
         form.primary.value = partner.colors.primary || '#117743';
@@ -229,7 +240,7 @@
       method: 'POST',
       body: {
         name: fd.get('name'),
-        tagline: fd.get('tagline'),
+        tagline_i18n: { fr: fd.get('tagline_fr') || '', en: fd.get('tagline_en') || '', es: fd.get('tagline_es') || '' },
         logo_url: fd.get('logo_url'),
         colors: { primary: fd.get('primary'), accent: fd.get('accent'), dark: fd.get('dark') }
       }

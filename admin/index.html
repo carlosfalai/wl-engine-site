@@ -59,8 +59,16 @@
             </select>
           </div>
           <div class="wl-field">
-            <label data-i18n="tagline_label">Slogan</label>
-            <input type="text" name="tagline">
+            <label data-i18n="tagline_label_fr">Slogan (français)</label>
+            <input type="text" name="tagline_fr" maxlength="120">
+          </div>
+          <div class="wl-field">
+            <label data-i18n="tagline_label_en">Slogan (anglais)</label>
+            <input type="text" name="tagline_en" maxlength="120">
+          </div>
+          <div class="wl-field">
+            <label data-i18n="tagline_label_es">Slogan (espagnol)</label>
+            <input type="text" name="tagline_es" maxlength="120">
           </div>
           <div class="wl-field full">
             <label data-i18n="sponsor_logo">URL du logo</label>
@@ -304,7 +312,10 @@
     var form = document.getElementById('wl-new-partner-form');
     form.name.value = p.name || '';
     form.type.value = p.type || 'both';
-    form.tagline.value = '';
+    var pTagline = p.tagline_i18n || {};
+    form.tagline_fr.value = pTagline.fr || '';
+    form.tagline_en.value = pTagline.en || '';
+    form.tagline_es.value = pTagline.es || '';
     form.logo_url.value = '';
     form.primary.value = '#117743';
     form.accent.value = '#0d5a33';
@@ -465,7 +476,7 @@
     var body = {
       name: fd.get('name'),
       type: fd.get('type'),
-      tagline: fd.get('tagline'),
+      tagline_i18n: { fr: fd.get('tagline_fr') || '', en: fd.get('tagline_en') || '', es: fd.get('tagline_es') || '' },
       logo_url: fd.get('logo_url'),
       colors: { primary: fd.get('primary'), accent: fd.get('accent'), dark: fd.get('dark') },
       demo: fd.get('demo') === 'on'
