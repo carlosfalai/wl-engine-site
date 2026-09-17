@@ -144,6 +144,49 @@
       example_caption_panier: 'Exemple fictif : famille de Rosemont (Montréal), 2 adultes et 1 enfant, 170 $ par semaine, allergie aux arachides.',
       example_caption_coach: 'Exemple fictif : 38 ans, 92 kg, perte de gras, 3 séances à la maison avec haltères, genou gauche fragile.',
       ai_disclaimer: 'Recommandation d’IA, pas un avis professionnel.',
+      hero_eyebrow_coach: 'Coach IA · plan sur mesure',
+      hero_eyebrow_panier: 'IA · épicerie intelligente',
+      hero_benefit_coach: 'Votre plan d’entraînement et vos repas, générés pour vous chaque semaine, en moins de 2 minutes.',
+      hero_benefit_panier: 'La liste d’épicerie de la semaine, aux prix des circulaires, prête en 2 minutes.',
+      video_frame_tag_coach: 'Session en direct',
+      video_frame_tag_panier: 'Reçu de la semaine',
+      examples_title: 'Ce que vous recevez',
+      examples_body_coach: 'Les entraînements de la semaine, vos calories expliquées, et l’épicerie qui va avec.',
+      examples_body_panier: 'Le trajet magasin par magasin, aux prix des circulaires de la semaine, avec les adresses.',
+      tier_member_badge: 'Recommandé',
+      bundle_best_value: 'Meilleure valeur',
+      pricing_title: 'Choisissez votre forfait',
+      plan_single_title: 'Un seul abonnement : GymBro + Panier',
+      plan_single_body: 'Le même compte débloque GymBro et Panier : 3 plans par jour, analyse photo dans GymBro, historique 30 jours.',
+      become_member_plan: 'Devenir membre — GymBro + Panier',
+      already_member_msg: 'Vous êtes déjà membre. Gérez votre abonnement avec le bouton « Gérer mon abonnement ».',
+      next_free_plan_msg: 'Prochain plan gratuit le {date}. Ou devenez membre pour 3 plans par jour.',
+      terms_gate_title: 'Avant de commencer',
+      terms_adult_label: 'J’ai 18 ans ou plus.',
+      terms_accept_label: 'J’accepte les conditions d’utilisation et la politique de confidentialité, et je comprends qu’il s’agit de recommandations générées par une IA, pas d’un avis médical ou professionnel.',
+      terms_continue: 'Continuer',
+      terms_required_msg: 'Acceptez d’abord les conditions ci-dessus.',
+      account_title: 'Mon compte',
+      account_body: 'Vos plans sont conservés 30 jours. Vous pouvez tout effacer à tout moment : compte, profil, plans et PDF. Un abonnement payé par ce compte est annulé en même temps.',
+      delete_account_btn: 'Supprimer mon compte et mes données',
+      delete_confirm_prompt: 'Pour confirmer, tapez SUPPRIMER',
+      delete_done: 'Compte supprimé. Merci d’avoir essayé.',
+      privacy_link: 'Confidentialité',
+      terms_link: 'Conditions d’utilisation',
+      allergy_check_label: 'Vérifiez toujours l’étiquette : l’IA peut se tromper.',
+      first_name_label: 'Prénom (facultatif, pour le PDF)',
+      pregnant_label: 'Je suis enceinte (plan prudent, sans déficit)',
+      photo_hint: 'JPG, PNG ou WebP. Une seule personne, de face, corps entier ou jusqu’à la taille.',
+      photo_unusable_msg: 'Photo inutilisable : {reason} Réessayez avec une photo de vous seul(e), corps entier, ou générez sans photo.',
+      photo_unreadable_msg: 'Photo illisible. Formats acceptés : JPG, PNG, WebP (les photos HEIC d’iPhone doivent être converties : Réglages › Appareil photo › Formats › Le plus compatible).',
+      age_min_msg: 'Le service s’adresse aux personnes de 18 ans et plus.',
+      too_many_failures_msg: 'Plusieurs générations ont échoué aujourd’hui. Réessayez demain ; votre quota n’a pas été consommé.',
+      capacity_msg: 'Le service a atteint sa capacité du jour. Réessayez demain ; votre quota n’a pas été consommé.',
+      generation_failed_msg: 'La génération a échoué ; votre quota n’a pas été consommé. Réessayez dans un instant.',
+      meals_removed_msg: '{n} ligne(s) du menu retirée(s) par sécurité (allergies ou régime).',
+      moved_msg: 'Déplacé pour éviter un détour : {items}',
+      dropped_msg: 'Retiré pour éviter un détour trop petit : {items}',
+      stale_prices_msg: 'Les circulaires n’ont pas pu être rafraîchies : prix du {date}.',
       signin: 'Commencer',
       partners: 'Partenaires',
       home: 'Accueil',
@@ -399,6 +442,49 @@
       example_caption_panier: 'Fictional example: a Rosemont (Montreal) family, 2 adults and 1 child, $170 a week, peanut allergy.',
       example_caption_coach: 'Fictional example: 38 years old, 92 kg, fat loss, 3 home sessions with dumbbells, sensitive left knee.',
       ai_disclaimer: 'AI recommendation, not professional advice.',
+      hero_eyebrow_coach: 'AI coach · a plan built for you',
+      hero_eyebrow_panier: 'AI · smart grocery planning',
+      hero_benefit_coach: 'Your training plan and meals, generated for you every week, in under 2 minutes.',
+      hero_benefit_panier: 'This week’s grocery list, at flyer prices, ready in 2 minutes.',
+      video_frame_tag_coach: 'Live session',
+      video_frame_tag_panier: 'This week’s receipt',
+      examples_title: 'What you get',
+      examples_body_coach: 'The week’s workouts, your calories explained, and the groceries to match.',
+      examples_body_panier: 'The store-by-store route at this week’s flyer prices, with addresses.',
+      tier_member_badge: 'Recommended',
+      bundle_best_value: 'Best value',
+      pricing_title: 'Choose your plan',
+      plan_single_title: 'One subscription: GymBro + Panier',
+      plan_single_body: 'The same account unlocks GymBro and Panier: 3 plans a day, photo analysis in GymBro, 30-day history.',
+      become_member_plan: 'Become a member — GymBro + Panier',
+      already_member_msg: 'You are already a member. Use "Manage my subscription".',
+      next_free_plan_msg: 'Next free plan on {date}. Or become a member for 3 plans a day.',
+      terms_gate_title: 'Before you start',
+      terms_adult_label: 'I am 18 or older.',
+      terms_accept_label: 'I accept the terms of use and the privacy policy, and I understand these are AI-generated recommendations, not medical or professional advice.',
+      terms_continue: 'Continue',
+      terms_required_msg: 'Please accept the terms above first.',
+      account_title: 'My account',
+      account_body: 'Your plans are kept 30 days. You can erase everything at any time: account, profile, plans and PDFs. A subscription paid by this account is cancelled at the same time.',
+      delete_account_btn: 'Delete my account and my data',
+      delete_confirm_prompt: 'To confirm, type DELETE',
+      delete_done: 'Account deleted. Thank you for trying it.',
+      privacy_link: 'Privacy',
+      terms_link: 'Terms of use',
+      allergy_check_label: 'Always check the label: the AI can be wrong.',
+      first_name_label: 'First name (optional, for the PDF)',
+      pregnant_label: 'I am pregnant (conservative plan, no deficit)',
+      photo_hint: 'JPG, PNG or WebP. One person, facing the camera, full body or waist-up.',
+      photo_unusable_msg: 'Unusable photo: {reason} Try again with a photo of yourself alone, full body, or generate without a photo.',
+      photo_unreadable_msg: 'Unreadable photo. Accepted formats: JPG, PNG, WebP (iPhone HEIC photos must be converted: Settings › Camera › Formats › Most Compatible).',
+      age_min_msg: 'The service is for people aged 18 and over.',
+      too_many_failures_msg: 'Several generations failed today. Try again tomorrow; your quota was not used.',
+      capacity_msg: 'The service reached its capacity for today. Try again tomorrow; your quota was not used.',
+      generation_failed_msg: 'Generation failed; your quota was not used. Try again in a moment.',
+      meals_removed_msg: '{n} menu line(s) removed for safety (allergies or diet).',
+      moved_msg: 'Moved to avoid a detour: {items}',
+      dropped_msg: 'Removed to avoid a stop not worth the trip: {items}',
+      stale_prices_msg: 'Flyers could not be refreshed: prices from {date}.',
       signin: 'Get started',
       partners: 'Partners',
       home: 'Home',
@@ -654,6 +740,49 @@
       example_caption_panier: 'Ejemplo ficticio: familia de Rosemont (Montreal), 2 adultos y 1 niño, 170 $ por semana, alergia a los cacahuetes.',
       example_caption_coach: 'Ejemplo ficticio: 38 años, 92 kg, pérdida de grasa, 3 sesiones en casa con mancuernas, rodilla izquierda delicada.',
       ai_disclaimer: 'Recomendación de IA, no consejo profesional.',
+      hero_eyebrow_coach: 'Coach IA · un plan a tu medida',
+      hero_eyebrow_panier: 'IA · compras inteligentes',
+      hero_benefit_coach: 'Tu plan de entrenamiento y comidas, generado para ti cada semana, en menos de 2 minutos.',
+      hero_benefit_panier: 'La lista de compras de la semana, a precios de folleto, lista en 2 minutos.',
+      video_frame_tag_coach: 'Sesión en vivo',
+      video_frame_tag_panier: 'Recibo de la semana',
+      examples_title: 'Lo que recibes',
+      examples_body_coach: 'Los entrenamientos de la semana, tus calorías explicadas, y las compras que van con ellos.',
+      examples_body_panier: 'La ruta tienda por tienda a precios de folleto de la semana, con direcciones.',
+      tier_member_badge: 'Recomendado',
+      bundle_best_value: 'Mejor valor',
+      pricing_title: 'Elige tu plan',
+      plan_single_title: 'Una sola suscripción: GymBro + Panier',
+      plan_single_body: 'La misma cuenta desbloquea GymBro y Panier: 3 planes al día, análisis de foto en GymBro, historial de 30 días.',
+      become_member_plan: 'Hacerme miembro — GymBro + Panier',
+      already_member_msg: 'Ya eres miembro. Usa «Gestionar mi suscripción».',
+      next_free_plan_msg: 'Próximo plan gratuito el {date}. O hazte miembro para 3 planes al día.',
+      terms_gate_title: 'Antes de empezar',
+      terms_adult_label: 'Tengo 18 años o más.',
+      terms_accept_label: 'Acepto las condiciones de uso y la política de privacidad, y entiendo que son recomendaciones generadas por IA, no un consejo médico ni profesional.',
+      terms_continue: 'Continuar',
+      terms_required_msg: 'Acepta primero las condiciones.',
+      account_title: 'Mi cuenta',
+      account_body: 'Tus planes se conservan 30 días. Puedes borrarlo todo en cualquier momento: cuenta, perfil, planes y PDF. Una suscripción pagada por esta cuenta se cancela al mismo tiempo.',
+      delete_account_btn: 'Eliminar mi cuenta y mis datos',
+      delete_confirm_prompt: 'Para confirmar, escribe SUPPRIMER',
+      delete_done: 'Cuenta eliminada. Gracias por probarlo.',
+      privacy_link: 'Privacidad',
+      terms_link: 'Condiciones de uso',
+      allergy_check_label: 'Revisa siempre la etiqueta: la IA puede equivocarse.',
+      first_name_label: 'Nombre (opcional, para el PDF)',
+      pregnant_label: 'Estoy embarazada (plan prudente, sin déficit)',
+      photo_hint: 'JPG, PNG o WebP. Una sola persona, de frente, cuerpo entero o hasta la cintura.',
+      photo_unusable_msg: 'Foto no utilizable: {reason} Inténtalo con una foto solo de ti, de cuerpo entero, o genera sin foto.',
+      photo_unreadable_msg: 'Foto ilegible. Formatos aceptados: JPG, PNG, WebP (las fotos HEIC de iPhone deben convertirse: Ajustes › Cámara › Formatos › Más compatible).',
+      age_min_msg: 'El servicio es para personas de 18 años o más.',
+      too_many_failures_msg: 'Varias generaciones fallaron hoy. Inténtalo mañana; tu cuota no se consumió.',
+      capacity_msg: 'El servicio alcanzó su capacidad de hoy. Inténtalo mañana; tu cuota no se consumió.',
+      generation_failed_msg: 'La generación falló; tu cuota no se consumió. Inténtalo en un momento.',
+      meals_removed_msg: '{n} línea(s) del menú retirada(s) por seguridad (alergias o dieta).',
+      moved_msg: 'Movido para evitar un desvío: {items}',
+      dropped_msg: 'Retirado para evitar una parada que no valía el viaje: {items}',
+      stale_prices_msg: 'No se pudieron actualizar los folletos: precios del {date}.',
       signin: 'Empezar',
       partners: 'Socios',
       home: 'Inicio',
@@ -1109,7 +1238,7 @@
           })
           .finally(function () { btn.disabled = false; });
       } else {
-        api('/auth/email/verify', { method: 'POST', body: { email: email, code: codeInput.value.trim(), partner: getPartner() } })
+        api('/auth/email/verify', { method: 'POST', body: { email: email, code: codeInput.value.replace(/\s+/g, ''), partner: getPartner() } })
           .then(function (data) { setToken(data.token); onSignedIn(data.user); })
           .catch(function () { showError(msg, escapeHtml(t('code_invalid'))); })
           .finally(function () { btn.disabled = false; });
@@ -1199,12 +1328,115 @@
 
   // ---------- generation error mapping ----------
   function genErrorMessage(err) {
-    var code = err && err.data && err.data.error;
-    if (code === 'quota_exceeded') return t('quota_exceeded_msg');
+    var data = (err && err.data) || {};
+    var code = data.error;
+    if (code === 'quota_exceeded') return t('quota_exceeded_msg') + (data.next_free_plan ? ' ' + tf('next_free_plan_msg', { date: formatDate(data.next_free_plan) }) : '');
     if (code === 'upgrade_required') return t('upgrade_required_msg');
     if (code === 'rate_limited') return t('rate_limited_msg');
+    if (code === 'terms_required') return t('terms_required_msg');
+    if (code === 'already_member') return t('already_member_msg');
+    if (code === 'photo_unusable') return tf('photo_unusable_msg', { reason: data.reason ? data.reason + '.' : '' }).replace('  ', ' ');
+    if (code === 'photo_unreadable') return t('photo_unreadable_msg');
+    if (code === 'too_many_failures') return t('too_many_failures_msg');
+    if (code === 'capacity_reached') return t('capacity_msg');
+    if (code === 'generation_failed') return t('generation_failed_msg');
+    if (code === 'invalid_fields' && data.reason === 'age_min_18') return t('age_min_msg');
     return t('error_generic');
   }
+
+  function formatDate(iso) {
+    try { return new Date(iso + (iso.length === 10 ? 'T12:00:00Z' : '')).toLocaleDateString(lang === 'fr' ? 'fr-CA' : (lang === 'es' ? 'es' : 'en-CA'), { year: 'numeric', month: 'long', day: 'numeric' }); }
+    catch (e) { return iso; }
+  }
+
+  // Sign out everywhere: the server bumps the account's token version, so
+  // the token in this browser (and any other) stops working.
+  function signOut() {
+    var done = function () { clearToken(); location.reload(); };
+    if (!getToken()) { done(); return; }
+    api('/auth/logout', { method: 'POST', body: {} }).then(done, done);
+  }
+
+  // The one plan on sale: "Devenir membre — GymBro + Panier". Works with
+  // both the old /config (single price + bundle) and the new one (one price).
+  function planCta(config) {
+    return t('become_member_plan');
+  }
+
+  // Free tier, allowance used: the button is disabled and the next free plan
+  // date is shown instead of a dead click.
+  function deadEnd(me, button, noteEl) {
+    var remaining = (me && me.remaining) || {};
+    var out = me && me.tier !== 'member' && remaining.month === 0;
+    if (button) button.disabled = !!out;
+    if (noteEl) {
+      noteEl.textContent = out && me.next_free_plan ? tf('next_free_plan_msg', { date: formatDate(me.next_free_plan) }) : '';
+      noteEl.classList.toggle('wl-hidden', !out);
+    }
+  }
+
+  // Terms of use + 18 gate. Shown until the account has accepted; the form
+  // section stays hidden meanwhile. Older /config or /me without the field
+  // simply never shows it.
+  function termsGate(me, container, formSection) {
+    if (!container) return;
+    var needed = me && me.terms_accepted_at === null;
+    container.classList.toggle('wl-hidden', !needed);
+    if (formSection) formSection.classList.toggle('wl-hidden', !!needed);
+    if (!needed) return;
+    container.innerHTML =
+      '<div class="wl-card wl-terms-gate"><h3>' + escapeHtml(t('terms_gate_title')) + '</h3>' +
+      '<label class="wl-choice"><input type="checkbox" id="wl-terms-adult"> <span>' + escapeHtml(t('terms_adult_label')) + '</span></label>' +
+      '<label class="wl-choice"><input type="checkbox" id="wl-terms-accept"> <span>' + escapeHtml(t('terms_accept_label')) + ' <a href="../conditions/" target="_blank" rel="noopener">' + escapeHtml(t('terms_link')) + '</a> · <a href="../confidentialite/" target="_blank" rel="noopener">' + escapeHtml(t('privacy_link')) + '</a></span></label>' +
+      '<div id="wl-terms-msg"></div>' +
+      '<button type="button" class="wl-btn" id="wl-terms-btn">' + escapeHtml(t('terms_continue')) + '</button></div>';
+    container.querySelector('#wl-terms-btn').addEventListener('click', function () {
+      var adult = container.querySelector('#wl-terms-adult').checked;
+      var accept = container.querySelector('#wl-terms-accept').checked;
+      var msg = container.querySelector('#wl-terms-msg');
+      if (!adult || !accept) { showError(msg, escapeHtml(t('terms_required_msg'))); return; }
+      api('/me/accept-terms', { method: 'POST', body: { adult: true, accept: true } })
+        .then(function () { container.classList.add('wl-hidden'); if (formSection) formSection.classList.remove('wl-hidden'); })
+        .catch(function () { showError(msg, escapeHtml(t('error_generic'))); });
+    });
+  }
+
+  // "Mon compte": retention note, legal links, delete everything.
+  function accountSection(container, me) {
+    if (!container) return;
+    container.innerHTML =
+      '<h2>' + escapeHtml(t('account_title')) + '</h2>' +
+      '<p class="wl-muted">' + escapeHtml(t('account_body')) + '</p>' +
+      '<p><a href="../confidentialite/">' + escapeHtml(t('privacy_link')) + '</a> · <a href="../conditions/">' + escapeHtml(t('terms_link')) + '</a></p>' +
+      '<div id="wl-delete-msg"></div>' +
+      '<button type="button" class="wl-btn wl-btn-outline" id="wl-delete-btn">' + escapeHtml(t('delete_account_btn')) + '</button>';
+    container.querySelector('#wl-delete-btn').addEventListener('click', function () {
+      var word = lang === 'en' ? 'DELETE' : 'SUPPRIMER';
+      var typed = window.prompt(t('delete_confirm_prompt'));
+      if (typed === null) return;
+      if (typed.trim().toUpperCase() !== word) { showError(container.querySelector('#wl-delete-msg'), escapeHtml(t('delete_confirm_prompt'))); return; }
+      api('/me', { method: 'DELETE', body: { confirm: word } })
+        .then(function () { clearToken(); container.innerHTML = '<div class="wl-alert wl-alert-success">' + escapeHtml(t('delete_done')) + '</div>'; setTimeout(function () { location.href = '../'; }, 2500); })
+        .catch(function () { showError(container.querySelector('#wl-delete-msg'), escapeHtml(t('error_generic'))); });
+    });
+  }
+
+  // A PDF link is signed for one hour: always ask for a fresh one on click.
+  function openPlan(planId) {
+    api('/plans/' + encodeURIComponent(planId) + '/pdf').then(function (d) { if (d.url) window.open(d.url, '_blank'); })
+      .catch(function () { window.alert(t('error_generic')); });
+  }
+
+  // Legal pages: one block per language, the domain and contact filled in.
+  function showLegal() {
+    document.querySelectorAll('.wl-legal[data-lang]').forEach(function (el) { el.classList.toggle('wl-hidden', el.getAttribute('data-lang') !== lang); });
+    document.querySelectorAll('[data-legal-domain]').forEach(function (el) { el.textContent = location.hostname; });
+    fetchConfig().then(function (config) {
+      if (global.applyBrand) global.applyBrand(config);
+      document.querySelectorAll('[data-legal-contact]').forEach(function (el) { el.textContent = config.contact_email || ''; el.href = 'mailto:' + (config.contact_email || ''); });
+    }).catch(function () {});
+  }
+
 
   // ---------- safe sponsor rendering ----------
   // Sponsor name/message/logo_url come from the API (partner-submitted data)
@@ -1288,6 +1520,14 @@
     looksLikeCaOrUs: looksLikeCaOrUs,
     countries: COUNTRIES,
     genErrorMessage: genErrorMessage,
-    renderSponsors: renderSponsors
+    renderSponsors: renderSponsors,
+    formatDate: formatDate,
+    signOut: signOut,
+    showLegal: showLegal,
+    termsGate: termsGate,
+    accountSection: accountSection,
+    openPlan: openPlan,
+    planCta: planCta,
+    deadEnd: deadEnd
   };
 })(window);

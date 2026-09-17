@@ -42,15 +42,16 @@
       <div class="wl-tier-badge-row">
         <span class="wl-badge" id="wl-tier-badge"></span>
         <span class="wl-remaining" id="wl-remaining-label"></span>
+        <span class="wl-muted wl-hidden" id="wl-dead-end"></span>
         <button class="wl-btn wl-btn-outline wl-hidden" id="wl-manage-sub-btn" type="button" data-i18n="manage_subscription">Gérer mon abonnement</button>
       </div>
       <div class="wl-card wl-upgrade-card wl-hidden" id="wl-upgrade-card">
-        <h3 data-i18n="upgrade_card_title">Passez au forfait Membre</h3>
-        <p data-i18n="upgrade_card_body">Plus de plans, analyse photo et historique complet.</p>
-        <p class="wl-muted" style="margin:8px 0 0" data-i18n="single_app_label">Cette application seule</p>
+        <h3 data-i18n="plan_single_title">Un seul abonnement : GymBro + Panier</h3>
+        <p class="wl-muted" data-i18n="plan_single_body"></p>
+
         <p class="wl-tier-price" id="wl-upgrade-price"></p>
         <button class="wl-btn" id="wl-upgrade-btn" type="button" data-i18n="become_member">Devenir membre</button>
-        <div class="wl-bundle-box wl-hidden" id="wl-bundle-box">
+        <div class="wl-bundle-box wl-hidden" id="wl-bundle-box" hidden>
           <h4 data-i18n="bundle_title">Les deux : GymBro + Panier</h4>
           <p class="wl-tier-price" id="wl-bundle-price" style="margin:0"></p>
           <p class="wl-bundle-upsell" id="wl-bundle-upsell"></p>
@@ -60,7 +61,8 @@
       </div>
     </div>
 
-    <div class="wl-section">
+    <div id="wl-terms-gate" class="wl-hidden"></div>
+    <div class="wl-section" id="wl-form-section">
       <h2 data-i18n="panier_title">Panier</h2>
       <div id="wl-profile-saved-line" class="wl-hidden" style="margin:0 0 12px;color:var(--wl-muted,#666);font-size:0.9em"></div>
       <button type="button" class="wl-btn wl-btn-outline wl-hidden" id="wl-generate-with-profile-btn" style="margin-bottom:16px" data-i18n="generate_with_profile">Générer avec mon profil</button>
@@ -124,6 +126,7 @@
           <div class="wl-field full">
             <label data-i18n="allergies_label">Allergies</label>
             <div class="wl-choices" id="wl-allergies"></div>
+            <span class="wl-muted" data-i18n="allergy_check_label"></span>
           </div>
           <div class="wl-field full">
             <label data-i18n="allergies_other_label">Autre allergie</label>
@@ -164,7 +167,11 @@
       <h2 data-i18n="my_plans">Mes plans</h2>
       <div id="wl-plans-list"></div>
     </div>
+    <div class="wl-section" id="wl-account"></div>
   </section>
+  <footer class="wl-footer wl-legal-footer">
+    <a href="../confidentialite/" data-i18n="privacy_link">Confidentialité</a> · <a href="../conditions/" data-i18n="terms_link">Conditions d'utilisation</a>
+  </footer>
 </div>
 
 <script src="../shared/config.js"></script>
@@ -298,7 +305,10 @@
     var returnUrl = location.origin + location.pathname + '?checkout=success' + (WLApp.getPartner() && !WLApp.hostPartner() ? '&p=' + encodeURIComponent(WLApp.getPartner()) : '');
     WLApp.api('/billing/checkout', { method: 'POST', body: { plan: plan === 'bundle' ? 'bundle' : 'single', success_url: returnUrl, cancel_url: location.origin + location.pathname } })
       .then(function (data) { if (data.url) location.href = data.url; })
-      .catch(function () { WLApp.showError(document.getElementById('wl-form-error'), WLApp.t('error_generic')); });
+      .catch(function (err) {
+        WLApp.showError(document.getElementById('wl-form-error'), WLApp.genErrorMessage(err));
+        if (err && err.data && err.data.error === 'already_member') WLApp.api('/me').then(function (d) { applyTierUI(d); }).catch(function () {});
+      });
   }
 
   function applyTierUI(me) {
@@ -322,12 +332,8 @@
       manageBtn.classList.add('wl-hidden');
       upgradeCard.classList.remove('wl-hidden');
       document.getElementById('wl-upgrade-price').textContent = (siteConfig && siteConfig.member_price_label) || '';
-      var bundle = WLApp.bundleInfo(siteConfig);
-      if (bundle) {
-        document.getElementById('wl-bundle-price').textContent = bundle.label;
-        document.getElementById('wl-bundle-upsell').textContent = bundle.upsell;
-        document.getElementById('wl-bundle-box').classList.remove('wl-hidden');
-      }
+      document.getElementById('wl-upgrade-btn').textContent = WLApp.planCta(siteConfig);
+      WLApp.deadEnd(me, document.getElementById('wl-generate-btn'), document.getElementById('wl-dead-end'));
     }
   }
 
@@ -337,7 +343,7 @@
       .catch(function () {});
   });
   document.getElementById('wl-upgrade-btn').addEventListener('click', function () { startCheckout('single'); });
-  document.getElementById('wl-bundle-btn').addEventListener('click', function () { startCheckout('bundle'); });
+
 
   function prefillPanierProfile(profile, complete) {
     var panier = profile && profile.panier;
@@ -386,6 +392,8 @@
     loadPlans();
     WLApp.api('/me').then(function (data) {
       applyTierUI(data);
+      WLApp.termsGate(data, document.getElementById('wl-terms-gate'), document.getElementById('wl-form-section'));
+      WLApp.accountSection(document.getElementById('wl-account'), data);
       prefillPanierProfile((data.user || data).profile, data.profile_complete && data.profile_complete.panier);
       var upgrade = new URLSearchParams(location.search).get('upgrade');
       if ((upgrade === '1' || upgrade === 'bundle') && data.tier !== 'member') {
@@ -396,8 +404,7 @@
 
   document.getElementById('wl-signout').addEventListener('click', function (e) {
     e.preventDefault();
-    WLApp.clearToken();
-    location.reload();
+    WLApp.signOut();
   });
 
   if (WLApp.getToken()) {
@@ -447,7 +454,9 @@
       .then(function (data) {
         document.getElementById('wl-progress').classList.add('wl-hidden');
         document.getElementById('wl-result').classList.remove('wl-hidden');
-        document.getElementById('wl-pdf-link').href = data.pdf_url;
+        var pdfLink = document.getElementById('wl-pdf-link');
+        pdfLink.href = data.pdf_url;
+        pdfLink.setAttribute('data-plan-id', data.plan_id || '');
         var sum = data.summary || {};
         var summaryEl = document.getElementById('wl-result-summary');
         summaryEl.textContent = (sum.total != null && sum.stops) ? WLApp.tf('result_summary', { total: new Intl.NumberFormat(WLApp.lang === 'en' ? 'en-CA' : (WLApp.lang === 'es' ? 'es' : 'fr-CA'), { style: 'currency', currency: sum.currency || 'CAD' }).format(Number(sum.total)), stops: sum.stops }) : '';
@@ -455,6 +464,10 @@
         var removedLines = [];
         if (sum.removed_for_safety && sum.removed_for_safety.length) removedLines.push(WLApp.tf('removed_for_safety_msg', { items: sum.removed_for_safety.join(', ') }));
         if (sum.trimmed_for_budget && sum.trimmed_for_budget.length) removedLines.push(WLApp.tf('trimmed_for_budget_msg', { items: sum.trimmed_for_budget.join(', ') }));
+        if (sum.meals_removed_for_safety && sum.meals_removed_for_safety.length) removedLines.push(WLApp.tf('meals_removed_msg', { n: sum.meals_removed_for_safety.length }));
+        if (sum.moved_to_avoid_detour && sum.moved_to_avoid_detour.length) removedLines.push(WLApp.tf('moved_msg', { items: sum.moved_to_avoid_detour.map(function (x) { return x.from + ' › ' + x.to; }).join('; ') }));
+        if (sum.dropped_small_stop && sum.dropped_small_stop.length) removedLines.push(WLApp.tf('dropped_msg', { items: sum.dropped_small_stop.join(', ') }));
+        if (sum.prices_stale && sum.priceDate) removedLines.push(WLApp.tf('stale_prices_msg', { date: sum.priceDate }));
         removedEl.textContent = removedLines.join(' · ');
         removedEl.classList.toggle('wl-hidden', !removedLines.length);
         loadPlans();
@@ -467,6 +480,13 @@
       .finally(function () {
         btn.disabled = false;
       });
+  });
+
+  document.getElementById('wl-pdf-link').addEventListener('click', function (e) {
+    var id = this.getAttribute('data-plan-id');
+    if (!id) return;
+    e.preventDefault();
+    WLApp.openPlan(id);
   });
 
   function loadPlans() {
@@ -499,9 +519,7 @@
       listEl.querySelectorAll('.wl-open-plan').forEach(function (a) {
         a.addEventListener('click', function (e) {
           e.preventDefault();
-          WLApp.api('/plans/' + a.getAttribute('data-plan-id') + '/pdf').then(function (d) {
-            window.open(d.url, '_blank');
-          });
+          WLApp.openPlan(a.getAttribute('data-plan-id'));
         });
       });
     }).catch(function () {

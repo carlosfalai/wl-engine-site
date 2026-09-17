@@ -27,9 +27,6 @@
   <section class="wl-hero">
     <h1 data-i18n="sponsor_pitch_title">Devenez commanditaire</h1>
     <p data-i18n="sponsor_pitch_body">500 $ par mois pour soutenir cette communauté gratuitement pour tous.</p>
-    <video id="wl-sponsor-video" controls poster="../videos/sponsor-fr.jpg" preload="none" style="width:100%;max-width:640px;border-radius:8px;margin-top:16px">
-      <source id="wl-sponsor-video-src" src="../videos/sponsor-fr.mp4" type="video/mp4">
-    </video>
   </section>
 
   <section class="wl-card">
@@ -57,12 +54,6 @@
 
   WLApp.initLangToggle(document.getElementById('wl-lang-btn'));
 
-  WLApp.initLocalizedVideo(
-    document.getElementById('wl-sponsor-video'),
-    document.getElementById('wl-sponsor-video-src'),
-    'sponsor',
-    '../videos/'
-  );
 
   WLApp.fetchConfig().then(function (config) {
     applyBrand(config);

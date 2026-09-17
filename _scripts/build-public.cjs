@@ -5,7 +5,7 @@ const fs = require('fs');
 const path = require('path');
 const root = path.resolve(__dirname, '..');
 const out = path.join(root, '_site');
-const INCLUDE = ['index.html', 'coach', 'panier', 'commanditaires', 'shared', 'videos', 'exemples'];
+const INCLUDE = ['index.html', 'robots.txt', 'coach', 'panier', 'commanditaires', 'confidentialite', 'conditions', 'shared', 'videos', 'exemples'];
 fs.rmSync(out, { recursive: true, force: true });
 for (const item of INCLUDE) {
   const src = path.join(root, item);
