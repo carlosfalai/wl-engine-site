@@ -183,13 +183,14 @@
 
       // product type drives which product page + video is shown
       var product = config.type === 'panier' ? 'panier' : 'coach';
-      var videoBase = product === 'panier' ? 'panier-public' : 'gymbro';
+      // Pitch videos (2026-09-17) exist in French only for now: every language plays them.
+      var videoBase = product === 'panier' ? 'panier-pitch-fr' : 'gymbro-pitch-fr';
       document.getElementById('wl-consumer-video-fallback').textContent = config.name || '';
-      WLApp.initLocalizedVideo(
-        document.getElementById('wl-consumer-video'),
-        document.getElementById('wl-consumer-video-src'),
-        videoBase
-      );
+      var consumerVideo = document.getElementById('wl-consumer-video');
+      document.getElementById('wl-consumer-video-src').src = 'videos/' + videoBase + '.mp4';
+      consumerVideo.poster = 'videos/' + videoBase + '.jpg';
+      consumerVideo.setAttribute('playsinline', '');
+      consumerVideo.load();
 
       var stepPrefix = product === 'panier' ? 'panier_step' : 'coach_step';
       document.getElementById('wl-how-steps').innerHTML = [1, 2, 3].map(function (n) { return '<li>' + WLApp.escapeHtml(WLApp.t(stepPrefix + n)) + '</li>'; }).join('');

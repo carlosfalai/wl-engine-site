@@ -20,6 +20,8 @@
 
   var DICT = {
     fr: {
+      km_under_100m: 'à moins de 100 m',
+      allergies_label_coach: 'Allergies — jamais dans vos repas ni votre épicerie',
       bundle_title: 'Les deux : GymBro + Panier',
       bundle_body: 'Un seul abonnement débloque les deux applications, avec le même compte.',
       bundle_upsell_coach: 'GymBro + Panier pour {diff} de plus',
@@ -273,6 +275,8 @@
       date_label: 'Date',
     },
     en: {
+      km_under_100m: 'under 100 m away',
+      allergies_label_coach: 'Allergies — never in your meals or groceries',
       bundle_title: 'Both: GymBro + Panier',
       bundle_body: 'One subscription unlocks both apps, on the same account.',
       bundle_upsell_coach: 'GymBro + Panier for {diff} more',
@@ -526,6 +530,8 @@
       date_label: 'Date',
     },
     es: {
+      km_under_100m: 'a menos de 100 m',
+      allergies_label_coach: 'Alergias — nunca en tus comidas ni en tu compra',
       bundle_title: 'Los dos: GymBro + Panier',
       bundle_body: 'Una sola suscripción desbloquea las dos aplicaciones, con la misma cuenta.',
       bundle_upsell_coach: 'GymBro + Panier por {diff} más',

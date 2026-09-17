@@ -246,7 +246,7 @@
         }
         var html = '<p style="margin:10px 0 0"><strong>' + WLApp.escapeHtml(WLApp.t('nearby_title')) + '</strong></p><ul class="wl-stores">';
         data.stores.forEach(function (st) {
-          var km = st.distance_km != null ? WLApp.tf('km_away', { km: String(st.distance_km).replace('.', WLApp.lang === 'en' ? '.' : ',') }) : '';
+          var km = st.distance_km == null ? '' : (st.distance_km < 0.1 ? WLApp.t('km_under_100m') : WLApp.tf('km_away', { km: String(st.distance_km).replace('.', WLApp.lang === 'en' ? '.' : ',') }));
           html += '<li><div><div>' + WLApp.escapeHtml(st.chain) + ' <span class="wl-muted">· ' + WLApp.escapeHtml(WLApp.tf('nearby_items', { n: st.flyer_items })) + '</span></div>' +
             (st.address ? '<div class="wl-store-addr">' + WLApp.escapeHtml(st.address) + '</div>' : '') + '</div>' +
             '<div class="wl-store-km">' + WLApp.escapeHtml(km) + '</div></li>';
