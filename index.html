@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Coach + Panier — Accueil</title>
+<title>Accueil</title>
 <link rel="stylesheet" href="shared/ui.css">
 </head>
 <body>
@@ -12,12 +12,12 @@
     <div class="wl-brand">
       <img data-brand-logo style="display:none" alt="logo">
       <div>
-        <div class="wl-brand-name" data-brand-name>Coach + Panier</div>
+        <div class="wl-brand-name" data-brand-name></div>
         <div class="wl-brand-tagline" data-brand-tagline></div>
       </div>
     </div>
     <nav class="wl-nav">
-      <a href="partenaire/" data-i18n="partners">Partenaires</a>
+      <a href="partenaire/" id="wl-partners-link" data-i18n="partners">Partenaires</a>
       <button class="wl-lang-toggle" id="wl-lang-btn" type="button">FR | EN | ES</button>
     </nav>
   </header>
@@ -28,7 +28,7 @@
   <!-- Partner (agency-billed) landing: default, shown unless billing_mode === 'member' -->
   <section id="wl-partner-landing">
     <section class="wl-hero">
-      <h1 data-brand-name>Coach + Panier</h1>
+      <h1 data-brand-name></h1>
       <p data-brand-tagline></p>
     </section>
 
@@ -59,12 +59,19 @@
   <!-- Consumer landing: shown when /config says billing_mode === 'member' -->
   <section id="wl-consumer-landing" class="wl-hidden">
     <section class="wl-hero">
-      <h1 data-brand-name>Coach + Panier</h1>
+      <h1 data-brand-name></h1>
       <p data-brand-tagline></p>
       <video id="wl-consumer-video" controls preload="none">
         <source id="wl-consumer-video-src" src="" type="video/mp4">
       </video>
       <div class="wl-video-fallback" id="wl-consumer-video-fallback" style="display:none"></div>
+    </section>
+    <section class="wl-section wl-card" id="wl-how">
+      <h2 data-i18n="how_title">Comment ça marche</h2>
+      <ol class="wl-how" id="wl-how-steps"></ol>
+      <p style="margin:12px 0 0"><a class="wl-btn wl-btn-outline" id="wl-example-link" href="#" target="_blank" rel="noopener" data-i18n="see_example">Voir un exemple de plan (PDF)</a></p>
+      <p class="wl-example" id="wl-example-caption"></p>
+      <p class="wl-muted" data-i18n="ai_disclaimer"></p>
     </section>
 
     <section class="wl-grid">
@@ -153,6 +160,10 @@
 
     if (config.billing_mode === 'member') {
       document.getElementById('wl-partner-landing').classList.add('wl-hidden');
+      var partnersLink = document.getElementById('wl-partners-link');
+      if (partnersLink) partnersLink.classList.add('wl-hidden');
+      var adminFooter = document.querySelector('.wl-footer');
+      if (adminFooter) adminFooter.classList.add('wl-hidden');
       var consumer = document.getElementById('wl-consumer-landing');
       consumer.classList.remove('wl-hidden');
 
@@ -165,6 +176,12 @@
         document.getElementById('wl-consumer-video-src'),
         videoBase
       );
+
+      var stepPrefix = product === 'panier' ? 'panier_step' : 'coach_step';
+      document.getElementById('wl-how-steps').innerHTML = [1, 2, 3].map(function (n) { return '<li>' + WLApp.escapeHtml(WLApp.t(stepPrefix + n)) + '</li>'; }).join('');
+      var exLang = WLApp.lang === 'fr' ? 'fr' : 'en';
+      document.getElementById('wl-example-link').href = 'exemples/' + (product === 'panier' ? 'panier' : 'gymbro') + '-exemple-' + exLang + '.pdf';
+      document.getElementById('wl-example-caption').textContent = WLApp.t(product === 'panier' ? 'example_caption_panier' : 'example_caption_coach');
 
       var productPath = (product === 'panier' ? 'panier/' : 'coach/');
       var freeCta = document.getElementById('wl-free-cta');

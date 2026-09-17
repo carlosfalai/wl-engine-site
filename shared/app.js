@@ -20,7 +20,123 @@
 
   var DICT = {
     fr: {
-      signin: 'Se connecter avec Google',
+      trimmed_for_budget_msg: 'Retirés pour respecter votre budget : {items}',
+      email_signin_title: 'Connexion par courriel',
+      email_signin_hint: 'Pas de mot de passe : on vous envoie un code à 6 chiffres.',
+      email_label: 'Votre courriel',
+      send_code: 'Recevoir mon code',
+      code_sent: 'Code envoyé à {email}. Il est valide 15 minutes (vérifiez aussi les indésirables).',
+      otp_code_label: 'Code à 6 chiffres',
+      verify_code: 'Se connecter',
+      code_invalid: 'Code invalide ou expiré. Demandez un nouveau code.',
+      code_wait: 'Un code vient d’être envoyé. Attendez une minute avant d’en demander un autre.',
+      email_invalid: 'Courriel invalide.',
+      use_other_email: 'Changer de courriel',
+      or_label: 'ou',
+      location_title: '1. Où faites-vous votre épicerie ?',
+      location_why: 'Votre position sert à trouver les circulaires de cette semaine et la succursale la plus proche de chaque magasin, avec la distance. On garde seulement votre code postal, jamais votre position exacte.',
+      use_my_location: 'Utiliser ma position',
+      locating: 'Recherche de votre position...',
+      location_denied: 'Position refusée ou indisponible. Entrez votre code postal.',
+      location_found: 'Position trouvée : {place}',
+      city_label: 'Ville',
+      check_stores: 'Voir les magasins près de chez moi',
+      nearby_title: 'Magasins avec circulaires près de chez vous',
+      nearby_loading: 'Lecture des circulaires de la semaine près de chez vous (jusqu’à 20 secondes)...',
+      nearby_none: 'Aucune circulaire trouvée pour ce code postal : les prix seront estimés.',
+      nearby_items: '{n} produits en circulaire',
+      km_away: 'à {km} km',
+      household_title: '2. Votre ménage et votre budget',
+      adults_label: 'Adultes',
+      children_label: 'Enfants',
+      budget_hint: 'Pour tout le ménage, par semaine.',
+      max_stores_label: 'Nombre maximum de magasins à visiter',
+      stops_auto: 'Automatique (selon le budget)',
+      diet_title: '3. Allergies et régime',
+      allergies_label: 'Allergies — jamais dans le panier ni dans les repas',
+      allergies_other_label: 'Autre allergie ou aliment à éviter (facultatif)',
+      allergies_other_placeholder: 'ex. kiwi, coriandre',
+      diet_label: 'Régime alimentaire (facultatif)',
+      allergy_peanuts: 'Arachides',
+      allergy_tree_nuts: 'Noix',
+      allergy_milk: 'Lait et produits laitiers',
+      allergy_eggs: 'Œufs',
+      allergy_wheat_gluten: 'Blé et gluten',
+      allergy_soy: 'Soya',
+      allergy_fish: 'Poisson',
+      allergy_shellfish: 'Fruits de mer',
+      allergy_sesame: 'Sésame',
+      allergy_mustard: 'Moutarde',
+      allergy_sulphites: 'Sulfites',
+      diet_vegetarian: 'Végétarien',
+      diet_vegan: 'Végétalien',
+      diet_pescatarian: 'Pescétarien',
+      diet_halal: 'Halal',
+      diet_kosher: 'Casher',
+      diet_lactose_free: 'Sans lactose',
+      diet_gluten_free: 'Sans gluten',
+      diet_low_sodium: 'Moins de sel',
+      diet_less_sugar: 'Moins de sucre',
+      goals_wellness_label: 'Ce qui compte pour vous (facultatif)',
+      goals_wellness_placeholder: 'ex. plus de protéines pour mes entraînements, des lunchs faciles pour les enfants',
+      tastes_label: 'Goûts et habitudes (facultatif)',
+      tastes_placeholder: 'ex. on n’aime pas le poisson, soupers prêts en 30 minutes',
+      privacy_note_panier: 'Vos allergies et préférences servent seulement à bâtir votre panier et à préremplir le formulaire la prochaine fois. Recommandation d’IA, pas un avis professionnel : vérifiez toujours l’étiquette des produits.',
+      removed_for_safety_msg: 'Retirés par sécurité (allergies ou régime) : {items}',
+      result_summary: 'Total {total} · {stops} magasin(s)',
+      training_location_label: 'Où vous entraînez-vous ?',
+      place_gym: 'Au gym',
+      place_home_equipment: 'À la maison, avec haltères ou élastiques',
+      place_home_none: 'À la maison, sans équipement',
+      place_outdoor: 'Dehors (parc, course)',
+      level_label: 'Niveau',
+      level_beginner: 'Débutant ou retour après une pause',
+      level_intermediate: 'Intermédiaire (6 mois et plus)',
+      level_advanced: 'Avancé (plusieurs années)',
+      goal_flexibility: 'Flexibilité et mobilité',
+      goal_general_health: 'Forme générale',
+      injuries_title: 'Blessures ou douleurs à ménager (facultatif)',
+      injury_zone_label: 'Zone',
+      injury_severity_label: 'Intensité',
+      severity_mild: 'Légère',
+      severity_moderate: 'Modérée',
+      severity_severe: 'Importante',
+      injury_desc_placeholder: 'ex. entorse en 2024, douleur dans les escaliers',
+      add_injury: '+ Ajouter une blessure',
+      remove_label: 'Retirer',
+      zone_neck: 'Cou',
+      zone_left_shoulder: 'Épaule gauche',
+      zone_right_shoulder: 'Épaule droite',
+      zone_upper_back: 'Haut du dos',
+      zone_lower_back: 'Bas du dos',
+      zone_left_hip: 'Hanche gauche',
+      zone_right_hip: 'Hanche droite',
+      zone_left_knee: 'Genou gauche',
+      zone_right_knee: 'Genou droit',
+      zone_left_ankle: 'Cheville gauche',
+      zone_right_ankle: 'Cheville droite',
+      zone_left_wrist: 'Poignet gauche',
+      zone_right_wrist: 'Poignet droit',
+      zone_left_elbow: 'Coude gauche',
+      zone_right_elbow: 'Coude droit',
+      zone_chest: 'Poitrine',
+      zone_abdomen: 'Abdomen',
+      zone_other: 'Autre',
+      nearest_gym_placeholder: 'ex. le gym de mon quartier (facultatif)',
+      coach_location_why: 'Votre code postal sert à adapter l’épicerie et les prix à votre région.',
+      privacy_note_coach: 'Vos réponses servent seulement à bâtir votre plan et à préremplir le formulaire la prochaine fois. Recommandation d’IA, pas un avis médical ni professionnel.',
+      how_title: 'Comment ça marche',
+      panier_step1: 'Partagez votre position ou votre code postal : on lit les circulaires de la semaine et on trouve la succursale la plus proche de chaque magasin.',
+      panier_step2: 'Indiquez votre budget, votre ménage, vos allergies et votre régime. Les allergies ne sont jamais négociables.',
+      panier_step3: 'Recevez un PDF : les menus de la semaine, la liste d’épicerie aux prix des circulaires, et le trajet magasin par magasin avec les adresses.',
+      coach_step1: 'Vos mesures, votre objectif, votre niveau et où vous vous entraînez : gym, maison ou dehors.',
+      coach_step2: 'Vos blessures, allergies et régime sont respectés dans chaque exercice et chaque repas.',
+      coach_step3: 'Recevez un PDF : les entraînements de la semaine, vos calories expliquées, les menus et l’épicerie.',
+      see_example: 'Voir un exemple de plan (PDF)',
+      example_caption_panier: 'Exemple fictif : famille de Rosemont (Montréal), 2 adultes et 1 enfant, 170 $ par semaine, allergie aux arachides.',
+      example_caption_coach: 'Exemple fictif : 38 ans, 92 kg, perte de gras, 3 séances à la maison avec haltères, genou gauche fragile.',
+      ai_disclaimer: 'Recommandation d’IA, pas un avis professionnel.',
+      signin: 'Commencer',
       partners: 'Partenaires',
       home: 'Accueil',
       no_prices: '',
@@ -151,7 +267,123 @@
       date_label: 'Date',
     },
     en: {
-      signin: 'Sign in with Google',
+      trimmed_for_budget_msg: 'Removed to stay within your budget: {items}',
+      email_signin_title: 'Sign in with email',
+      email_signin_hint: 'No password: we email you a 6-digit code.',
+      email_label: 'Your email',
+      send_code: 'Send my code',
+      code_sent: 'Code sent to {email}. It is valid for 15 minutes (check spam too).',
+      otp_code_label: '6-digit code',
+      verify_code: 'Sign in',
+      code_invalid: 'Invalid or expired code. Ask for a new one.',
+      code_wait: 'A code was just sent. Wait a minute before asking again.',
+      email_invalid: 'Invalid email.',
+      use_other_email: 'Use another email',
+      or_label: 'or',
+      location_title: '1. Where do you shop?',
+      location_why: 'Your location finds this week’s flyers and the closest branch of each store, with the distance. We only keep your postal code, never your exact position.',
+      use_my_location: 'Use my location',
+      locating: 'Finding your location...',
+      location_denied: 'Location denied or unavailable. Enter your postal code.',
+      location_found: 'Location found: {place}',
+      city_label: 'City',
+      check_stores: 'Show stores near me',
+      nearby_title: 'Stores with flyers near you',
+      nearby_loading: 'Reading this week’s flyers near you (up to 20 seconds)...',
+      nearby_none: 'No flyers found for this postal code: prices will be estimated.',
+      nearby_items: '{n} flyer items',
+      km_away: '{km} km away',
+      household_title: '2. Your household and budget',
+      adults_label: 'Adults',
+      children_label: 'Children',
+      budget_hint: 'For the whole household, per week.',
+      max_stores_label: 'Maximum number of stores to visit',
+      stops_auto: 'Automatic (based on budget)',
+      diet_title: '3. Allergies and diet',
+      allergies_label: 'Allergies — never in the basket or the meals',
+      allergies_other_label: 'Other allergy or food to avoid (optional)',
+      allergies_other_placeholder: 'e.g. kiwi, cilantro',
+      diet_label: 'Diet (optional)',
+      allergy_peanuts: 'Peanuts',
+      allergy_tree_nuts: 'Tree nuts',
+      allergy_milk: 'Milk and dairy',
+      allergy_eggs: 'Eggs',
+      allergy_wheat_gluten: 'Wheat and gluten',
+      allergy_soy: 'Soy',
+      allergy_fish: 'Fish',
+      allergy_shellfish: 'Shellfish',
+      allergy_sesame: 'Sesame',
+      allergy_mustard: 'Mustard',
+      allergy_sulphites: 'Sulphites',
+      diet_vegetarian: 'Vegetarian',
+      diet_vegan: 'Vegan',
+      diet_pescatarian: 'Pescatarian',
+      diet_halal: 'Halal',
+      diet_kosher: 'Kosher',
+      diet_lactose_free: 'Lactose-free',
+      diet_gluten_free: 'Gluten-free',
+      diet_low_sodium: 'Less salt',
+      diet_less_sugar: 'Less sugar',
+      goals_wellness_label: 'What matters to you (optional)',
+      goals_wellness_placeholder: 'e.g. more protein for my workouts, easy lunches for the kids',
+      tastes_label: 'Tastes and habits (optional)',
+      tastes_placeholder: 'e.g. we don’t like fish, dinners ready in 30 minutes',
+      privacy_note_panier: 'Your allergies and preferences are only used to build your basket and prefill the form next time. AI recommendation, not professional advice: always check product labels.',
+      removed_for_safety_msg: 'Removed for safety (allergies or diet): {items}',
+      result_summary: 'Total {total} · {stops} store(s)',
+      training_location_label: 'Where do you train?',
+      place_gym: 'At the gym',
+      place_home_equipment: 'At home, with dumbbells or bands',
+      place_home_none: 'At home, no equipment',
+      place_outdoor: 'Outdoors (park, running)',
+      level_label: 'Level',
+      level_beginner: 'Beginner or coming back',
+      level_intermediate: 'Intermediate (6+ months)',
+      level_advanced: 'Advanced (several years)',
+      goal_flexibility: 'Flexibility and mobility',
+      goal_general_health: 'General fitness',
+      injuries_title: 'Injuries or pain to work around (optional)',
+      injury_zone_label: 'Area',
+      injury_severity_label: 'Severity',
+      severity_mild: 'Mild',
+      severity_moderate: 'Moderate',
+      severity_severe: 'Severe',
+      injury_desc_placeholder: 'e.g. sprain in 2024, hurts on stairs',
+      add_injury: '+ Add an injury',
+      remove_label: 'Remove',
+      zone_neck: 'Neck',
+      zone_left_shoulder: 'Left shoulder',
+      zone_right_shoulder: 'Right shoulder',
+      zone_upper_back: 'Upper back',
+      zone_lower_back: 'Lower back',
+      zone_left_hip: 'Left hip',
+      zone_right_hip: 'Right hip',
+      zone_left_knee: 'Left knee',
+      zone_right_knee: 'Right knee',
+      zone_left_ankle: 'Left ankle',
+      zone_right_ankle: 'Right ankle',
+      zone_left_wrist: 'Left wrist',
+      zone_right_wrist: 'Right wrist',
+      zone_left_elbow: 'Left elbow',
+      zone_right_elbow: 'Right elbow',
+      zone_chest: 'Chest',
+      zone_abdomen: 'Abdomen',
+      zone_other: 'Other',
+      nearest_gym_placeholder: 'e.g. my neighbourhood gym (optional)',
+      coach_location_why: 'Your postal code adapts the groceries and prices to your area.',
+      privacy_note_coach: 'Your answers are only used to build your plan and prefill the form next time. AI recommendation, not medical or professional advice.',
+      how_title: 'How it works',
+      panier_step1: 'Share your location or postal code: we read this week’s flyers and find the closest branch of each store.',
+      panier_step2: 'Enter your budget, household, allergies and diet. Allergies are never negotiable.',
+      panier_step3: 'Get a PDF: the week’s menus, the grocery list at flyer prices, and the store-by-store route with addresses.',
+      coach_step1: 'Your measurements, goal, level and where you train: gym, home or outdoors.',
+      coach_step2: 'Your injuries, allergies and diet are respected in every exercise and meal.',
+      coach_step3: 'Get a PDF: the week’s workouts, your calories explained, meals and groceries.',
+      see_example: 'See an example plan (PDF)',
+      example_caption_panier: 'Fictional example: a Rosemont (Montreal) family, 2 adults and 1 child, $170 a week, peanut allergy.',
+      example_caption_coach: 'Fictional example: 38 years old, 92 kg, fat loss, 3 home sessions with dumbbells, sensitive left knee.',
+      ai_disclaimer: 'AI recommendation, not professional advice.',
+      signin: 'Get started',
       partners: 'Partners',
       home: 'Home',
       no_prices: '',
@@ -282,7 +514,123 @@
       date_label: 'Date',
     },
     es: {
-      signin: 'Iniciar sesión con Google',
+      trimmed_for_budget_msg: 'Retirados para respetar tu presupuesto: {items}',
+      email_signin_title: 'Acceso por correo',
+      email_signin_hint: 'Sin contraseña: te enviamos un código de 6 dígitos.',
+      email_label: 'Tu correo',
+      send_code: 'Recibir mi código',
+      code_sent: 'Código enviado a {email}. Válido 15 minutos (revisa también el spam).',
+      otp_code_label: 'Código de 6 dígitos',
+      verify_code: 'Entrar',
+      code_invalid: 'Código inválido o vencido. Pide uno nuevo.',
+      code_wait: 'Acabamos de enviar un código. Espera un minuto.',
+      email_invalid: 'Correo no válido.',
+      use_other_email: 'Usar otro correo',
+      or_label: 'o',
+      location_title: '1. ¿Dónde haces tus compras?',
+      location_why: 'Tu ubicación sirve para encontrar los folletos de esta semana y la sucursal más cercana de cada tienda. Solo guardamos tu código postal, nunca tu posición exacta.',
+      use_my_location: 'Usar mi ubicación',
+      locating: 'Buscando tu ubicación...',
+      location_denied: 'Ubicación denegada o no disponible. Escribe tu código postal.',
+      location_found: 'Ubicación encontrada: {place}',
+      city_label: 'Ciudad',
+      check_stores: 'Ver tiendas cerca de mí',
+      nearby_title: 'Tiendas con folletos cerca de ti',
+      nearby_loading: 'Leyendo los folletos de la semana cerca de ti (hasta 20 segundos)...',
+      nearby_none: 'No hay folletos para este código postal: los precios serán estimados.',
+      nearby_items: '{n} productos en folleto',
+      km_away: 'a {km} km',
+      household_title: '2. Tu hogar y tu presupuesto',
+      adults_label: 'Adultos',
+      children_label: 'Niños',
+      budget_hint: 'Para todo el hogar, por semana.',
+      max_stores_label: 'Número máximo de tiendas',
+      stops_auto: 'Automático (según el presupuesto)',
+      diet_title: '3. Alergias y dieta',
+      allergies_label: 'Alergias — nunca en la canasta ni en las comidas',
+      allergies_other_label: 'Otra alergia o alimento a evitar (opcional)',
+      allergies_other_placeholder: 'ej. kiwi, cilantro',
+      diet_label: 'Dieta (opcional)',
+      allergy_peanuts: 'Cacahuetes',
+      allergy_tree_nuts: 'Frutos secos',
+      allergy_milk: 'Leche y lácteos',
+      allergy_eggs: 'Huevos',
+      allergy_wheat_gluten: 'Trigo y gluten',
+      allergy_soy: 'Soja',
+      allergy_fish: 'Pescado',
+      allergy_shellfish: 'Mariscos',
+      allergy_sesame: 'Sésamo',
+      allergy_mustard: 'Mostaza',
+      allergy_sulphites: 'Sulfitos',
+      diet_vegetarian: 'Vegetariano',
+      diet_vegan: 'Vegano',
+      diet_pescatarian: 'Pescetariano',
+      diet_halal: 'Halal',
+      diet_kosher: 'Kosher',
+      diet_lactose_free: 'Sin lactosa',
+      diet_gluten_free: 'Sin gluten',
+      diet_low_sodium: 'Menos sal',
+      diet_less_sugar: 'Menos azúcar',
+      goals_wellness_label: 'Lo que te importa (opcional)',
+      goals_wellness_placeholder: 'ej. más proteína para mis entrenamientos, almuerzos fáciles para los niños',
+      tastes_label: 'Gustos y hábitos (opcional)',
+      tastes_placeholder: 'ej. no nos gusta el pescado, cenas listas en 30 minutos',
+      privacy_note_panier: 'Tus alergias y preferencias solo sirven para armar tu canasta y rellenar el formulario la próxima vez. Recomendación de IA, no consejo profesional: revisa siempre las etiquetas.',
+      removed_for_safety_msg: 'Retirados por seguridad (alergias o dieta): {items}',
+      result_summary: 'Total {total} · {stops} tienda(s)',
+      training_location_label: '¿Dónde entrenas?',
+      place_gym: 'En el gimnasio',
+      place_home_equipment: 'En casa, con mancuernas o bandas',
+      place_home_none: 'En casa, sin equipo',
+      place_outdoor: 'Al aire libre (parque, correr)',
+      level_label: 'Nivel',
+      level_beginner: 'Principiante o retomando',
+      level_intermediate: 'Intermedio (6+ meses)',
+      level_advanced: 'Avanzado (varios años)',
+      goal_flexibility: 'Flexibilidad y movilidad',
+      goal_general_health: 'Forma general',
+      injuries_title: 'Lesiones o dolores a cuidar (opcional)',
+      injury_zone_label: 'Zona',
+      injury_severity_label: 'Intensidad',
+      severity_mild: 'Leve',
+      severity_moderate: 'Moderada',
+      severity_severe: 'Fuerte',
+      injury_desc_placeholder: 'ej. esguince en 2024, duele en escaleras',
+      add_injury: '+ Agregar una lesión',
+      remove_label: 'Quitar',
+      zone_neck: 'Cuello',
+      zone_left_shoulder: 'Hombro izquierdo',
+      zone_right_shoulder: 'Hombro derecho',
+      zone_upper_back: 'Espalda alta',
+      zone_lower_back: 'Espalda baja',
+      zone_left_hip: 'Cadera izquierda',
+      zone_right_hip: 'Cadera derecha',
+      zone_left_knee: 'Rodilla izquierda',
+      zone_right_knee: 'Rodilla derecha',
+      zone_left_ankle: 'Tobillo izquierdo',
+      zone_right_ankle: 'Tobillo derecho',
+      zone_left_wrist: 'Muñeca izquierda',
+      zone_right_wrist: 'Muñeca derecha',
+      zone_left_elbow: 'Codo izquierdo',
+      zone_right_elbow: 'Codo derecho',
+      zone_chest: 'Pecho',
+      zone_abdomen: 'Abdomen',
+      zone_other: 'Otra',
+      nearest_gym_placeholder: 'ej. el gimnasio de mi barrio (opcional)',
+      coach_location_why: 'Tu código postal adapta la compra y los precios a tu zona.',
+      privacy_note_coach: 'Tus respuestas solo sirven para armar tu plan y rellenar el formulario la próxima vez. Recomendación de IA, no consejo médico ni profesional.',
+      how_title: 'Cómo funciona',
+      panier_step1: 'Comparte tu ubicación o código postal: leemos los folletos de la semana y encontramos la sucursal más cercana de cada tienda.',
+      panier_step2: 'Indica tu presupuesto, tu hogar, tus alergias y tu dieta. Las alergias nunca se negocian.',
+      panier_step3: 'Recibe un PDF: los menús de la semana, la lista de compras a precios de folleto y la ruta tienda por tienda con direcciones.',
+      coach_step1: 'Tus medidas, objetivo, nivel y dónde entrenas: gimnasio, casa o al aire libre.',
+      coach_step2: 'Tus lesiones, alergias y dieta se respetan en cada ejercicio y comida.',
+      coach_step3: 'Recibe un PDF: los entrenamientos de la semana, tus calorías explicadas, menús y compras.',
+      see_example: 'Ver un plan de ejemplo (PDF)',
+      example_caption_panier: 'Ejemplo ficticio: familia de Rosemont (Montreal), 2 adultos y 1 niño, 170 $ por semana, alergia a los cacahuetes.',
+      example_caption_coach: 'Ejemplo ficticio: 38 años, 92 kg, pérdida de grasa, 3 sesiones en casa con mancuernas, rodilla izquierda delicada.',
+      ai_disclaimer: 'Recomendación de IA, no consejo profesional.',
+      signin: 'Empezar',
       partners: 'Socios',
       home: 'Inicio',
       no_prices: '',
@@ -589,7 +937,7 @@
     return api('/config?' + params.toString()).catch(function (err) {
       // fallback brand per spec — apply it directly here, then re-throw so each
       // page's own .catch() still runs and shows the "service unavailable" banner.
-      var fallback = { code: partner || '', type: 'both', name: 'Coach + Panier', tagline: '', colors: {} };
+      var fallback = { code: partner || '', type: partner ? '' : 'both', name: partner ? '' : 'Coach + Panier', tagline: '', colors: {} };
       if (global.applyBrand) global.applyBrand(fallback);
       throw err;
     });
@@ -655,6 +1003,134 @@
     container.innerHTML = '<div class="wl-alert wl-alert-error">' + message + '</div>';
   }
 
+
+  // ---------- interpolation ----------
+  function tf(key, vars) {
+    var out = t(key);
+    Object.keys(vars || {}).forEach(function (k) { out = out.split('{' + k + '}').join(String(vars[k])); });
+    return out;
+  }
+
+  function escapeHtml(v) {
+    return String(v == null ? '' : v).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  // ---------- sign-in ----------
+  function isGoogleConfigured() {
+    var id = global.WL && global.WL.GOOGLE_CLIENT_ID;
+    return !!id && id !== 'REPLACE_AT_DEPLOY' && /\.apps\.googleusercontent\.com$/.test(id);
+  }
+
+  // E-mail one-time code: email -> "send code" -> 6 digits -> token.
+  function initEmailSignIn(container, onSignedIn) {
+    if (!container) return;
+    container.innerHTML =
+      '<form class="wl-form wl-email-signin" novalidate>' +
+        '<h3>' + escapeHtml(t('email_signin_title')) + '</h3>' +
+        '<p class="wl-muted">' + escapeHtml(t('email_signin_hint')) + '</p>' +
+        '<div class="wl-field"><label for="wl-email-input">' + escapeHtml(t('email_label')) + '</label>' +
+          '<input type="email" id="wl-email-input" autocomplete="email" inputmode="email" required></div>' +
+        '<div class="wl-field wl-hidden" id="wl-code-field"><label for="wl-code-input">' + escapeHtml(t('otp_code_label')) + '</label>' +
+          '<input type="text" id="wl-code-input" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}"></div>' +
+        '<div id="wl-email-msg"></div>' +
+        '<button type="submit" class="wl-btn wl-btn-block" id="wl-email-btn">' + escapeHtml(t('send_code')) + '</button>' +
+        '<button type="button" class="wl-link-btn wl-hidden" id="wl-email-change">' + escapeHtml(t('use_other_email')) + '</button>' +
+      '</form>';
+    var form = container.querySelector('form');
+    var emailInput = container.querySelector('#wl-email-input');
+    var codeField = container.querySelector('#wl-code-field');
+    var codeInput = container.querySelector('#wl-code-input');
+    var msg = container.querySelector('#wl-email-msg');
+    var btn = container.querySelector('#wl-email-btn');
+    var change = container.querySelector('#wl-email-change');
+    var stage = 'email';
+
+    function setStage(next) {
+      stage = next;
+      var codeStage = next === 'code';
+      codeField.classList.toggle('wl-hidden', !codeStage);
+      change.classList.toggle('wl-hidden', !codeStage);
+      emailInput.readOnly = codeStage;
+      btn.textContent = codeStage ? t('verify_code') : t('send_code');
+      if (codeStage) codeInput.focus();
+    }
+    change.addEventListener('click', function () { msg.innerHTML = ''; codeInput.value = ''; setStage('email'); emailInput.focus(); });
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var email = emailInput.value.trim();
+      msg.innerHTML = '';
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { showError(msg, escapeHtml(t('email_invalid'))); return; }
+      btn.disabled = true;
+      if (stage === 'email') {
+        api('/auth/email/start', { method: 'POST', body: { email: email, partner: getPartner(), language: lang } })
+          .then(function () {
+            msg.innerHTML = '<div class="wl-alert wl-alert-success">' + escapeHtml(tf('code_sent', { email: email })) + '</div>';
+            setStage('code');
+          })
+          .catch(function (err) {
+            var code = err && err.data && err.data.error;
+            if (code === 'code_recently_sent') { msg.innerHTML = '<div class="wl-alert wl-alert-warn">' + escapeHtml(t('code_wait')) + '</div>'; setStage('code'); }
+            else showError(msg, escapeHtml(code === 'invalid_email' ? t('email_invalid') : t('service_unavailable')));
+          })
+          .finally(function () { btn.disabled = false; });
+      } else {
+        api('/auth/email/verify', { method: 'POST', body: { email: email, code: codeInput.value.trim(), partner: getPartner() } })
+          .then(function (data) { setToken(data.token); onSignedIn(data.user); })
+          .catch(function () { showError(msg, escapeHtml(t('code_invalid'))); })
+          .finally(function () { btn.disabled = false; });
+      }
+    });
+  }
+
+  // Google button when configured, e-mail code always.
+  function initSignIn(googleEl, emailEl, onSignedIn, onError) {
+    if (isGoogleConfigured() && googleEl) {
+      initGoogleSignIn(googleEl, function (credential) {
+        api('/auth/google', { method: 'POST', body: { credential: credential, partner: getPartner() } })
+          .then(function (data) { setToken(data.token); onSignedIn(data.user); })
+          .catch(function () { if (onError) onError(); });
+      });
+    } else if (googleEl) {
+      googleEl.innerHTML = '';
+    }
+    initEmailSignIn(emailEl, onSignedIn);
+  }
+
+  // ---------- position ----------
+  // Browser geolocation (asks permission) -> { lat, lng }.
+  function getPosition() {
+    return new Promise(function (resolve, reject) {
+      if (!navigator.geolocation) { reject(new Error('unsupported')); return; }
+      navigator.geolocation.getCurrentPosition(
+        function (pos) { resolve({ lat: pos.coords.latitude, lng: pos.coords.longitude }); },
+        function (err) { reject(err); },
+        { enableHighAccuracy: false, timeout: 15000, maximumAge: 10 * 60 * 1000 }
+      );
+    });
+  }
+
+  // ---------- checkbox groups ----------
+  var ALLERGY_IDS = ['peanuts', 'tree_nuts', 'milk', 'eggs', 'wheat_gluten', 'soy', 'fish', 'shellfish', 'sesame', 'mustard', 'sulphites'];
+  var DIET_IDS = ['vegetarian', 'vegan', 'pescatarian', 'halal', 'kosher', 'lactose_free', 'gluten_free', 'low_sodium', 'less_sugar'];
+  function renderChoices(container, ids, keyPrefix, name, selected) {
+    if (!container) return;
+    var sel = selected || [];
+    container.innerHTML = ids.map(function (id) {
+      return '<label class="wl-choice"><input type="checkbox" name="' + name + '" value="' + id + '"' + (sel.indexOf(id) !== -1 ? ' checked' : '') + '> <span>' + escapeHtml(t(keyPrefix + id)) + '</span></label>';
+    }).join('');
+  }
+  function checkedValues(container) {
+    if (!container) return [];
+    return Array.prototype.slice.call(container.querySelectorAll('input[type=checkbox]:checked')).map(function (i) { return i.value; });
+  }
+  function setChecked(container, values) {
+    if (!container) return;
+    Array.prototype.slice.call(container.querySelectorAll('input[type=checkbox]')).forEach(function (i) { i.checked = (values || []).indexOf(i.value) !== -1; });
+  }
+
   // ---------- postal / country detection ----------
   var CA_POSTAL = /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/;
   var US_ZIP = /^\d{5}(-\d{4})?$/;
@@ -706,7 +1182,16 @@
       var textWrap = document.createElement('div');
       var nameEl = document.createElement('div');
       nameEl.className = 'wl-sponsor-name';
-      nameEl.textContent = s.name || '';
+      if (s.link_url && /^https:\/\//i.test(s.link_url)) {
+        var link = document.createElement('a');
+        link.href = s.link_url;
+        link.target = '_blank';
+        link.rel = 'noopener';
+        link.textContent = s.name || '';
+        nameEl.appendChild(link);
+      } else {
+        nameEl.textContent = s.name || '';
+      }
       textWrap.appendChild(nameEl);
       if (s.message) {
         var msgEl = document.createElement('div');
@@ -722,6 +1207,17 @@
   global.WLApp = {
     lang: lang,
     t: t,
+    tf: tf,
+    escapeHtml: escapeHtml,
+    isGoogleConfigured: isGoogleConfigured,
+    initEmailSignIn: initEmailSignIn,
+    initSignIn: initSignIn,
+    getPosition: getPosition,
+    allergyIds: ALLERGY_IDS,
+    dietIds: DIET_IDS,
+    renderChoices: renderChoices,
+    checkedValues: checkedValues,
+    setChecked: setChecked,
     applyI18n: applyI18n,
     initLangToggle: initLangToggle,
     initLocalizedVideo: initLocalizedVideo,

@@ -293,3 +293,28 @@ img { max-width: 100%; }
 
 .wl-upgrade-card { border: 2px dashed var(--color-primary); text-align: center; }
 .wl-upgrade-card h3 { margin-top: 0; color: var(--color-primary); }
+
+/* ---- sign-in by e-mail, choices, location card (2026-09-17) ---- */
+.wl-email-signin { max-width: 420px; margin: calc(var(--spacing-unit) * 5) auto 0; text-align: left; }
+.wl-email-signin h3 { margin: 0 0 4px; }
+.wl-muted { color: #667085; font-size: 0.92em; }
+.wl-link-btn { background: none; border: 0; color: var(--color-primary, #16A34A); cursor: pointer; padding: 8px 0; font: inherit; text-decoration: underline; }
+.wl-or { text-align: center; color: #667085; margin: 16px 0 0; }
+.wl-choices { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 8px; }
+.wl-choice { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border: 1px solid #D0D5DD; border-radius: 8px; cursor: pointer; background: #fff; font-size: 0.95em; }
+.wl-choice input { width: auto; margin: 0; }
+.wl-choice:has(input:checked) { border-color: var(--color-primary, #16A34A); box-shadow: inset 0 0 0 1px var(--color-primary, #16A34A); }
+.wl-step { border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: 16px; margin: 0 0 16px; background: var(--card-color); }
+.wl-step h3 { margin: 0 0 6px; font-size: 1.05em; }
+.wl-location-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; }
+.wl-location-row .wl-field { flex: 1 1 180px; margin: 0; }
+.wl-stores { list-style: none; padding: 0; margin: 10px 0 0; }
+.wl-stores li { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-top: 1px solid #EAECF0; font-size: 0.93em; }
+.wl-stores li:first-child { border-top: 0; }
+.wl-stores .wl-store-addr { color: #667085; font-size: 0.9em; }
+.wl-stores .wl-store-km { white-space: nowrap; font-weight: 600; }
+.wl-injury-row { display: grid; grid-template-columns: 1fr 1fr 2fr auto; gap: 8px; align-items: end; margin-bottom: 8px; }
+.wl-how { margin: 12px 0 0; padding-left: 20px; }
+.wl-how li { margin: 6px 0; }
+.wl-example { font-size: 0.9em; color: #667085; margin: 6px 0 0; }
+@media (max-width: 560px) { .wl-injury-row { grid-template-columns: 1fr 1fr; } .wl-choices { grid-template-columns: 1fr 1fr; } }

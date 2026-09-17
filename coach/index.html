@@ -33,6 +33,7 @@
     <h1 data-i18n="coach_title">Coach</h1>
     <p data-i18n="coach_desc">Plan d'entraînement hebdomadaire personnalisé, livré en PDF.</p>
     <div id="wl-gsi-btn"></div>
+    <div id="wl-email-signin"></div>
     <div id="wl-signin-error"></div>
   </section>
 
@@ -84,6 +85,25 @@
               <option value="fat_loss" data-i18n="goal_fat_loss">Perte de gras</option>
               <option value="muscle_gain" data-i18n="goal_muscle_gain">Gain musculaire</option>
               <option value="maintenance" data-i18n="goal_maintenance">Maintien</option>
+              <option value="flexibility" data-i18n="goal_flexibility">Flexibilité et mobilité</option>
+              <option value="general_health" data-i18n="goal_general_health">Forme générale</option>
+            </select>
+          </div>
+          <div class="wl-field">
+            <label data-i18n="training_location_label">Où vous entraînez-vous ?</label>
+            <select name="training_location" required>
+              <option value="gym" data-i18n="place_gym">Au gym</option>
+              <option value="home_equipment" data-i18n="place_home_equipment">À la maison, avec haltères</option>
+              <option value="home_none" data-i18n="place_home_none">À la maison, sans équipement</option>
+              <option value="outdoor" data-i18n="place_outdoor">Dehors</option>
+            </select>
+          </div>
+          <div class="wl-field">
+            <label data-i18n="level_label">Niveau</label>
+            <select name="experience_level" required>
+              <option value="beginner" data-i18n="level_beginner">Débutant</option>
+              <option value="intermediate" data-i18n="level_intermediate">Intermédiaire</option>
+              <option value="advanced" data-i18n="level_advanced">Avancé</option>
             </select>
           </div>
           <div class="wl-field">
@@ -98,9 +118,18 @@
             <label data-i18n="weekly_food_budget_label">Budget épicerie / semaine</label>
             <input type="number" name="weekly_food_budget" min="0" step="1">
           </div>
+          <div class="wl-field full">
+            <span class="wl-muted" data-i18n="coach_location_why"></span>
+            <button type="button" class="wl-btn wl-btn-outline" id="wl-geo-btn" data-i18n="use_my_location" style="margin-top:6px">Utiliser ma position</button>
+            <div id="wl-geo-msg" style="margin-top:6px"></div>
+          </div>
           <div class="wl-field">
             <label data-i18n="postal_label">Code postal</label>
-            <input type="text" name="postal_code" id="wl-postal-input" required>
+            <input type="text" name="postal_code" id="wl-postal-input" required autocomplete="postal-code">
+          </div>
+          <div class="wl-field">
+            <label data-i18n="city_label">Ville</label>
+            <input type="text" name="city" id="wl-city-input" maxlength="80" autocomplete="address-level2">
           </div>
           <div class="wl-field wl-hidden" id="wl-country-field">
             <label data-i18n="country_label">Pays</label>
@@ -109,15 +138,23 @@
           </div>
           <div class="wl-field">
             <label data-i18n="nearest_gym_label">Gym le plus proche</label>
-            <input type="text" name="nearest_gym">
+            <input type="text" name="nearest_gym" data-i18n-placeholder="nearest_gym_placeholder">
           </div>
           <div class="wl-field full">
-            <label data-i18n="injuries_label">Blessures (facultatif)</label>
-            <textarea name="injuries_text" data-i18n-placeholder="injuries_placeholder" placeholder="ex. genou gauche, léger, depuis 2024"></textarea>
+            <label data-i18n="injuries_title">Blessures ou douleurs à ménager (facultatif)</label>
+            <div id="wl-injuries"></div>
+            <button type="button" class="wl-link-btn" id="wl-add-injury" data-i18n="add_injury">+ Ajouter une blessure</button>
           </div>
           <div class="wl-field full">
-            <label data-i18n="diet_restrictions_label">Restrictions alimentaires (séparées par des virgules)</label>
-            <input type="text" name="diet_restrictions_text" data-i18n-placeholder="diet_restrictions_placeholder" placeholder="ex. sans gluten, sans arachides">
+            <label data-i18n="allergies_label">Allergies</label>
+            <div class="wl-choices" id="wl-allergies"></div>
+          </div>
+          <div class="wl-field full">
+            <label data-i18n="diet_label">Régime alimentaire</label>
+            <div class="wl-choices" id="wl-diet"></div>
+          </div>
+          <div class="wl-field full">
+            <p class="wl-muted" data-i18n="privacy_note_coach"></p>
           </div>
           <div class="wl-field full wl-hidden" id="wl-photo-field">
             <label data-i18n="photo_label">Photo (facultatif)</label>
@@ -151,6 +188,40 @@
 <script src="../shared/app.js"></script>
 <script>
   WLApp.applyI18n();
+  WLApp.renderChoices(document.getElementById('wl-allergies'), WLApp.allergyIds, 'allergy_', 'allergies');
+  WLApp.renderChoices(document.getElementById('wl-diet'), WLApp.dietIds, 'diet_', 'diet');
+
+  var ZONES = ['neck', 'left_shoulder', 'right_shoulder', 'upper_back', 'lower_back', 'left_hip', 'right_hip', 'left_knee', 'right_knee', 'left_ankle', 'right_ankle', 'left_wrist', 'right_wrist', 'left_elbow', 'right_elbow', 'chest', 'abdomen', 'other'];
+  var injuriesEl = document.getElementById('wl-injuries');
+  function addInjuryRow(inj) {
+    if (injuriesEl.children.length >= 5) return;
+    var row = document.createElement('div');
+    row.className = 'wl-injury-row';
+    row.innerHTML =
+      '<div class="wl-field"><label>' + WLApp.escapeHtml(WLApp.t('injury_zone_label')) + '</label><select class="wl-inj-zone">' +
+        ZONES.map(function (z) { return '<option value="' + z + '">' + WLApp.escapeHtml(WLApp.t('zone_' + z)) + '</option>'; }).join('') + '</select></div>' +
+      '<div class="wl-field"><label>' + WLApp.escapeHtml(WLApp.t('injury_severity_label')) + '</label><select class="wl-inj-sev">' +
+        ['mild', 'moderate', 'severe'].map(function (v) { return '<option value="' + v + '">' + WLApp.escapeHtml(WLApp.t('severity_' + v)) + '</option>'; }).join('') + '</select></div>' +
+      '<div class="wl-field"><input type="text" class="wl-inj-desc" maxlength="200" placeholder="' + WLApp.escapeHtml(WLApp.t('injury_desc_placeholder')) + '"></div>' +
+      '<button type="button" class="wl-link-btn wl-inj-remove">' + WLApp.escapeHtml(WLApp.t('remove_label')) + '</button>';
+    if (inj) {
+      if (ZONES.indexOf(inj.body_zone) !== -1) row.querySelector('.wl-inj-zone').value = inj.body_zone;
+      else row.querySelector('.wl-inj-zone').value = 'other';
+      if (inj.severity) row.querySelector('.wl-inj-sev').value = inj.severity;
+      row.querySelector('.wl-inj-desc').value = inj.description || (ZONES.indexOf(inj.body_zone) === -1 ? (inj.body_zone || '') : '');
+    }
+    row.querySelector('.wl-inj-remove').addEventListener('click', function () { row.remove(); });
+    injuriesEl.appendChild(row);
+  }
+  document.getElementById('wl-add-injury').addEventListener('click', function () { addInjuryRow(null); });
+  function readInjuries() {
+    return Array.prototype.slice.call(injuriesEl.querySelectorAll('.wl-injury-row')).map(function (row) {
+      var d = row.querySelector('.wl-inj-desc').value.trim().slice(0, 200);
+      var inj = { body_zone: row.querySelector('.wl-inj-zone').value, severity: row.querySelector('.wl-inj-sev').value };
+      if (d) inj.description = d;
+      return inj;
+    });
+  }
 
   var countrySelect = document.getElementById('wl-country-select');
   countrySelect.innerHTML = WLApp.countries.map(function (c) {
@@ -175,6 +246,24 @@
   }
   postalInput.addEventListener('input', checkPostal);
   postalInput.addEventListener('blur', checkPostal);
+
+  var geoMsg = document.getElementById('wl-geo-msg');
+  var cityInput = document.getElementById('wl-city-input');
+  document.getElementById('wl-geo-btn').addEventListener('click', function () {
+    geoMsg.innerHTML = '<span class="wl-muted">' + WLApp.escapeHtml(WLApp.t('locating')) + '</span>';
+    WLApp.getPosition()
+      .then(function (pt) { return WLApp.api('/geo/reverse', { method: 'POST', body: { lat: pt.lat, lng: pt.lng, language: WLApp.lang } }); })
+      .then(function (geo) {
+        if (geo.postal_code) postalInput.value = geo.postal_code;
+        if (geo.city) cityInput.value = geo.city;
+        checkPostal();
+        geoMsg.innerHTML = '<div class="wl-alert wl-alert-success">' + WLApp.escapeHtml(WLApp.tf('location_found', { place: [geo.city, geo.postal_code].filter(Boolean).join(', ') })) + '</div>';
+      })
+      .catch(function () {
+        geoMsg.innerHTML = '<div class="wl-alert wl-alert-warn">' + WLApp.escapeHtml(WLApp.t('location_denied')) + '</div>';
+        postalInput.focus();
+      });
+  });
 
   WLApp.initLangToggle(document.getElementById('wl-lang-btn'), { postPreference: true });
 
@@ -256,19 +345,17 @@
   function prefillCoachProfile(profile, complete) {
     if (!profile) return;
     var form = document.getElementById('wl-profile-form');
-    ['height_cm', 'weight_kg', 'age', 'gender', 'fitness_goal', 'days_per_week', 'target_weight_kg', 'weekly_food_budget', 'postal_code', 'nearest_gym'].forEach(function (name) {
+    ['height_cm', 'weight_kg', 'age', 'gender', 'fitness_goal', 'days_per_week', 'target_weight_kg', 'weekly_food_budget', 'postal_code', 'city', 'nearest_gym', 'training_location', 'experience_level'].forEach(function (name) {
       if (profile[name] === undefined || profile[name] === null) return;
       var field = form.elements[name];
       if (field) field.value = profile[name];
     });
     if (profile.postal_code) checkPostal();
     if (profile.country) countrySelect.value = profile.country;
-    if (Array.isArray(profile.injuries) && profile.injuries.length) {
-      form.elements.injuries_text.value = profile.injuries.map(function (i) { return i.description || i.body_zone || ''; }).filter(Boolean).join('; ');
-    }
-    if (Array.isArray(profile.diet_restrictions) && profile.diet_restrictions.length) {
-      form.elements.diet_restrictions_text.value = profile.diet_restrictions.join(', ');
-    }
+    injuriesEl.innerHTML = '';
+    if (Array.isArray(profile.injuries)) profile.injuries.slice(0, 5).forEach(addInjuryRow);
+    WLApp.setChecked(document.getElementById('wl-allergies'), profile.allergies);
+    WLApp.setChecked(document.getElementById('wl-diet'), profile.diet);
     var savedLine = document.getElementById('wl-profile-saved-line');
     if (complete) {
       savedLine.textContent = WLApp.t('profile_saved') + (profile.saved_at ? ' (' + new Date(profile.saved_at).toLocaleDateString() + ')' : '');
@@ -304,15 +391,8 @@
       WLApp.clearToken();
     });
   } else {
-    WLApp.initGoogleSignIn(document.getElementById('wl-gsi-btn'), function (credential) {
-      WLApp.api('/auth/google', { method: 'POST', body: { credential: credential, partner: WLApp.getPartner() } })
-        .then(function (data) {
-          WLApp.setToken(data.token);
-          showApp(data.user);
-        })
-        .catch(function () {
-          WLApp.showError(document.getElementById('wl-signin-error'), WLApp.t('error_generic'));
-        });
+    WLApp.initSignIn(document.getElementById('wl-gsi-btn'), document.getElementById('wl-email-signin'), showApp, function () {
+      WLApp.showError(document.getElementById('wl-signin-error'), WLApp.t('error_generic'));
     });
   }
 
@@ -320,13 +400,7 @@
     e.preventDefault();
     var form = e.target;
     var fd = new FormData(form);
-    var injuries = [];
-    var injuriesText = (fd.get('injuries_text') || '').trim();
-    if (injuriesText) {
-      injuries.push({ body_zone: injuriesText, severity: 'mild', description: injuriesText });
-    }
-    var dietText = (fd.get('diet_restrictions_text') || '').trim();
-    var dietRestrictions = dietText ? dietText.split(',').map(function (s) { return s.trim(); }).filter(Boolean).slice(0, 10) : undefined;
+    var injuries = readInjuries();
     var profile = {
       height_cm: Number(fd.get('height_cm')),
       weight_kg: Number(fd.get('weight_kg')),
@@ -338,10 +412,15 @@
       weekly_food_budget: fd.get('weekly_food_budget') ? Number(fd.get('weekly_food_budget')) : undefined,
       postal_code: fd.get('postal_code'),
       country: countryField.classList.contains('wl-hidden') ? undefined : fd.get('country'),
+      city: fd.get('city') || undefined,
       nearest_gym: fd.get('nearest_gym') || undefined,
+      training_location: fd.get('training_location'),
+      experience_level: fd.get('experience_level'),
+      allergies: WLApp.checkedValues(document.getElementById('wl-allergies')),
+      diet: WLApp.checkedValues(document.getElementById('wl-diet')),
       language: WLApp.lang,
       injuries: injuries,
-      diet_restrictions: dietRestrictions
+      diet_restrictions: []
     };
 
     var errorEl = document.getElementById('wl-form-error');
@@ -358,6 +437,8 @@
         var photo = fd.get('photo');
         if (photo && photo.size > 0) genFd.append('photo', photo);
         genFd.append('language', WLApp.lang);
+        if (profile.postal_code) genFd.append('postal_code', profile.postal_code);
+        if (profile.country) genFd.append('country', profile.country);
 
         return WLApp.api('/coach/generate', { method: 'POST', formData: genFd });
       })

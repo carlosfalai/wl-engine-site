@@ -23,7 +23,7 @@
     if (colors.accent) root.style.setProperty('--color-accent', colors.accent);
     if (colors.dark) root.style.setProperty('--color-dark', colors.dark);
 
-    var name = config.name || 'Coach + Panier';
+    var name = config.name || (config.type === 'both' ? 'Coach + Panier' : '');
     var tagline = resolveTagline(config);
 
     document.querySelectorAll('[data-brand-name]').forEach(function (el) {

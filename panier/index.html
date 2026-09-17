@@ -32,6 +32,7 @@
     <h1 data-i18n="panier_title">Panier</h1>
     <p data-i18n="panier_desc">Le panier d'épicerie parfait selon votre budget, livré en PDF.</p>
     <div id="wl-gsi-btn"></div>
+    <div id="wl-email-signin"></div>
     <div id="wl-signin-error"></div>
   </section>
 
@@ -56,32 +57,82 @@
       <button type="button" class="wl-btn wl-btn-outline wl-hidden" id="wl-generate-with-profile-btn" style="margin-bottom:16px" data-i18n="generate_with_profile">Générer avec mon profil</button>
       <div id="wl-form-error"></div>
       <form id="wl-panier-form" class="wl-form">
-        <div class="wl-form-grid">
-          <div class="wl-field">
-            <label data-i18n="postal_label">Code postal</label>
-            <input type="text" name="postal_code" id="wl-postal-input" required>
+        <div class="wl-step">
+          <h3 data-i18n="location_title">1. Où faites-vous votre épicerie ?</h3>
+          <p class="wl-muted" data-i18n="location_why"></p>
+          <button type="button" class="wl-btn wl-btn-outline" id="wl-geo-btn" data-i18n="use_my_location">Utiliser ma position</button>
+          <div id="wl-geo-msg" style="margin-top:8px"></div>
+          <div class="wl-location-row" style="margin-top:10px">
+            <div class="wl-field">
+              <label data-i18n="postal_label">Code postal</label>
+              <input type="text" name="postal_code" id="wl-postal-input" required autocomplete="postal-code">
+            </div>
+            <div class="wl-field">
+              <label data-i18n="city_label">Ville</label>
+              <input type="text" name="city" id="wl-city-input" maxlength="80" autocomplete="address-level2">
+            </div>
+            <div class="wl-field wl-hidden" id="wl-country-field">
+              <label data-i18n="country_label">Pays</label>
+              <select name="country" id="wl-country-select"></select>
+              <span class="wl-country-hint wl-hidden" id="wl-country-hint" data-i18n="country_other_hint"></span>
+            </div>
           </div>
-          <div class="wl-field wl-hidden" id="wl-country-field">
-            <label data-i18n="country_label">Pays</label>
-            <select name="country" id="wl-country-select"></select>
-            <span class="wl-country-hint wl-hidden" id="wl-country-hint" data-i18n="country_other_hint"></span>
+          <button type="button" class="wl-link-btn" id="wl-nearby-btn" data-i18n="check_stores">Voir les magasins près de chez moi</button>
+          <div id="wl-nearby"></div>
+        </div>
+
+        <div class="wl-step">
+          <h3 data-i18n="household_title">2. Votre ménage et votre budget</h3>
+          <div class="wl-form-grid">
+            <div class="wl-field">
+              <label data-i18n="adults_label">Adultes</label>
+              <input type="number" name="adults" required min="1" max="10" value="1">
+            </div>
+            <div class="wl-field">
+              <label data-i18n="children_label">Enfants</label>
+              <input type="number" name="children" min="0" max="10" value="0">
+            </div>
+            <div class="wl-field">
+              <label data-i18n="panier_budget_label">Budget / semaine</label>
+              <input type="number" name="budget" required min="30" max="2000" step="1">
+              <span class="wl-muted" data-i18n="budget_hint"></span>
+            </div>
+            <div class="wl-field">
+              <label data-i18n="max_stores_label">Nombre maximum de magasins</label>
+              <select name="max_stores">
+                <option value="" data-i18n="stops_auto">Automatique</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+              </select>
+            </div>
           </div>
-          <div class="wl-field">
-            <label data-i18n="panier_budget_label">Budget / semaine</label>
-            <input type="number" name="budget" required min="0" step="1">
-          </div>
-          <div class="wl-field">
-            <label data-i18n="people_label">Nombre de personnes</label>
-            <input type="number" name="people" required min="1" max="20">
+        </div>
+
+        <div class="wl-step">
+          <h3 data-i18n="diet_title">3. Allergies et régime</h3>
+          <div class="wl-field full">
+            <label data-i18n="allergies_label">Allergies</label>
+            <div class="wl-choices" id="wl-allergies"></div>
           </div>
           <div class="wl-field full">
-            <label data-i18n="goals_label">Objectifs santé (facultatif)</label>
-            <textarea name="goals" data-i18n-placeholder="goals_placeholder" placeholder="ex. moins de sucre, plus de protéines"></textarea>
+            <label data-i18n="allergies_other_label">Autre allergie</label>
+            <input type="text" name="allergies_other" maxlength="200" data-i18n-placeholder="allergies_other_placeholder">
           </div>
           <div class="wl-field full">
-            <label data-i18n="preferences_label">Préférences / restrictions (facultatif)</label>
-            <textarea name="preferences" data-i18n-placeholder="preferences_placeholder" placeholder="ex. végétarien, sans gluten, allergies"></textarea>
+            <label data-i18n="diet_label">Régime alimentaire</label>
+            <div class="wl-choices" id="wl-diet"></div>
           </div>
+          <div class="wl-field full">
+            <label data-i18n="goals_wellness_label">Ce qui compte pour vous</label>
+            <textarea name="goals" maxlength="600" data-i18n-placeholder="goals_wellness_placeholder"></textarea>
+          </div>
+          <div class="wl-field full">
+            <label data-i18n="tastes_label">Goûts et habitudes</label>
+            <textarea name="preferences" maxlength="600" data-i18n-placeholder="tastes_placeholder"></textarea>
+          </div>
+          <p class="wl-muted" data-i18n="privacy_note_panier"></p>
         </div>
         <button type="submit" class="wl-btn" id="wl-generate-btn" data-i18n="generate_plan">Générer mon plan</button>
       </form>
@@ -93,6 +144,8 @@
 
       <div id="wl-result" class="wl-hidden">
         <div class="wl-alert wl-alert-success">
+          <p id="wl-result-summary" style="margin:0 0 8px"></p>
+          <p id="wl-result-removed" class="wl-hidden" style="margin:0 0 8px"></p>
           <a id="wl-pdf-link" class="wl-btn" href="#" target="_blank" data-i18n="open_pdf">Ouvrir le PDF</a>
         </div>
       </div>
@@ -110,6 +163,9 @@
 <script src="../shared/app.js"></script>
 <script>
   WLApp.applyI18n();
+  WLApp.renderChoices(document.getElementById('wl-allergies'), WLApp.allergyIds, 'allergy_', 'allergies');
+  WLApp.renderChoices(document.getElementById('wl-diet'), WLApp.dietIds, 'diet_', 'diet');
+  var lastPoint = null; // { lat, lng } from the browser, never saved
 
   var countrySelect = document.getElementById('wl-country-select');
   countrySelect.innerHTML = WLApp.countries.map(function (c) {
@@ -132,8 +188,67 @@
       countryHint.classList.add('wl-hidden');
     }
   }
-  postalInput.addEventListener('input', checkPostal);
+  postalInput.addEventListener('input', function () { checkPostal(); lastPoint = null; });
   postalInput.addEventListener('blur', checkPostal);
+
+  var geoMsg = document.getElementById('wl-geo-msg');
+  var cityInput = document.getElementById('wl-city-input');
+  document.getElementById('wl-geo-btn').addEventListener('click', function () {
+    geoMsg.innerHTML = '<span class="wl-muted">' + WLApp.escapeHtml(WLApp.t('locating')) + '</span>';
+    WLApp.getPosition()
+      .then(function (pt) {
+        lastPoint = pt;
+        return WLApp.api('/geo/reverse', { method: 'POST', body: { lat: pt.lat, lng: pt.lng, language: WLApp.lang } });
+      })
+      .then(function (geo) {
+        if (geo.postal_code) postalInput.value = geo.postal_code;
+        if (geo.city) cityInput.value = geo.city;
+        if (geo.country && geo.country !== 'CA' && geo.country !== 'US') {
+          countryField.classList.remove('wl-hidden');
+          var opt = Array.prototype.slice.call(countrySelect.options).find(function (o) { return o.value === geo.country; });
+          countrySelect.value = opt ? geo.country : '';
+        } else {
+          checkPostal();
+        }
+        var place = [geo.city, geo.postal_code].filter(Boolean).join(', ');
+        geoMsg.innerHTML = '<div class="wl-alert wl-alert-success">' + WLApp.escapeHtml(WLApp.tf('location_found', { place: place })) + '</div>';
+        loadNearby();
+      })
+      .catch(function () {
+        lastPoint = null;
+        geoMsg.innerHTML = '<div class="wl-alert wl-alert-warn">' + WLApp.escapeHtml(WLApp.t('location_denied')) + '</div>';
+        postalInput.focus();
+      });
+  });
+
+  var nearbyEl = document.getElementById('wl-nearby');
+  function loadNearby() {
+    var postal = postalInput.value.trim();
+    if (!postal) { postalInput.focus(); return; }
+    nearbyEl.innerHTML = '<p class="wl-muted">' + WLApp.escapeHtml(WLApp.t('nearby_loading')) + '</p>';
+    var body = { postal_code: postal, language: WLApp.lang };
+    if (!countryField.classList.contains('wl-hidden')) body.country = countrySelect.value || undefined;
+    if (lastPoint) { body.lat = lastPoint.lat; body.lng = lastPoint.lng; }
+    WLApp.api('/panier/nearby', { method: 'POST', body: body })
+      .then(function (data) {
+        if (!data.coverage || !data.stores || !data.stores.length) {
+          nearbyEl.innerHTML = '<p class="wl-muted">' + WLApp.escapeHtml(WLApp.t('nearby_none')) + '</p>';
+          return;
+        }
+        var html = '<p style="margin:10px 0 0"><strong>' + WLApp.escapeHtml(WLApp.t('nearby_title')) + '</strong></p><ul class="wl-stores">';
+        data.stores.forEach(function (st) {
+          var km = st.distance_km != null ? WLApp.tf('km_away', { km: String(st.distance_km).replace('.', WLApp.lang === 'en' ? '.' : ',') }) : '';
+          html += '<li><div><div>' + WLApp.escapeHtml(st.chain) + ' <span class="wl-muted">· ' + WLApp.escapeHtml(WLApp.tf('nearby_items', { n: st.flyer_items })) + '</span></div>' +
+            (st.address ? '<div class="wl-store-addr">' + WLApp.escapeHtml(st.address) + '</div>' : '') + '</div>' +
+            '<div class="wl-store-km">' + WLApp.escapeHtml(km) + '</div></li>';
+        });
+        nearbyEl.innerHTML = html + '</ul>';
+      })
+      .catch(function () {
+        nearbyEl.innerHTML = '<p class="wl-muted">' + WLApp.escapeHtml(WLApp.t('nearby_none')) + '</p>';
+      });
+  }
+  document.getElementById('wl-nearby-btn').addEventListener('click', loadNearby);
 
   WLApp.initLangToggle(document.getElementById('wl-lang-btn'), { postPreference: true });
 
@@ -216,11 +331,20 @@
       return;
     }
     var form = document.getElementById('wl-panier-form');
-    ['postal_code', 'budget', 'people', 'goals', 'preferences'].forEach(function (name) {
+    ['postal_code', 'city', 'budget', 'goals', 'preferences', 'allergies_other', 'max_stores'].forEach(function (name) {
       if (panier[name] === undefined || panier[name] === null) return;
       var field = form.elements[name];
       if (field) field.value = panier[name];
     });
+    if (panier.adults !== undefined) {
+      form.elements.adults.value = panier.adults;
+      form.elements.children.value = panier.children || 0;
+    } else if (panier.people) {
+      form.elements.adults.value = panier.people;
+      form.elements.children.value = 0;
+    }
+    WLApp.setChecked(document.getElementById('wl-allergies'), panier.allergies);
+    WLApp.setChecked(document.getElementById('wl-diet'), panier.diet);
     if (panier.postal_code) checkPostal();
     if (panier.country) countrySelect.value = panier.country;
 
@@ -266,15 +390,8 @@
       WLApp.clearToken();
     });
   } else {
-    WLApp.initGoogleSignIn(document.getElementById('wl-gsi-btn'), function (credential) {
-      WLApp.api('/auth/google', { method: 'POST', body: { credential: credential, partner: WLApp.getPartner() } })
-        .then(function (data) {
-          WLApp.setToken(data.token);
-          showApp(data.user);
-        })
-        .catch(function () {
-          WLApp.showError(document.getElementById('wl-signin-error'), WLApp.t('error_generic'));
-        });
+    WLApp.initSignIn(document.getElementById('wl-gsi-btn'), document.getElementById('wl-email-signin'), showApp, function () {
+      WLApp.showError(document.getElementById('wl-signin-error'), WLApp.t('error_generic'));
     });
   }
 
@@ -282,15 +399,25 @@
     e.preventDefault();
     var form = e.target;
     var fd = new FormData(form);
+    var adults = Number(fd.get('adults')) || 1;
+    var children = Number(fd.get('children')) || 0;
     var payload = {
       postal_code: fd.get('postal_code'),
+      city: fd.get('city') || '',
       country: countryField.classList.contains('wl-hidden') ? undefined : fd.get('country'),
       budget: Number(fd.get('budget')),
-      people: Number(fd.get('people')),
+      adults: adults,
+      children: children,
+      people: adults + children,
+      max_stores: fd.get('max_stores') ? Number(fd.get('max_stores')) : undefined,
+      allergies: WLApp.checkedValues(document.getElementById('wl-allergies')),
+      allergies_other: fd.get('allergies_other') || '',
+      diet: WLApp.checkedValues(document.getElementById('wl-diet')),
       goals: fd.get('goals') || '',
       preferences: fd.get('preferences') || '',
       language: WLApp.lang
     };
+    if (lastPoint) { payload.lat = lastPoint.lat; payload.lng = lastPoint.lng; }
 
     var errorEl = document.getElementById('wl-form-error');
     errorEl.innerHTML = '';
@@ -304,6 +431,15 @@
         document.getElementById('wl-progress').classList.add('wl-hidden');
         document.getElementById('wl-result').classList.remove('wl-hidden');
         document.getElementById('wl-pdf-link').href = data.pdf_url;
+        var sum = data.summary || {};
+        var summaryEl = document.getElementById('wl-result-summary');
+        summaryEl.textContent = (sum.total != null && sum.stops) ? WLApp.tf('result_summary', { total: new Intl.NumberFormat(WLApp.lang === 'en' ? 'en-CA' : (WLApp.lang === 'es' ? 'es' : 'fr-CA'), { style: 'currency', currency: sum.currency || 'CAD' }).format(Number(sum.total)), stops: sum.stops }) : '';
+        var removedEl = document.getElementById('wl-result-removed');
+        var removedLines = [];
+        if (sum.removed_for_safety && sum.removed_for_safety.length) removedLines.push(WLApp.tf('removed_for_safety_msg', { items: sum.removed_for_safety.join(', ') }));
+        if (sum.trimmed_for_budget && sum.trimmed_for_budget.length) removedLines.push(WLApp.tf('trimmed_for_budget_msg', { items: sum.trimmed_for_budget.join(', ') }));
+        removedEl.textContent = removedLines.join(' · ');
+        removedEl.classList.toggle('wl-hidden', !removedLines.length);
         loadPlans();
         WLApp.api('/me').then(function (d) { applyTierUI(d); }).catch(function () {});
       })
