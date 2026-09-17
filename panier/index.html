@@ -3,8 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="icon" id="wl-favicon" type="image/svg+xml" href="/shared/icons/default.svg">
+<link rel="icon" id="wl-favicon" type="image/svg+xml" href="/shared/icons/panier.svg">
 <title>Panier</title>
+<meta name="description" content="La liste d'épicerie de la semaine, aux prix des circulaires près de chez vous, en 2 minutes.">
 <link rel="stylesheet" href="../shared/ui.css">
 </head>
 <body>
@@ -19,7 +20,7 @@
     <nav class="wl-nav">
       <a href="../" data-i18n="home">Accueil</a>
       <span id="wl-user-info" class="wl-hidden">
-        <span data-i18n="signed_in_as">Connecté en tant que</span> <strong id="wl-user-email"></strong>
+        <strong id="wl-user-email"></strong>
         &nbsp;·&nbsp;<a href="#" id="wl-signout" data-i18n="sign_out">Déconnexion</a>
       </span>
       <button class="wl-lang-toggle" id="wl-lang-btn" type="button">FR | EN | ES</button>
@@ -29,54 +30,35 @@
   <div id="wl-config-error"></div>
   <div id="wl-checkout-banner"></div>
 
-  <section id="wl-signin-section" class="wl-signin-box">
-    <h1 data-i18n="panier_title">Panier</h1>
-    <p data-i18n="panier_desc">Le panier d'épicerie parfait selon votre budget, livré en PDF.</p>
-    <div id="wl-gsi-btn"></div>
-    <div id="wl-email-signin"></div>
-    <div id="wl-signin-error"></div>
-  </section>
-
-  <section id="wl-app-section" class="wl-hidden">
-    <div class="wl-section" id="wl-tier-section" style="margin-top:0">
-      <div class="wl-tier-badge-row">
-        <span class="wl-badge" id="wl-tier-badge"></span>
-        <span class="wl-remaining" id="wl-remaining-label"></span>
-        <span class="wl-muted wl-hidden" id="wl-dead-end"></span>
-        <button class="wl-btn wl-btn-outline wl-hidden" id="wl-manage-sub-btn" type="button" data-i18n="manage_subscription">Gérer mon abonnement</button>
-      </div>
-      <div class="wl-card wl-upgrade-card wl-hidden" id="wl-upgrade-card">
-        <h3 data-i18n="plan_single_title">Un seul abonnement : GymBro + Panier</h3>
-        <p class="wl-muted" data-i18n="plan_single_body"></p>
-
-        <p class="wl-tier-price" id="wl-upgrade-price"></p>
-        <button class="wl-btn" id="wl-upgrade-btn" type="button" data-i18n="become_member">Devenir membre</button>
-        <div class="wl-bundle-box wl-hidden" id="wl-bundle-box" hidden>
-          <h4 data-i18n="bundle_title">Les deux : GymBro + Panier</h4>
-          <p class="wl-tier-price" id="wl-bundle-price" style="margin:0"></p>
-          <p class="wl-bundle-upsell" id="wl-bundle-upsell"></p>
-          <p class="wl-muted" data-i18n="bundle_body"></p>
-          <button class="wl-btn wl-btn-outline" id="wl-bundle-btn" type="button" data-i18n="become_member_both">Prendre les deux</button>
-        </div>
-      </div>
+  <section id="wl-app-section">
+    <div class="wl-thin-bar wl-hidden" id="wl-thin-bar">
+      <span><span class="wl-badge" id="wl-tier-badge"></span> <span id="wl-remaining-label"></span></span>
+      <button class="wl-link-btn wl-hidden" id="wl-manage-sub-btn" type="button" data-i18n="manage_subscription">Gérer mon abonnement</button>
     </div>
 
+    <div id="wl-return" class="wl-hidden"></div>
+    <div id="wl-free-used" class="wl-hidden"></div>
     <div id="wl-terms-gate" class="wl-hidden"></div>
-    <div class="wl-section" id="wl-form-section">
-      <h2 data-i18n="panier_title">Panier</h2>
-      <div id="wl-profile-saved-line" class="wl-hidden" style="margin:0 0 12px;color:var(--wl-muted,#666);font-size:0.9em"></div>
-      <button type="button" class="wl-btn wl-btn-outline wl-hidden" id="wl-generate-with-profile-btn" style="margin-bottom:16px" data-i18n="generate_with_profile">Générer avec mon profil</button>
-      <div id="wl-form-error"></div>
-      <form id="wl-panier-form" class="wl-form">
-        <div class="wl-step">
-          <h3 data-i18n="location_title">1. Où faites-vous votre épicerie ?</h3>
-          <p class="wl-muted" data-i18n="location_why"></p>
-          <button type="button" class="wl-btn wl-btn-outline" id="wl-geo-btn" data-i18n="use_my_location">Utiliser ma position</button>
+    <div id="wl-form-error"></div>
+
+    <div id="wl-form-section">
+      <div class="wl-own" id="wl-own">
+        <h3 style="margin:0 0 2px" data-i18n="own_title">Dites-le dans vos mots</h3>
+        <p class="wl-muted" style="margin:0 0 6px" data-i18n="own_help"></p>
+        <textarea id="wl-own-text" maxlength="300" data-i18n-placeholder="own_placeholder"></textarea>
+        <div class="wl-own-row"><button type="button" class="wl-btn wl-btn-outline" id="wl-own-btn" data-i18n="own_btn">Remplir pour moi</button><span class="wl-muted" id="wl-own-msg"></span></div>
+      </div>
+
+      <form id="wl-panier-form" class="wl-form" novalidate>
+        <div class="wl-q" data-q="location" data-type="location">
+          <h3 data-i18n="location_title">Où faites-vous votre épicerie ?</h3>
+          <p class="wl-q-help" data-i18n="location_why"></p>
+          <button type="button" class="wl-btn wl-btn-block" id="wl-geo-btn" data-i18n="use_my_location">Utiliser ma position</button>
           <div id="wl-geo-msg" style="margin-top:8px"></div>
-          <div class="wl-location-row" style="margin-top:10px">
+          <div class="wl-location-row" style="margin-top:12px">
             <div class="wl-field">
               <label data-i18n="postal_label">Code postal</label>
-              <input type="text" name="postal_code" id="wl-postal-input" required autocomplete="postal-code">
+              <input type="text" name="postal_code" id="wl-postal-input" required autocomplete="postal-code" inputmode="text">
             </div>
             <div class="wl-field">
               <label data-i18n="city_label">Ville</label>
@@ -88,43 +70,28 @@
               <span class="wl-country-hint wl-hidden" id="wl-country-hint" data-i18n="country_other_hint"></span>
             </div>
           </div>
-          <button type="button" class="wl-link-btn" id="wl-nearby-btn" data-i18n="check_stores">Voir les magasins près de chez moi</button>
           <div id="wl-nearby"></div>
         </div>
 
-        <div class="wl-step">
-          <h3 data-i18n="household_title">2. Votre ménage et votre budget</h3>
-          <div class="wl-form-grid">
-            <div class="wl-field">
-              <label data-i18n="adults_label">Adultes</label>
-              <input type="number" name="adults" required min="1" max="10" value="1">
-            </div>
-            <div class="wl-field">
-              <label data-i18n="children_label">Enfants</label>
-              <input type="number" name="children" min="0" max="10" value="0">
-            </div>
-            <div class="wl-field">
-              <label data-i18n="panier_budget_label">Budget / semaine</label>
-              <input type="number" name="budget" required min="30" max="2000" step="1">
-              <span class="wl-muted" data-i18n="budget_hint"></span>
-            </div>
-            <div class="wl-field">
-              <label data-i18n="max_stores_label">Nombre maximum de magasins</label>
-              <select name="max_stores">
-                <option value="" data-i18n="stops_auto">Automatique</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-              </select>
-            </div>
-          </div>
+        <div class="wl-q" data-q="adults" data-type="chips">
+          <h3 data-i18n="adults_label">Adultes</h3>
+          <div class="wl-field"><input type="number" name="adults" required min="1" max="10" value="" data-quick="1,2,3,4,5" inputmode="numeric"></div>
         </div>
 
-        <div class="wl-step">
-          <h3 data-i18n="diet_title">3. Allergies et régime</h3>
+        <div class="wl-q" data-q="children" data-type="chips" data-optional>
+          <h3 data-i18n="children_label">Enfants</h3>
+          <div class="wl-field"><input type="number" name="children" min="0" max="10" value="" data-quick="0,1,2,3,4" inputmode="numeric"></div>
+        </div>
+
+        <div class="wl-q" data-q="budget" data-type="chips">
+          <h3 data-i18n="panier_budget_label">Budget / semaine</h3>
+          <p class="wl-q-help" data-i18n="budget_hint"></p>
+          <div class="wl-field"><input type="number" name="budget" required min="30" max="2000" step="1" data-quick="100,150,200,250,300,400" inputmode="numeric"></div>
+        </div>
+
+        <div class="wl-q" data-q="allergies" data-type="checks" data-optional>
+          <h3 data-i18n="allergies_label">Allergies</h3>
           <div class="wl-field full">
-            <label data-i18n="allergies_label">Allergies</label>
             <div class="wl-choices" id="wl-allergies"></div>
             <span class="wl-muted" data-i18n="allergy_check_label"></span>
           </div>
@@ -132,42 +99,61 @@
             <label data-i18n="allergies_other_label">Autre allergie</label>
             <input type="text" name="allergies_other" maxlength="200" data-i18n-placeholder="allergies_other_placeholder">
           </div>
+        </div>
+
+        <div class="wl-q" data-q="diet" data-type="checks" data-optional>
+          <h3 data-i18n="diet_label">Régime alimentaire</h3>
+          <div class="wl-field full"><div class="wl-choices" id="wl-diet"></div></div>
+        </div>
+
+        <div class="wl-q" data-q="extras" data-type="text" data-optional>
+          <h3 data-i18n="goals_wellness_label">Ce qui compte pour vous</h3>
           <div class="wl-field full">
-            <label data-i18n="diet_label">Régime alimentaire</label>
-            <div class="wl-choices" id="wl-diet"></div>
-          </div>
-          <div class="wl-field full">
-            <label data-i18n="goals_wellness_label">Ce qui compte pour vous</label>
             <textarea name="goals" maxlength="600" data-i18n-placeholder="goals_wellness_placeholder"></textarea>
           </div>
           <div class="wl-field full">
             <label data-i18n="tastes_label">Goûts et habitudes</label>
             <textarea name="preferences" maxlength="600" data-i18n-placeholder="tastes_placeholder"></textarea>
           </div>
+          <div class="wl-field">
+            <label data-i18n="max_stores_label">Nombre maximum de magasins</label>
+            <select name="max_stores">
+              <option value="" data-i18n="stops_auto">Automatique</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+            </select>
+          </div>
           <p class="wl-muted" data-i18n="privacy_note_panier"></p>
         </div>
         <button type="submit" class="wl-btn" id="wl-generate-btn" data-i18n="generate_plan">Générer mon plan</button>
       </form>
+    </div>
 
-      <div id="wl-progress" class="wl-progress wl-hidden">
-        <div class="wl-spinner"></div>
-        <div data-i18n="generating">Analyse en cours, 30 à 90 secondes...</div>
-      </div>
+    <div id="wl-email-step" class="wl-hidden"></div>
+    <div id="wl-progress" class="wl-hidden"></div>
+    <div id="wl-result" class="wl-hidden"></div>
 
-      <div id="wl-result" class="wl-hidden">
-        <div class="wl-alert wl-alert-success">
-          <p id="wl-result-summary" style="margin:0 0 8px"></p>
-          <p id="wl-result-removed" class="wl-hidden" style="margin:0 0 8px"></p>
-          <a id="wl-pdf-link" class="wl-btn" href="#" target="_blank" data-i18n="open_pdf">Ouvrir le PDF</a>
-        </div>
+    <div class="wl-section wl-hidden" id="wl-tier-section">
+      <div class="wl-card wl-upgrade-card" id="wl-upgrade-card">
+        <h3 data-i18n="plan_single_title">Un seul abonnement : GymBro + Panier</h3>
+        <p class="wl-muted" data-i18n="plan_single_body"></p>
+        <p class="wl-tier-price" id="wl-upgrade-price"></p>
+        <button class="wl-btn" id="wl-upgrade-btn" type="button" data-i18n="become_member">Devenir membre</button>
       </div>
     </div>
 
-    <div class="wl-section">
+    <div class="wl-section wl-hidden" id="wl-plans-section">
       <h2 data-i18n="my_plans">Mes plans</h2>
       <div id="wl-plans-list"></div>
     </div>
-    <div class="wl-section" id="wl-account"></div>
+    <div class="wl-section wl-hidden" id="wl-prefs-section">
+      <label class="wl-choice wl-consent"><input type="checkbox" id="wl-nudge-toggle"> <span data-i18n="nudge_opt_label"></span></label>
+      <div id="wl-nudge-msg" class="wl-muted" style="margin-top:6px"></div>
+      <p class="wl-home-hint" data-i18n="home_hint"></p>
+    </div>
+    <div class="wl-section wl-hidden" id="wl-account"></div>
   </section>
   <footer class="wl-footer wl-legal-footer">
     <a href="../confidentialite/" data-i18n="privacy_link">Confidentialité</a> · <a href="../conditions/" data-i18n="terms_link">Conditions d'utilisation</a>
@@ -177,45 +163,70 @@
 <script src="../shared/config.js"></script>
 <script src="../shared/brand.js"></script>
 <script src="../shared/app.js"></script>
+<script src="../shared/flow.js"></script>
 <script>
-  WLApp.applyI18n();
-  WLApp.renderChoices(document.getElementById('wl-allergies'), WLApp.allergyIds, 'allergy_', 'allergies');
-  WLApp.renderChoices(document.getElementById('wl-diet'), WLApp.dietIds, 'diet_', 'diet');
+(function () {
+  var A = WLApp, F = WLFlow, esc = A.escapeHtml;
+  var PRODUCT = 'panier';
+  A.applyI18n();
+  A.initManifest();
+  A.renderChoices(document.getElementById('wl-allergies'), A.allergyIds, 'allergy_', 'allergies');
+  A.renderChoices(document.getElementById('wl-diet'), A.dietIds, 'diet_', 'diet');
+  A.initLangToggle(document.getElementById('wl-lang-btn'), { postPreference: true });
+
+  var el = function (id) { return document.getElementById(id); };
+  var form = el('wl-panier-form');
   var lastPoint = null; // { lat, lng } from the browser, never saved
+  var me = null;
+  var siteConfig = null;
 
-  var countrySelect = document.getElementById('wl-country-select');
-  countrySelect.innerHTML = WLApp.countries.map(function (c) {
-    return '<option value="' + c[0] + '">' + c[1] + '</option>';
-  }).join('');
+  // ---- location ----
+  var countrySelect = el('wl-country-select');
+  countrySelect.innerHTML = A.countries.map(function (c) { return '<option value="' + c[0] + '">' + esc(c[1]) + '</option>'; }).join('');
   countrySelect.value = 'CA';
-
-  var countryHint = document.getElementById('wl-country-hint');
-  countrySelect.addEventListener('change', function () {
-    countryHint.classList.toggle('wl-hidden', countrySelect.value !== '');
-  });
-
-  var postalInput = document.getElementById('wl-postal-input');
-  var countryField = document.getElementById('wl-country-field');
+  var countryHint = el('wl-country-hint');
+  countrySelect.addEventListener('change', function () { countryHint.classList.toggle('wl-hidden', countrySelect.value !== ''); });
+  var postalInput = el('wl-postal-input');
+  var cityInput = el('wl-city-input');
+  var countryField = el('wl-country-field');
   function checkPostal() {
-    if (postalInput.value && !WLApp.looksLikeCaOrUs(postalInput.value)) {
-      countryField.classList.remove('wl-hidden');
-    } else {
-      countryField.classList.add('wl-hidden');
-      countryHint.classList.add('wl-hidden');
-    }
+    if (postalInput.value && !A.looksLikeCaOrUs(postalInput.value)) countryField.classList.remove('wl-hidden');
+    else { countryField.classList.add('wl-hidden'); countryHint.classList.add('wl-hidden'); }
   }
-  postalInput.addEventListener('input', function () { checkPostal(); lastPoint = null; });
+  postalInput.addEventListener('input', function () { checkPostal(); lastPoint = null; nearbyDone = ''; });
   postalInput.addEventListener('blur', checkPostal);
 
-  var geoMsg = document.getElementById('wl-geo-msg');
-  var cityInput = document.getElementById('wl-city-input');
-  document.getElementById('wl-geo-btn').addEventListener('click', function () {
-    geoMsg.innerHTML = '<span class="wl-muted">' + WLApp.escapeHtml(WLApp.t('locating')) + '</span>';
-    WLApp.getPosition()
-      .then(function (pt) {
-        lastPoint = pt;
-        return WLApp.api('/geo/reverse', { method: 'POST', body: { lat: pt.lat, lng: pt.lng, language: WLApp.lang } });
+  var geoMsg = el('wl-geo-msg');
+  var nearbyEl = el('wl-nearby');
+  var nearbyDone = '';
+  function loadNearby() {
+    var postal = postalInput.value.trim();
+    if (!postal) return Promise.resolve();
+    var key = postal + '|' + (lastPoint ? 'pt' : '');
+    if (nearbyDone === key) return Promise.resolve();
+    nearbyEl.innerHTML = '<p class="wl-muted">' + esc(A.t('loc_checking')) + '</p>';
+    var body = { postal_code: postal, language: A.lang, partner: A.getPartner() };
+    if (!countryField.classList.contains('wl-hidden')) body.country = countrySelect.value || undefined;
+    if (lastPoint) { body.lat = lastPoint.lat; body.lng = lastPoint.lng; }
+    return A.api('/panier/nearby', { method: 'POST', body: body })
+      .then(function (data) {
+        nearbyDone = key;
+        if (!data.coverage || !data.stores || !data.stores.length) { nearbyEl.innerHTML = '<p class="wl-muted">' + esc(A.t('loc_none')) + '</p>'; wiz.reply('location', A.t('loc_none')); return; }
+        var html = '<ul class="wl-stores">';
+        data.stores.forEach(function (st) {
+          html += '<li><div><div>' + esc(st.chain) + ' <span class="wl-muted">· ' + esc(A.tf('nearby_items', { n: st.flyer_items })) + '</span></div>' + (st.address ? '<div class="wl-store-addr">' + esc(st.address) + '</div>' : '') + '</div><div class="wl-store-km">' + esc(F.km(st.distance_km)) + '</div></li>';
+        });
+        nearbyEl.innerHTML = html + '</ul>';
+        wiz.reply('location', A.tf('loc_found_stores', { list: data.stores.slice(0, 3).map(function (st) { return st.chain + (st.distance_km != null ? ' ' + F.km(st.distance_km) : ''); }).join(', ') }));
       })
+      .catch(function (err) {
+        nearbyEl.innerHTML = '<p class="wl-muted">' + esc(err && err.status === 429 ? A.t('rate_limited_retry') : A.t('loc_none')) + '</p>';
+      });
+  }
+  el('wl-geo-btn').addEventListener('click', function () {
+    geoMsg.innerHTML = '<span class="wl-muted">' + esc(A.t('locating')) + '</span>';
+    A.getPosition()
+      .then(function (pt) { lastPoint = pt; return A.api('/geo/reverse', { method: 'POST', body: { lat: pt.lat, lng: pt.lng, language: A.lang, partner: A.getPartner() } }); })
       .then(function (geo) {
         if (geo.postal_code) postalInput.value = geo.postal_code;
         if (geo.city) cityInput.value = geo.city;
@@ -223,309 +234,245 @@
           countryField.classList.remove('wl-hidden');
           var opt = Array.prototype.slice.call(countrySelect.options).find(function (o) { return o.value === geo.country; });
           countrySelect.value = opt ? geo.country : '';
-        } else {
-          checkPostal();
-        }
-        var place = [geo.city, geo.postal_code].filter(Boolean).join(', ');
-        geoMsg.innerHTML = '<div class="wl-alert wl-alert-success">' + WLApp.escapeHtml(WLApp.tf('location_found', { place: place })) + '</div>';
-        loadNearby();
+        } else checkPostal();
+        geoMsg.innerHTML = '<div class="wl-alert wl-alert-success">' + esc(A.tf('location_found', { place: [geo.city, geo.postal_code].filter(Boolean).join(', ') })) + '</div>';
+        nearbyDone = '';
+        return loadNearby();
       })
-      .catch(function () {
-        lastPoint = null;
-        geoMsg.innerHTML = '<div class="wl-alert wl-alert-warn">' + WLApp.escapeHtml(WLApp.t('location_denied')) + '</div>';
-        postalInput.focus();
-      });
+      .catch(function () { lastPoint = null; geoMsg.innerHTML = '<div class="wl-alert wl-alert-warn">' + esc(A.t('location_denied')) + '</div>'; postalInput.focus(); });
   });
 
-  var nearbyEl = document.getElementById('wl-nearby');
-  function loadNearby() {
-    var postal = postalInput.value.trim();
-    if (!postal) { postalInput.focus(); return; }
-    nearbyEl.innerHTML = '<p class="wl-muted">' + WLApp.escapeHtml(WLApp.t('nearby_loading')) + '</p>';
-    var body = { postal_code: postal, language: WLApp.lang };
-    if (!countryField.classList.contains('wl-hidden')) body.country = countrySelect.value || undefined;
-    if (lastPoint) { body.lat = lastPoint.lat; body.lng = lastPoint.lng; }
-    WLApp.api('/panier/nearby', { method: 'POST', body: body })
+  // ---- the wizard ----
+  var wiz = F.wizard(form, {
+    onAnswer: function (id) { if (id === 'location') return loadNearby(); return null; }
+  });
+
+  // ---- "Dites-le dans vos mots" ----
+  el('wl-own-btn').addEventListener('click', function () {
+    var text = el('wl-own-text').value.trim();
+    var msg = el('wl-own-msg');
+    if (text.length < 3) { el('wl-own-text').focus(); return; }
+    el('wl-own-btn').disabled = true;
+    msg.textContent = '…';
+    A.api('/panier/parse', { method: 'POST', body: { text: text, language: A.lang, partner: A.getPartner() } })
       .then(function (data) {
-        if (!data.coverage || !data.stores || !data.stores.length) {
-          nearbyEl.innerHTML = '<p class="wl-muted">' + WLApp.escapeHtml(WLApp.t('nearby_none')) + '</p>';
-          return;
-        }
-        var html = '<p style="margin:10px 0 0"><strong>' + WLApp.escapeHtml(WLApp.t('nearby_title')) + '</strong></p><ul class="wl-stores">';
-        data.stores.forEach(function (st) {
-          var km = st.distance_km == null ? '' : (st.distance_km < 0.1 ? WLApp.t('km_under_100m') : WLApp.tf('km_away', { km: String(st.distance_km).replace('.', WLApp.lang === 'en' ? '.' : ',') }));
-          html += '<li><div><div>' + WLApp.escapeHtml(st.chain) + ' <span class="wl-muted">· ' + WLApp.escapeHtml(WLApp.tf('nearby_items', { n: st.flyer_items })) + '</span></div>' +
-            (st.address ? '<div class="wl-store-addr">' + WLApp.escapeHtml(st.address) + '</div>' : '') + '</div>' +
-            '<div class="wl-store-km">' + WLApp.escapeHtml(km) + '</div></li>';
-        });
-        nearbyEl.innerHTML = html + '</ul>';
+        var f = data.fields || {};
+        if (!Object.keys(f).length) { msg.textContent = A.t('own_fail'); return; }
+        ['budget', 'adults', 'children', 'allergies_other', 'goals', 'preferences', 'max_stores', 'postal_code'].forEach(function (k) { if (f[k] !== undefined && form.elements[k]) form.elements[k].value = f[k]; });
+        if (f.postal_code) { checkPostal(); nearbyDone = ''; }
+        if (f.allergies) A.setChecked(el('wl-allergies'), f.allergies);
+        if (f.diet) A.setChecked(el('wl-diet'), f.diet);
+        wiz.sync();
+        msg.textContent = A.tf('own_ok', { summary: F.ownWordsSummary(f) });
+        wiz.goTo(form.elements.postal_code.value ? 'allergies' : 'location');
       })
-      .catch(function () {
-        nearbyEl.innerHTML = '<p class="wl-muted">' + WLApp.escapeHtml(WLApp.t('nearby_none')) + '</p>';
-      });
-  }
-  document.getElementById('wl-nearby-btn').addEventListener('click', loadNearby);
-
-  WLApp.initLangToggle(document.getElementById('wl-lang-btn'), { postPreference: true });
-
-  if (new URLSearchParams(location.search).get('checkout') === 'success') {
-    var checkoutBanner = document.getElementById('wl-checkout-banner');
-    var cleanUrl = location.pathname + (WLApp.getPartner() && !WLApp.hostPartner() ? '?p=' + encodeURIComponent(WLApp.getPartner()) : '');
-    history.replaceState(null, '', cleanUrl);
-    if (WLApp.getToken()) {
-      // The Stripe webhook that flips tier to 'member' can land after the
-      // browser redirect back — show "activating" and poll /me until the
-      // tier is actually member instead of claiming success too early.
-      checkoutBanner.innerHTML = '<div class="wl-alert wl-alert-success">' + WLApp.t('checkout_activating') + '</div>';
-      WLApp.pollForMembership(function (user) {
-        applyTierUI(user);
-        if (user.tier === 'member') {
-          checkoutBanner.innerHTML = '<div class="wl-alert wl-alert-success">' + WLApp.t('checkout_thanks') + '</div>';
-        }
-      });
-    } else {
-      checkoutBanner.innerHTML = '<div class="wl-alert wl-alert-success">' + WLApp.t('checkout_thanks') + '</div>';
-    }
-  }
-
-  var siteConfig = null;
-  WLApp.fetchConfig().then(function (config) {
-    siteConfig = config;
-    applyBrand(config);
-  }).catch(function () {
-    WLApp.showError(document.getElementById('wl-config-error'), WLApp.t('service_unavailable'));
+      .catch(function (err) { msg.textContent = err && err.status === 429 ? A.t('rate_limited_retry') : A.t('own_fail'); })
+      .finally(function () { el('wl-own-btn').disabled = false; });
   });
 
-  var signinSection = document.getElementById('wl-signin-section');
-  var appSection = document.getElementById('wl-app-section');
-  var userInfo = document.getElementById('wl-user-info');
-  var userEmail = document.getElementById('wl-user-email');
-
-  function startCheckout(plan) {
-    var returnUrl = location.origin + location.pathname + '?checkout=success' + (WLApp.getPartner() && !WLApp.hostPartner() ? '&p=' + encodeURIComponent(WLApp.getPartner()) : '');
-    WLApp.api('/billing/checkout', { method: 'POST', body: { plan: plan === 'bundle' ? 'bundle' : 'single', success_url: returnUrl, cancel_url: location.origin + location.pathname } })
-      .then(function (data) { if (data.url) location.href = data.url; })
-      .catch(function (err) {
-        WLApp.showError(document.getElementById('wl-form-error'), WLApp.genErrorMessage(err));
-        if (err && err.data && err.data.error === 'already_member') WLApp.api('/me').then(function (d) { applyTierUI(d); }).catch(function () {});
-      });
-  }
-
-  function applyTierUI(me) {
-    var tier = me.tier || 'free';
-    var remaining = me.remaining || {};
-    var badge = document.getElementById('wl-tier-badge');
-    badge.textContent = WLApp.t('your_tier') + ': ' + (tier === 'member' ? WLApp.t('tier_member') : WLApp.t('tier_free'));
-
-    var remainingLabel = document.getElementById('wl-remaining-label');
-    var manageBtn = document.getElementById('wl-manage-sub-btn');
-    var upgradeCard = document.getElementById('wl-upgrade-card');
-
-    if (tier === 'member') {
-      var remainingCount = (remaining.today !== undefined) ? remaining.today : remaining.month;
-      var remainingWord = (remaining.today !== undefined) ? WLApp.t('plans_remaining_today') : WLApp.t('plans_remaining_month');
-      remainingLabel.textContent = (remainingCount !== undefined ? remainingCount + ' ' + remainingWord : '');
-      manageBtn.classList.remove('wl-hidden');
-      upgradeCard.classList.add('wl-hidden');
-    } else {
-      remainingLabel.textContent = (remaining.month !== undefined ? remaining.month + ' ' + WLApp.t('plans_remaining_month') : '');
-      manageBtn.classList.add('wl-hidden');
-      upgradeCard.classList.remove('wl-hidden');
-      document.getElementById('wl-upgrade-price').textContent = (siteConfig && siteConfig.member_price_label) || '';
-      document.getElementById('wl-upgrade-btn').textContent = WLApp.planCta(siteConfig);
-      WLApp.deadEnd(me, document.getElementById('wl-generate-btn'), document.getElementById('wl-dead-end'));
-    }
-  }
-
-  document.getElementById('wl-manage-sub-btn').addEventListener('click', function () {
-    WLApp.api('/billing/portal', { method: 'POST', body: { return_url: location.href } })
-      .then(function (data) { if (data.url) location.href = data.url; })
-      .catch(function () {});
-  });
-  document.getElementById('wl-upgrade-btn').addEventListener('click', function () { startCheckout('single'); });
-
-
-  function prefillPanierProfile(profile, complete) {
-    var panier = profile && profile.panier;
-    var genBtn = document.getElementById('wl-generate-with-profile-btn');
-    if (!panier) {
-      genBtn.classList.add('wl-hidden');
-      return;
-    }
-    var form = document.getElementById('wl-panier-form');
-    ['postal_code', 'city', 'budget', 'goals', 'preferences', 'allergies_other', 'max_stores'].forEach(function (name) {
-      if (panier[name] === undefined || panier[name] === null) return;
-      var field = form.elements[name];
-      if (field) field.value = panier[name];
-    });
-    if (panier.adults !== undefined) {
-      form.elements.adults.value = panier.adults;
-      form.elements.children.value = panier.children || 0;
-    } else if (panier.people) {
-      form.elements.adults.value = panier.people;
-      form.elements.children.value = 0;
-    }
-    WLApp.setChecked(document.getElementById('wl-allergies'), panier.allergies);
-    WLApp.setChecked(document.getElementById('wl-diet'), panier.diet);
-    if (panier.postal_code) checkPostal();
-    if (panier.country) countrySelect.value = panier.country;
-
-    var savedLine = document.getElementById('wl-profile-saved-line');
-    if (complete) {
-      savedLine.textContent = WLApp.t('profile_saved') + (panier.saved_at ? ' (' + new Date(panier.saved_at).toLocaleDateString() + ')' : '');
-      savedLine.classList.remove('wl-hidden');
-      genBtn.classList.remove('wl-hidden');
-    } else {
-      genBtn.classList.add('wl-hidden');
-    }
-  }
-
-  document.getElementById('wl-generate-with-profile-btn').addEventListener('click', function () {
-    document.getElementById('wl-panier-form').requestSubmit();
-  });
-
-  function showApp(user) {
-    signinSection.classList.add('wl-hidden');
-    appSection.classList.remove('wl-hidden');
-    userInfo.classList.remove('wl-hidden');
-    userEmail.textContent = (user && user.email) || '';
-    loadPlans();
-    WLApp.api('/me').then(function (data) {
-      applyTierUI(data);
-      WLApp.termsGate(data, document.getElementById('wl-terms-gate'), document.getElementById('wl-form-section'));
-      WLApp.accountSection(document.getElementById('wl-account'), data);
-      prefillPanierProfile((data.user || data).profile, data.profile_complete && data.profile_complete.panier);
-      var upgrade = new URLSearchParams(location.search).get('upgrade');
-      if ((upgrade === '1' || upgrade === 'bundle') && data.tier !== 'member') {
-        startCheckout(upgrade === 'bundle' ? 'bundle' : 'single');
-      }
-    }).catch(function () {});
-  }
-
-  document.getElementById('wl-signout').addEventListener('click', function (e) {
-    e.preventDefault();
-    WLApp.signOut();
-  });
-
-  if (WLApp.getToken()) {
-    WLApp.api('/me').then(function (data) {
-      showApp(data.user);
-    }).catch(function () {
-      WLApp.clearToken();
-    });
-  } else {
-    WLApp.initSignIn(document.getElementById('wl-gsi-btn'), document.getElementById('wl-email-signin'), showApp, function () {
-      WLApp.showError(document.getElementById('wl-signin-error'), WLApp.t('error_generic'));
-    });
-  }
-
-  document.getElementById('wl-panier-form').addEventListener('submit', function (e) {
-    e.preventDefault();
-    var form = e.target;
+  // ---- payload ----
+  function payloadFromForm() {
     var fd = new FormData(form);
     var adults = Number(fd.get('adults')) || 1;
     var children = Number(fd.get('children')) || 0;
-    var payload = {
+    var p = {
       postal_code: fd.get('postal_code'),
       city: fd.get('city') || '',
       country: countryField.classList.contains('wl-hidden') ? undefined : fd.get('country'),
       budget: Number(fd.get('budget')),
-      adults: adults,
-      children: children,
-      people: adults + children,
+      adults: adults, children: children, people: adults + children,
       max_stores: fd.get('max_stores') ? Number(fd.get('max_stores')) : undefined,
-      allergies: WLApp.checkedValues(document.getElementById('wl-allergies')),
+      allergies: A.checkedValues(el('wl-allergies')),
       allergies_other: fd.get('allergies_other') || '',
-      diet: WLApp.checkedValues(document.getElementById('wl-diet')),
+      diet: A.checkedValues(el('wl-diet')),
       goals: fd.get('goals') || '',
       preferences: fd.get('preferences') || '',
-      language: WLApp.lang
+      language: A.lang
     };
-    if (lastPoint) { payload.lat = lastPoint.lat; payload.lng = lastPoint.lng; }
+    if (lastPoint) { p.lat = lastPoint.lat; p.lng = lastPoint.lng; }
+    return p;
+  }
+  function fillForm(p) {
+    if (!p) return;
+    ['postal_code', 'city', 'budget', 'goals', 'preferences', 'allergies_other', 'max_stores', 'adults', 'children'].forEach(function (k) { if (p[k] !== undefined && p[k] !== null && form.elements[k]) form.elements[k].value = p[k]; });
+    if (p.adults === undefined && p.people) form.elements.adults.value = p.people;
+    if (p.country) countrySelect.value = p.country;
+    A.setChecked(el('wl-allergies'), p.allergies);
+    A.setChecked(el('wl-diet'), p.diet);
+    checkPostal();
+    wiz.sync();
+  }
 
-    var errorEl = document.getElementById('wl-form-error');
-    errorEl.innerHTML = '';
-    var btn = document.getElementById('wl-generate-btn');
-    btn.disabled = true;
-    document.getElementById('wl-progress').classList.remove('wl-hidden');
-    document.getElementById('wl-result').classList.add('wl-hidden');
+  // ---- visibility helpers ----
+  function showOnly(ids) {
+    ['wl-form-section', 'wl-email-step', 'wl-progress', 'wl-result', 'wl-return', 'wl-free-used'].forEach(function (id) { el(id).classList.toggle('wl-hidden', ids.indexOf(id) === -1); });
+  }
 
-    WLApp.api('/panier/generate', { method: 'POST', body: payload })
-      .then(function (data) {
-        document.getElementById('wl-progress').classList.add('wl-hidden');
-        document.getElementById('wl-result').classList.remove('wl-hidden');
-        var pdfLink = document.getElementById('wl-pdf-link');
-        pdfLink.href = data.pdf_url;
-        pdfLink.setAttribute('data-plan-id', data.plan_id || '');
-        var sum = data.summary || {};
-        var summaryEl = document.getElementById('wl-result-summary');
-        summaryEl.textContent = (sum.total != null && sum.stops) ? WLApp.tf('result_summary', { total: new Intl.NumberFormat(WLApp.lang === 'en' ? 'en-CA' : (WLApp.lang === 'es' ? 'es' : 'fr-CA'), { style: 'currency', currency: sum.currency || 'CAD' }).format(Number(sum.total)), stops: sum.stops }) : '';
-        var removedEl = document.getElementById('wl-result-removed');
-        var removedLines = [];
-        if (sum.removed_for_safety && sum.removed_for_safety.length) removedLines.push(WLApp.tf('removed_for_safety_msg', { items: sum.removed_for_safety.join(', ') }));
-        if (sum.trimmed_for_budget && sum.trimmed_for_budget.length) removedLines.push(WLApp.tf('trimmed_for_budget_msg', { items: sum.trimmed_for_budget.join(', ') }));
-        if (sum.meals_removed_for_safety && sum.meals_removed_for_safety.length) removedLines.push(WLApp.tf('meals_removed_msg', { n: sum.meals_removed_for_safety.length }));
-        if (sum.moved_to_avoid_detour && sum.moved_to_avoid_detour.length) removedLines.push(WLApp.tf('moved_msg', { items: sum.moved_to_avoid_detour.map(function (x) { return x.from + ' › ' + x.to; }).join('; ') }));
-        if (sum.dropped_small_stop && sum.dropped_small_stop.length) removedLines.push(WLApp.tf('dropped_msg', { items: sum.dropped_small_stop.join(', ') }));
-        if (sum.prices_stale && sum.priceDate) removedLines.push(WLApp.tf('stale_prices_msg', { date: sum.priceDate }));
-        removedEl.textContent = removedLines.join(' · ');
-        removedEl.classList.toggle('wl-hidden', !removedLines.length);
+  // ---- generation ----
+  function generate(payload, extra) {
+    extra = extra || {};
+    el('wl-form-error').innerHTML = '';
+    showOnly(['wl-progress']);
+    var body = Object.assign({}, payload, { async: true, return_url: F.returnUrl() });
+    return F.generateWithProgress(el('wl-progress'), PRODUCT, { path: '/panier/generate', body: body })
+      .then(function (res) {
+        F.clearDraft(PRODUCT);
+        showOnly(['wl-result']);
+        F.renderPanierResult(el('wl-result'), res, { sent: true });
+        window.scrollTo({ top: el('wl-result').offsetTop - 12, behavior: 'smooth' });
         loadPlans();
-        WLApp.api('/me').then(function (d) { applyTierUI(d); }).catch(function () {});
+        refreshMe();
       })
       .catch(function (err) {
-        document.getElementById('wl-progress').classList.add('wl-hidden');
-        WLApp.showError(errorEl, WLApp.genErrorMessage(err));
-      })
-      .finally(function () {
-        btn.disabled = false;
+        var code = err && err.data && err.data.error;
+        showOnly(code === 'quota_exceeded' ? ['wl-free-used', 'wl-form-section'] : ['wl-form-section']);
+        if (code === 'quota_exceeded') { refreshMe(); }
+        else if (code === 'terms_required') { refreshMe(); }
+        A.showError(el('wl-form-error'), esc(code === 'job_lost' ? A.t('job_lost') : A.genErrorMessage(err)));
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       });
-  });
+  }
 
-  document.getElementById('wl-pdf-link').addEventListener('click', function (e) {
-    var id = this.getAttribute('data-plan-id');
-    if (!id) return;
+  form.addEventListener('submit', function (e) {
     e.preventDefault();
-    WLApp.openPlan(id);
+    if (!form.checkValidity()) { form.reportValidity(); return; }
+    var payload = payloadFromForm();
+    if (A.getToken()) { generate(payload); return; }
+    // The paperwork comes last: e-mail (and consent) only now.
+    F.saveDraft(PRODUCT, { payload: payload });
+    showOnly(['wl-email-step']);
+    F.emailStep(el('wl-email-step'), {
+      product: PRODUCT, nudge: true,
+      draft: function () { return { payload: payload, pending: true }; },
+      onSignedIn: function (user, o) {
+        afterSignIn(user);
+        if (o && o.nudge) A.api('/me/preferences', { method: 'POST', body: { nudge: true } }).catch(function () {});
+        generate(payload);
+      }
+    });
+    window.scrollTo({ top: el('wl-email-step').offsetTop - 12, behavior: 'smooth' });
   });
 
+  // ---- signed-in chrome ----
+  function startCheckout() {
+    var ret = location.origin + location.pathname + '?checkout=success' + (A.getPartner() && !A.hostPartner() ? '&p=' + encodeURIComponent(A.getPartner()) : '');
+    A.api('/billing/checkout', { method: 'POST', body: { plan: 'bundle', success_url: ret, cancel_url: location.origin + location.pathname } })
+      .then(function (d) { if (d.url) location.href = d.url; })
+      .catch(function (err) { A.showError(el('wl-form-error'), A.genErrorMessage(err)); if (err && err.data && err.data.error === 'already_member') refreshMe(); });
+  }
+  el('wl-upgrade-btn').addEventListener('click', startCheckout);
+  el('wl-manage-sub-btn').addEventListener('click', function () {
+    A.api('/billing/portal', { method: 'POST', body: { return_url: location.href } }).then(function (d) { if (d.url) location.href = d.url; }).catch(function () {});
+  });
+  el('wl-signout').addEventListener('click', function (e) { e.preventDefault(); F.clearDraft(PRODUCT); A.signOut(); });
+  el('wl-nudge-toggle').addEventListener('change', function () {
+    var on = el('wl-nudge-toggle').checked;
+    A.api('/me/preferences', { method: 'POST', body: { nudge: on } })
+      .then(function () { el('wl-nudge-msg').textContent = A.t(on ? 'nudge_saved' : 'nudge_off'); })
+      .catch(function () { el('wl-nudge-toggle').checked = !on; });
+  });
+
+  function applyTierUI(m) {
+    me = m;
+    var tier = m.tier || 'free';
+    var remaining = m.remaining || {};
+    el('wl-thin-bar').classList.remove('wl-hidden');
+    el('wl-tier-badge').textContent = A.t('your_tier') + ': ' + (tier === 'member' ? A.t('tier_member') : A.t('tier_free'));
+    if (tier === 'member') {
+      var n = remaining.today !== undefined ? remaining.today : remaining.month;
+      el('wl-remaining-label').textContent = n !== undefined ? n + ' ' + (remaining.today !== undefined ? A.t('plans_remaining_today') : A.t('plans_remaining_month')) : '';
+      el('wl-manage-sub-btn').classList.remove('wl-hidden');
+      el('wl-tier-section').classList.add('wl-hidden');
+    } else {
+      el('wl-remaining-label').textContent = remaining.month !== undefined ? remaining.month + ' ' + A.t('plans_remaining_month') : '';
+      el('wl-manage-sub-btn').classList.add('wl-hidden');
+      el('wl-tier-section').classList.remove('wl-hidden');
+      el('wl-upgrade-price').textContent = (siteConfig && siteConfig.member_price_label) || '';
+      el('wl-upgrade-btn').textContent = A.planCta(siteConfig);
+    }
+    var used = tier !== 'member' && remaining.month === 0;
+    if (used) F.freeUsedCard(el('wl-free-used'), m); else el('wl-free-used').classList.add('wl-hidden');
+    el('wl-nudge-toggle').checked = Boolean(m.nudge_opt_in);
+    el('wl-prefs-section').classList.remove('wl-hidden');
+  }
+  function refreshMe() {
+    return A.api('/me').then(function (d) { applyTierUI(d); A.termsGate(d, el('wl-terms-gate'), null); return d; }).catch(function () { return null; });
+  }
+  function afterSignIn(user) {
+    el('wl-user-info').classList.remove('wl-hidden');
+    el('wl-user-email').textContent = (user && user.email) || '';
+    el('wl-plans-section').classList.remove('wl-hidden');
+    el('wl-account').classList.remove('wl-hidden');
+  }
   function loadPlans() {
-    var listEl = document.getElementById('wl-plans-list');
-    WLApp.api('/plans').then(function (data) {
+    var listEl = el('wl-plans-list');
+    A.api('/plans').then(function (data) {
       var plans = (data.plans || []).filter(function (p) { return p.product === 'panier'; });
-      if (!plans.length) {
-        listEl.innerHTML = '<p>' + WLApp.t('no_plans_yet') + '</p>';
+      if (!plans.length) { listEl.innerHTML = '<p class="wl-muted">' + esc(A.t('no_plans_yet')) + '</p>'; return; }
+      listEl.innerHTML = '';
+      var ul = document.createElement('ul'); ul.className = 'wl-stops';
+      plans.forEach(function (p) {
+        var li = document.createElement('li');
+        var head = document.createElement('div'); head.className = 'wl-stop-head';
+        var left = document.createElement('span'); left.textContent = A.formatDate(p.created_at) + (p.summary && p.summary.total != null ? ' · ' + F.money(p.summary.total, p.summary.currency) : '');
+        var a = document.createElement('a'); a.href = '#'; a.textContent = A.t('open_pdf');
+        a.addEventListener('click', function (e) { e.preventDefault(); A.openPlan(p.id); });
+        head.appendChild(left); head.appendChild(a); li.appendChild(head); ul.appendChild(li);
+      });
+      listEl.appendChild(ul);
+    }).catch(function () { listEl.innerHTML = '<p class="wl-muted">' + esc(A.t('no_plans_yet')) + '</p>'; });
+  }
+
+  // ---- boot ----
+  A.fetchConfig().then(function (c) { siteConfig = c; applyBrand(c); }).catch(function () { A.showError(el('wl-config-error'), A.t('service_unavailable')); });
+
+  if (F.qp('checkout') === 'success') {
+    var banner = el('wl-checkout-banner');
+    F.dropParams(['checkout']);
+    if (A.getToken()) {
+      banner.innerHTML = '<div class="wl-alert wl-alert-success">' + esc(A.t('checkout_activating')) + '</div>';
+      A.pollForMembership(function (u) { if (u.tier === 'member') { banner.innerHTML = '<div class="wl-alert wl-alert-success">' + esc(A.t('checkout_thanks')) + '</div>'; refreshMe(); } });
+    }
+  }
+
+  F.handleMagicLink(PRODUCT).then(function () {
+    if (!A.getToken()) { var d = F.loadDraft(PRODUCT); if (d && d.payload) fillForm(d.payload); return; }
+    return A.api('/me').then(function (data) {
+      afterSignIn(data.user);
+      applyTierUI(data);
+      A.termsGate(data, el('wl-terms-gate'), null);
+      A.accountSection(el('wl-account'), data);
+      loadPlans();
+      var profile = (data.user || data).profile || {};
+      var complete = data.profile_complete && data.profile_complete.panier;
+      if (complete) fillForm(profile.panier);
+      var draft = F.loadDraft(PRODUCT);
+      var planId = F.qp('plan');
+      if (draft && draft.payload && draft.pending && draft.at && Date.now() - draft.at < 3 * 3600 * 1000) {
+        // Back from the e-mail: the answers were waiting, go.
+        fillForm(draft.payload);
+        if (draft.nudge) A.api('/me/preferences', { method: 'POST', body: { nudge: true } }).catch(function () {});
+        F.clearDraft(PRODUCT);
+        generate(draft.payload);
         return;
       }
-      // plan id/created_at are API data - build rows via DOM, never innerHTML.
-      listEl.innerHTML = '<table class="wl-table"><thead><tr><th>' + WLApp.t('date_label') + '</th><th></th></tr></thead></table>';
-      var tbody = document.createElement('tbody');
-      plans.forEach(function (p) {
-        var tr = document.createElement('tr');
-        var dateTd = document.createElement('td');
-        dateTd.textContent = new Date(p.created_at).toLocaleDateString();
-        tr.appendChild(dateTd);
-        var linkTd = document.createElement('td');
-        var a = document.createElement('a');
-        a.href = '#';
-        a.className = 'wl-open-plan';
-        a.dataset.planId = p.id;
-        a.textContent = WLApp.t('open_pdf');
-        linkTd.appendChild(a);
-        tr.appendChild(linkTd);
-        tbody.appendChild(tr);
-      });
-      listEl.querySelector('table').appendChild(tbody);
-      listEl.querySelectorAll('.wl-open-plan').forEach(function (a) {
-        a.addEventListener('click', function (e) {
-          e.preventDefault();
-          WLApp.openPlan(a.getAttribute('data-plan-id'));
-        });
-      });
-    }).catch(function () {
-      listEl.innerHTML = '<p>' + WLApp.t('no_plans_yet') + '</p>';
-    });
-  }
+      if (planId) {
+        F.dropParams(['plan']);
+        return A.api('/plans/' + encodeURIComponent(planId)).then(function (p) {
+          showOnly(['wl-result']);
+          F.renderPanierResult(el('wl-result'), { plan_id: p.id, pdf_key: p.pdf_key, summary: p.summary }, {});
+          if (complete) F.returnCard(el('wl-return'), { product: PRODUCT, onRedo: function () { generate(payloadFromForm()); }, onEdit: function () { showOnly(['wl-form-section']); wiz.restart(); } });
+        }).catch(function () { showOnly(['wl-form-section']); });
+      }
+      if (F.qp('redo') && complete) { F.dropParams(['redo']); generate(payloadFromForm()); return; }
+      if (complete) {
+        showOnly(['wl-return']);
+        F.returnCard(el('wl-return'), { product: PRODUCT, onRedo: function () { generate(payloadFromForm()); }, onEdit: function () { showOnly(['wl-form-section']); wiz.restart(); } });
+        if (data.tier !== 'member' && data.remaining && data.remaining.month === 0) el('wl-free-used').classList.remove('wl-hidden');
+      }
+    }).catch(function () { A.clearToken(); });
+  });
+})();
 </script>
 </body>
 </html>

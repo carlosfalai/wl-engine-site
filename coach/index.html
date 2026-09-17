@@ -3,8 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="icon" id="wl-favicon" type="image/svg+xml" href="/shared/icons/default.svg">
-<title>Coach</title>
+<link rel="icon" id="wl-favicon" type="image/svg+xml" href="/shared/icons/gymbro.svg">
+<title>GymBro</title>
+<meta name="description" content="Votre plan d'entraînement et vos repas, générés pour vous chaque semaine, en moins de 2 minutes.">
 <link rel="stylesheet" href="../shared/ui.css">
 </head>
 <body>
@@ -13,13 +14,13 @@
     <div class="wl-brand">
       <img data-brand-logo style="display:none" alt="logo">
       <div>
-        <div class="wl-brand-name" data-brand-name>Coach</div>
+        <div class="wl-brand-name" data-brand-name>GymBro</div>
       </div>
     </div>
     <nav class="wl-nav">
       <a href="../" data-i18n="home">Accueil</a>
       <span id="wl-user-info" class="wl-hidden">
-        <span data-i18n="signed_in_as">Connecté en tant que</span> <strong id="wl-user-email"></strong>
+        <strong id="wl-user-email"></strong>
         &nbsp;·&nbsp;<a href="#" id="wl-signout" data-i18n="sign_out">Déconnexion</a>
       </span>
       <button class="wl-lang-toggle" id="wl-lang-btn" type="button">FR | EN | ES</button>
@@ -29,76 +30,22 @@
   <div id="wl-config-error"></div>
   <div id="wl-checkout-banner"></div>
 
-  <!-- Sign-in state -->
-  <section id="wl-signin-section" class="wl-signin-box">
-    <h1 data-i18n="coach_title">Coach</h1>
-    <p data-i18n="coach_desc">Plan d'entraînement hebdomadaire personnalisé, livré en PDF.</p>
-    <div id="wl-gsi-btn"></div>
-    <div id="wl-email-signin"></div>
-    <div id="wl-signin-error"></div>
-  </section>
-
-  <!-- Profile + generate state -->
-  <section id="wl-app-section" class="wl-hidden">
-    <div class="wl-section" id="wl-tier-section" style="margin-top:0">
-      <div class="wl-tier-badge-row">
-        <span class="wl-badge" id="wl-tier-badge"></span>
-        <span class="wl-remaining" id="wl-remaining-label"></span>
-        <span class="wl-muted wl-hidden" id="wl-dead-end"></span>
-        <button class="wl-btn wl-btn-outline wl-hidden" id="wl-manage-sub-btn" type="button" data-i18n="manage_subscription">Gérer mon abonnement</button>
-      </div>
-      <div class="wl-card wl-upgrade-card wl-hidden" id="wl-upgrade-card">
-        <h3 data-i18n="plan_single_title">Un seul abonnement : GymBro + Panier</h3>
-        <p class="wl-muted" data-i18n="plan_single_body"></p>
-        <p data-i18n="upgrade_card_body">Plus de plans, analyse photo et historique complet.</p>
-        <p class="wl-tier-price" id="wl-upgrade-price"></p>
-        <button class="wl-btn" id="wl-upgrade-btn" type="button" data-i18n="become_member">Devenir membre</button>
-        <div class="wl-bundle-box wl-hidden" id="wl-bundle-box" hidden>
-          <h4 data-i18n="bundle_title">Les deux : GymBro + Panier</h4>
-          <p class="wl-tier-price" id="wl-bundle-price" style="margin:0"></p>
-          <p class="wl-bundle-upsell" id="wl-bundle-upsell"></p>
-          <p class="wl-muted" data-i18n="bundle_body"></p>
-          <button class="wl-btn wl-btn-outline" id="wl-bundle-btn" type="button" data-i18n="become_member_both">Prendre les deux</button>
-        </div>
-      </div>
+  <section id="wl-app-section">
+    <div class="wl-thin-bar wl-hidden" id="wl-thin-bar">
+      <span><span class="wl-badge" id="wl-tier-badge"></span> <span id="wl-remaining-label"></span></span>
+      <button class="wl-link-btn wl-hidden" id="wl-manage-sub-btn" type="button" data-i18n="manage_subscription">Gérer mon abonnement</button>
     </div>
 
+    <div id="wl-return" class="wl-hidden"></div>
+    <div id="wl-free-used" class="wl-hidden"></div>
     <div id="wl-terms-gate" class="wl-hidden"></div>
-    <div class="wl-section" id="wl-form-section">
-      <h2 data-brand-name>GymBro</h2>
-      <div id="wl-profile-saved-line" class="wl-hidden" style="margin:0 0 12px;color:var(--wl-muted,#666);font-size:0.9em"></div>
-      <div id="wl-form-error"></div>
-      <form id="wl-profile-form" class="wl-form">
-        <div class="wl-form-grid">
-          <div class="wl-field">
-            <label data-i18n="first_name_label">Prénom (facultatif)</label>
-            <input type="text" name="first_name" maxlength="40" autocomplete="given-name">
-          </div>
-          <div class="wl-field">
-            <label data-i18n="height_label">Taille (cm)</label>
-            <input type="number" name="height_cm" required min="100" max="250">
-          </div>
-          <div class="wl-field">
-            <label data-i18n="weight_label">Poids (kg)</label>
-            <input type="number" name="weight_kg" required min="30" max="300" step="0.1">
-          </div>
-          <div class="wl-field">
-            <label data-i18n="age_label">Âge</label>
-            <input type="number" name="age" required min="18" max="100">
-          </div>
-          <div class="wl-field">
-            <label data-i18n="gender_label">Sexe</label>
-            <select name="gender" required>
-              <option value="male" data-i18n="gender_male">Homme</option>
-              <option value="female" data-i18n="gender_female">Femme</option>
-              <option value="other" data-i18n="gender_other">Autre</option>
-            </select>
-          </div>
-          <div class="wl-field wl-hidden" id="wl-pregnant-field">
-            <label class="wl-choice"><input type="checkbox" name="pregnant" value="1"> <span data-i18n="pregnant_label">Je suis enceinte</span></label>
-          </div>
-          <div class="wl-field">
-            <label data-i18n="goal_label">Objectif</label>
+    <div id="wl-form-error"></div>
+
+    <div id="wl-form-section">
+      <form id="wl-profile-form" class="wl-form" novalidate>
+        <div class="wl-q" data-q="goal" data-type="tap">
+          <h3 data-i18n="goal_label">Objectif</h3>
+          <div class="wl-field wl-q-native">
             <select name="fitness_goal" required>
               <option value="fat_loss" data-i18n="goal_fat_loss">Perte de gras</option>
               <option value="muscle_gain" data-i18n="goal_muscle_gain">Gain musculaire</option>
@@ -107,8 +54,11 @@
               <option value="general_health" data-i18n="goal_general_health">Forme générale</option>
             </select>
           </div>
-          <div class="wl-field">
-            <label data-i18n="training_location_label">Où vous entraînez-vous ?</label>
+        </div>
+
+        <div class="wl-q" data-q="place" data-type="tap">
+          <h3 data-i18n="training_location_label">Où vous entraînez-vous ?</h3>
+          <div class="wl-field wl-q-native">
             <select name="training_location" required>
               <option value="gym" data-i18n="place_gym">Au gym</option>
               <option value="home_equipment" data-i18n="place_home_equipment">À la maison, avec haltères</option>
@@ -116,55 +66,54 @@
               <option value="outdoor" data-i18n="place_outdoor">Dehors</option>
             </select>
           </div>
-          <div class="wl-field">
-            <label data-i18n="level_label">Niveau</label>
+        </div>
+
+        <div class="wl-q" data-q="level" data-type="tap">
+          <h3 data-i18n="level_label">Niveau</h3>
+          <div class="wl-field wl-q-native">
             <select name="experience_level" required>
               <option value="beginner" data-i18n="level_beginner">Débutant</option>
               <option value="intermediate" data-i18n="level_intermediate">Intermédiaire</option>
               <option value="advanced" data-i18n="level_advanced">Avancé</option>
             </select>
           </div>
-          <div class="wl-field">
-            <label data-i18n="days_per_week_label">Jours par semaine</label>
-            <input type="number" name="days_per_week" required min="1" max="7">
+        </div>
+
+        <div class="wl-q" data-q="days" data-type="chips">
+          <h3 data-i18n="days_per_week_label">Jours par semaine</h3>
+          <div class="wl-field"><input type="number" name="days_per_week" required min="1" max="7" data-quick="2,3,4,5,6" inputmode="numeric"></div>
+        </div>
+
+        <div class="wl-q" data-q="body" data-type="text">
+          <h3 data-i18n="body_title">Vos mesures</h3>
+          <div class="wl-form-grid">
+            <div class="wl-field"><label data-i18n="height_label">Taille (cm)</label><input type="number" name="height_cm" required min="100" max="250" inputmode="numeric"></div>
+            <div class="wl-field"><label data-i18n="weight_label">Poids (kg)</label><input type="number" name="weight_kg" required min="30" max="300" step="0.1" inputmode="decimal"></div>
+            <div class="wl-field"><label data-i18n="age_label">Âge</label><input type="number" name="age" required min="18" max="100" inputmode="numeric"></div>
+            <div class="wl-field"><label data-i18n="gender_label">Sexe</label>
+              <select name="gender" required>
+                <option value="male" data-i18n="gender_male">Homme</option>
+                <option value="female" data-i18n="gender_female">Femme</option>
+                <option value="other" data-i18n="gender_other">Autre</option>
+              </select>
+            </div>
+            <div class="wl-field wl-hidden" id="wl-pregnant-field">
+              <label class="wl-choice"><input type="checkbox" name="pregnant" value="1"> <span data-i18n="pregnant_label">Je suis enceinte</span></label>
+            </div>
+            <div class="wl-field"><label data-i18n="target_weight_label">Poids cible (kg)</label><input type="number" name="target_weight_kg" min="30" max="300" step="0.1" inputmode="decimal"></div>
+            <div class="wl-field"><label data-i18n="first_name_label">Prénom</label><input type="text" name="first_name" maxlength="40" autocomplete="given-name"></div>
           </div>
-          <div class="wl-field">
-            <label data-i18n="target_weight_label">Poids cible (kg)</label>
-            <input type="number" name="target_weight_kg" min="30" max="300" step="0.1">
-          </div>
-          <div class="wl-field">
-            <label data-i18n="weekly_food_budget_label">Budget épicerie / semaine</label>
-            <input type="number" name="weekly_food_budget" min="0" step="1">
-          </div>
+        </div>
+
+        <div class="wl-q" data-q="injuries" data-type="text" data-optional>
+          <h3 data-i18n="injuries_title">Blessures ou douleurs à ménager</h3>
+          <div id="wl-injuries"></div>
+          <button type="button" class="wl-btn wl-btn-outline" id="wl-add-injury" data-i18n="add_injury">+ Ajouter une blessure</button>
+        </div>
+
+        <div class="wl-q" data-q="food" data-type="checks" data-optional>
+          <h3 data-i18n="allergies_label_coach">Allergies</h3>
           <div class="wl-field full">
-            <span class="wl-muted" data-i18n="coach_location_why"></span>
-            <button type="button" class="wl-btn wl-btn-outline" id="wl-geo-btn" data-i18n="use_my_location" style="margin-top:6px">Utiliser ma position</button>
-            <div id="wl-geo-msg" style="margin-top:6px"></div>
-          </div>
-          <div class="wl-field">
-            <label data-i18n="postal_label">Code postal</label>
-            <input type="text" name="postal_code" id="wl-postal-input" required autocomplete="postal-code">
-          </div>
-          <div class="wl-field">
-            <label data-i18n="city_label">Ville</label>
-            <input type="text" name="city" id="wl-city-input" maxlength="80" autocomplete="address-level2">
-          </div>
-          <div class="wl-field wl-hidden" id="wl-country-field">
-            <label data-i18n="country_label">Pays</label>
-            <select name="country" id="wl-country-select"></select>
-            <span class="wl-country-hint wl-hidden" id="wl-country-hint" data-i18n="country_other_hint"></span>
-          </div>
-          <div class="wl-field">
-            <label data-i18n="nearest_gym_label">Gym le plus proche</label>
-            <input type="text" name="nearest_gym" data-i18n-placeholder="nearest_gym_placeholder">
-          </div>
-          <div class="wl-field full">
-            <label data-i18n="injuries_title">Blessures ou douleurs à ménager (facultatif)</label>
-            <div id="wl-injuries"></div>
-            <button type="button" class="wl-link-btn" id="wl-add-injury" data-i18n="add_injury">+ Ajouter une blessure</button>
-          </div>
-          <div class="wl-field full">
-            <label data-i18n="allergies_label_coach">Allergies</label>
             <div class="wl-choices" id="wl-allergies"></div>
             <span class="wl-muted" data-i18n="allergy_check_label"></span>
           </div>
@@ -172,36 +121,62 @@
             <label data-i18n="diet_label">Régime alimentaire</label>
             <div class="wl-choices" id="wl-diet"></div>
           </div>
-          <div class="wl-field full">
-            <p class="wl-muted" data-i18n="privacy_note_coach"></p>
+          <div class="wl-field">
+            <label data-i18n="weekly_food_budget_label">Budget épicerie / semaine</label>
+            <input type="number" name="weekly_food_budget" min="0" step="1" inputmode="numeric">
           </div>
-          <div class="wl-field full wl-hidden" id="wl-photo-field">
-            <label data-i18n="photo_label">Photo (facultatif)</label>
-            <input type="file" name="photo" accept="image/jpeg,image/png,image/webp">
-            <span class="wl-muted" data-i18n="photo_hint"></span>
+        </div>
+
+        <div class="wl-q" data-q="location" data-type="location">
+          <h3 data-i18n="postal_label">Code postal</h3>
+          <p class="wl-q-help" data-i18n="coach_location_why"></p>
+          <button type="button" class="wl-btn wl-btn-outline wl-btn-block" id="wl-geo-btn" data-i18n="use_my_location">Utiliser ma position</button>
+          <div id="wl-geo-msg" style="margin-top:6px"></div>
+          <div class="wl-location-row" style="margin-top:10px">
+            <div class="wl-field"><label data-i18n="postal_label">Code postal</label><input type="text" name="postal_code" id="wl-postal-input" required autocomplete="postal-code"></div>
+            <div class="wl-field"><label data-i18n="city_label">Ville</label><input type="text" name="city" id="wl-city-input" maxlength="80" autocomplete="address-level2"></div>
+            <div class="wl-field wl-hidden" id="wl-country-field">
+              <label data-i18n="country_label">Pays</label>
+              <select name="country" id="wl-country-select"></select>
+              <span class="wl-country-hint wl-hidden" id="wl-country-hint" data-i18n="country_other_hint"></span>
+            </div>
+            <div class="wl-field"><label data-i18n="nearest_gym_label">Gym le plus proche</label><input type="text" name="nearest_gym" data-i18n-placeholder="nearest_gym_placeholder"></div>
           </div>
+        </div>
+
+        <div class="wl-q wl-hidden" data-q="photo" data-type="text" data-optional id="wl-photo-q">
+          <h3 data-i18n="photo_label">Photo (facultatif)</h3>
+          <p class="wl-q-help" data-i18n="photo_hint"></p>
+          <div class="wl-photo-btns">
+            <label class="wl-btn wl-btn-outline"><span data-i18n="photo_take">Prendre une photo</span><input type="file" name="photo_camera" accept="image/*" capture="environment"></label>
+            <label class="wl-btn wl-btn-outline"><span data-i18n="photo_pick">Choisir une photo</span><input type="file" name="photo" accept="image/jpeg,image/png,image/webp"></label>
+          </div>
+          <div class="wl-photo-name" id="wl-photo-name" data-i18n="photo_none">Aucune photo (facultatif)</div>
+          <p class="wl-muted" data-i18n="privacy_note_coach"></p>
         </div>
         <button type="submit" class="wl-btn" id="wl-generate-btn" data-i18n="generate_plan">Générer mon plan</button>
       </form>
+    </div>
 
-      <div id="wl-progress" class="wl-progress wl-hidden">
-        <div class="wl-spinner"></div>
-        <div data-i18n="generating">Analyse en cours, 30 à 90 secondes...</div>
-      </div>
+    <div id="wl-email-step" class="wl-hidden"></div>
+    <div id="wl-progress" class="wl-hidden"></div>
+    <div id="wl-result" class="wl-hidden"></div>
 
-      <div id="wl-result" class="wl-hidden">
-        <div class="wl-alert wl-alert-success">
-          <p id="wl-result-note" class="wl-hidden" style="margin:0 0 8px"></p>
-          <a id="wl-pdf-link" class="wl-btn" href="#" target="_blank" data-i18n="open_pdf">Ouvrir le PDF</a>
-        </div>
+    <div class="wl-section wl-hidden" id="wl-tier-section">
+      <div class="wl-card wl-upgrade-card" id="wl-upgrade-card">
+        <h3 data-i18n="plan_single_title">Un seul abonnement : GymBro + Panier</h3>
+        <p class="wl-muted" data-i18n="plan_single_body"></p>
+        <p class="wl-tier-price" id="wl-upgrade-price"></p>
+        <button class="wl-btn" id="wl-upgrade-btn" type="button" data-i18n="become_member">Devenir membre</button>
       </div>
     </div>
 
-    <div class="wl-section">
+    <div class="wl-section wl-hidden" id="wl-plans-section">
       <h2 data-i18n="my_plans">Mes plans</h2>
       <div id="wl-plans-list"></div>
+      <p class="wl-home-hint" data-i18n="home_hint"></p>
     </div>
-    <div class="wl-section" id="wl-account"></div>
+    <div class="wl-section wl-hidden" id="wl-account"></div>
   </section>
   <footer class="wl-footer wl-legal-footer">
     <a href="../confidentialite/" data-i18n="privacy_link">Confidentialité</a> · <a href="../conditions/" data-i18n="terms_link">Conditions d'utilisation</a>
@@ -211,38 +186,44 @@
 <script src="../shared/config.js"></script>
 <script src="../shared/brand.js"></script>
 <script src="../shared/app.js"></script>
+<script src="../shared/flow.js"></script>
 <script>
-  WLApp.applyI18n();
-  WLApp.renderChoices(document.getElementById('wl-allergies'), WLApp.allergyIds, 'allergy_', 'allergies');
-  WLApp.renderChoices(document.getElementById('wl-diet'), WLApp.dietIds, 'diet_', 'diet');
+(function () {
+  var A = WLApp, F = WLFlow, esc = A.escapeHtml;
+  var PRODUCT = 'coach';
+  A.addDict({ fr: { body_title: 'Vos mesures' }, en: { body_title: 'Your measurements' }, es: { body_title: 'Tus medidas' } });
+  A.applyI18n();
+  A.initManifest();
+  A.renderChoices(document.getElementById('wl-allergies'), A.allergyIds, 'allergy_', 'allergies');
+  A.renderChoices(document.getElementById('wl-diet'), A.dietIds, 'diet_', 'diet');
+  A.initLangToggle(document.getElementById('wl-lang-btn'), { postPreference: true });
 
+  var el = function (id) { return document.getElementById(id); };
+  var form = el('wl-profile-form');
+  var me = null;
+  var siteConfig = null;
+
+  // ---- injuries ----
   var ZONES = ['neck', 'left_shoulder', 'right_shoulder', 'upper_back', 'lower_back', 'left_hip', 'right_hip', 'left_knee', 'right_knee', 'left_ankle', 'right_ankle', 'left_wrist', 'right_wrist', 'left_elbow', 'right_elbow', 'chest', 'abdomen', 'other'];
-  var injuriesEl = document.getElementById('wl-injuries');
+  var injuriesEl = el('wl-injuries');
   function addInjuryRow(inj) {
     if (injuriesEl.children.length >= 5) return;
     var row = document.createElement('div');
     row.className = 'wl-injury-row';
     row.innerHTML =
-      '<div class="wl-field"><label>' + WLApp.escapeHtml(WLApp.t('injury_zone_label')) + '</label><select class="wl-inj-zone">' +
-        ZONES.map(function (z) { return '<option value="' + z + '">' + WLApp.escapeHtml(WLApp.t('zone_' + z)) + '</option>'; }).join('') + '</select></div>' +
-      '<div class="wl-field"><label>' + WLApp.escapeHtml(WLApp.t('injury_severity_label')) + '</label><select class="wl-inj-sev">' +
-        ['mild', 'moderate', 'severe'].map(function (v) { return '<option value="' + v + '">' + WLApp.escapeHtml(WLApp.t('severity_' + v)) + '</option>'; }).join('') + '</select></div>' +
-      '<div class="wl-field"><input type="text" class="wl-inj-desc" maxlength="200" placeholder="' + WLApp.escapeHtml(WLApp.t('injury_desc_placeholder')) + '"></div>' +
-      '<button type="button" class="wl-link-btn wl-inj-remove">' + WLApp.escapeHtml(WLApp.t('remove_label')) + '</button>';
+      '<div class="wl-field"><label>' + esc(A.t('injury_zone_label')) + '</label><select class="wl-inj-zone">' + ZONES.map(function (z) { return '<option value="' + z + '">' + esc(A.t('zone_' + z)) + '</option>'; }).join('') + '</select></div>' +
+      '<div class="wl-field"><label>' + esc(A.t('injury_severity_label')) + '</label><select class="wl-inj-sev">' + ['mild', 'moderate', 'severe'].map(function (v) { return '<option value="' + v + '">' + esc(A.t('severity_' + v)) + '</option>'; }).join('') + '</select></div>' +
+      '<div class="wl-field"><input type="text" class="wl-inj-desc" maxlength="200" placeholder="' + esc(A.t('injury_desc_placeholder')) + '"></div>' +
+      '<button type="button" class="wl-link-btn wl-inj-remove">' + esc(A.t('remove_label')) + '</button>';
     if (inj) {
-      if (ZONES.indexOf(inj.body_zone) !== -1) row.querySelector('.wl-inj-zone').value = inj.body_zone;
-      else row.querySelector('.wl-inj-zone').value = 'other';
+      row.querySelector('.wl-inj-zone').value = ZONES.indexOf(inj.body_zone) !== -1 ? inj.body_zone : 'other';
       if (inj.severity) row.querySelector('.wl-inj-sev').value = inj.severity;
-      row.querySelector('.wl-inj-desc').value = inj.description || (ZONES.indexOf(inj.body_zone) === -1 ? (inj.body_zone || '') : '');
+      row.querySelector('.wl-inj-desc').value = inj.description || '';
     }
     row.querySelector('.wl-inj-remove').addEventListener('click', function () { row.remove(); });
     injuriesEl.appendChild(row);
   }
-  document.getElementById('wl-add-injury').addEventListener('click', function () { addInjuryRow(null); });
-  var genderSelect = document.querySelector('#wl-profile-form select[name=gender]');
-  function togglePregnant() { document.getElementById('wl-pregnant-field').classList.toggle('wl-hidden', genderSelect.value !== 'female'); }
-  genderSelect.addEventListener('change', togglePregnant);
-  togglePregnant();
+  el('wl-add-injury').addEventListener('click', function () { addInjuryRow(null); });
   function readInjuries() {
     return Array.prototype.slice.call(injuriesEl.querySelectorAll('.wl-injury-row')).map(function (row) {
       var d = row.querySelector('.wl-inj-desc').value.trim().slice(0, 200);
@@ -251,196 +232,56 @@
       return inj;
     });
   }
+  var genderSelect = form.querySelector('select[name=gender]');
+  function togglePregnant() { el('wl-pregnant-field').classList.toggle('wl-hidden', genderSelect.value !== 'female'); }
+  genderSelect.addEventListener('change', togglePregnant);
+  togglePregnant();
 
-  var countrySelect = document.getElementById('wl-country-select');
-  countrySelect.innerHTML = WLApp.countries.map(function (c) {
-    return '<option value="' + c[0] + '">' + c[1] + '</option>';
-  }).join('');
+  // ---- location ----
+  var countrySelect = el('wl-country-select');
+  countrySelect.innerHTML = A.countries.map(function (c) { return '<option value="' + c[0] + '">' + esc(c[1]) + '</option>'; }).join('');
   countrySelect.value = 'CA';
-
-  var countryHint = document.getElementById('wl-country-hint');
-  countrySelect.addEventListener('change', function () {
-    countryHint.classList.toggle('wl-hidden', countrySelect.value !== '');
-  });
-
-  var postalInput = document.getElementById('wl-postal-input');
-  var countryField = document.getElementById('wl-country-field');
+  var countryHint = el('wl-country-hint');
+  countrySelect.addEventListener('change', function () { countryHint.classList.toggle('wl-hidden', countrySelect.value !== ''); });
+  var postalInput = el('wl-postal-input');
+  var cityInput = el('wl-city-input');
+  var countryField = el('wl-country-field');
   function checkPostal() {
-    if (postalInput.value && !WLApp.looksLikeCaOrUs(postalInput.value)) {
-      countryField.classList.remove('wl-hidden');
-    } else {
-      countryField.classList.add('wl-hidden');
-      countryHint.classList.add('wl-hidden');
-    }
+    if (postalInput.value && !A.looksLikeCaOrUs(postalInput.value)) countryField.classList.remove('wl-hidden');
+    else { countryField.classList.add('wl-hidden'); countryHint.classList.add('wl-hidden'); }
   }
   postalInput.addEventListener('input', checkPostal);
   postalInput.addEventListener('blur', checkPostal);
-
-  var geoMsg = document.getElementById('wl-geo-msg');
-  var cityInput = document.getElementById('wl-city-input');
-  document.getElementById('wl-geo-btn').addEventListener('click', function () {
-    geoMsg.innerHTML = '<span class="wl-muted">' + WLApp.escapeHtml(WLApp.t('locating')) + '</span>';
-    WLApp.getPosition()
-      .then(function (pt) { return WLApp.api('/geo/reverse', { method: 'POST', body: { lat: pt.lat, lng: pt.lng, language: WLApp.lang } }); })
+  var geoMsg = el('wl-geo-msg');
+  el('wl-geo-btn').addEventListener('click', function () {
+    geoMsg.innerHTML = '<span class="wl-muted">' + esc(A.t('locating')) + '</span>';
+    A.getPosition()
+      .then(function (pt) { return A.api('/geo/reverse', { method: 'POST', body: { lat: pt.lat, lng: pt.lng, language: A.lang, partner: A.getPartner() } }); })
       .then(function (geo) {
         if (geo.postal_code) postalInput.value = geo.postal_code;
         if (geo.city) cityInput.value = geo.city;
         checkPostal();
-        geoMsg.innerHTML = '<div class="wl-alert wl-alert-success">' + WLApp.escapeHtml(WLApp.tf('location_found', { place: [geo.city, geo.postal_code].filter(Boolean).join(', ') })) + '</div>';
+        geoMsg.innerHTML = '<div class="wl-alert wl-alert-success">' + esc(A.tf('location_found', { place: [geo.city, geo.postal_code].filter(Boolean).join(', ') })) + '</div>';
+        wiz.reply('location', A.tf('location_found', { place: [geo.city, geo.postal_code].filter(Boolean).join(', ') }));
       })
-      .catch(function () {
-        geoMsg.innerHTML = '<div class="wl-alert wl-alert-warn">' + WLApp.escapeHtml(WLApp.t('location_denied')) + '</div>';
-        postalInput.focus();
-      });
+      .catch(function () { geoMsg.innerHTML = '<div class="wl-alert wl-alert-warn">' + esc(A.t('location_denied')) + '</div>'; postalInput.focus(); });
   });
 
-  WLApp.initLangToggle(document.getElementById('wl-lang-btn'), { postPreference: true });
-
-  if (new URLSearchParams(location.search).get('checkout') === 'success') {
-    var checkoutBanner = document.getElementById('wl-checkout-banner');
-    var cleanUrl = location.pathname + (WLApp.getPartner() && !WLApp.hostPartner() ? '?p=' + encodeURIComponent(WLApp.getPartner()) : '');
-    history.replaceState(null, '', cleanUrl);
-    if (WLApp.getToken()) {
-      // The Stripe webhook that flips tier to 'member' can land after the
-      // browser redirect back — show "activating" and poll /me until the
-      // tier is actually member instead of claiming success too early.
-      checkoutBanner.innerHTML = '<div class="wl-alert wl-alert-success">' + WLApp.t('checkout_activating') + '</div>';
-      WLApp.pollForMembership(function (user) {
-        applyTierUI(user);
-        if (user.tier === 'member') {
-          checkoutBanner.innerHTML = '<div class="wl-alert wl-alert-success">' + WLApp.t('checkout_thanks') + '</div>';
-        }
-      });
-    } else {
-      checkoutBanner.innerHTML = '<div class="wl-alert wl-alert-success">' + WLApp.t('checkout_thanks') + '</div>';
-    }
-  }
-
-  var siteConfig = null;
-  WLApp.fetchConfig().then(function (config) {
-    siteConfig = config;
-    applyBrand(config);
-  }).catch(function () {
-    WLApp.showError(document.getElementById('wl-config-error'), WLApp.t('service_unavailable'));
-  });
-
-  var signinSection = document.getElementById('wl-signin-section');
-  var appSection = document.getElementById('wl-app-section');
-  var userInfo = document.getElementById('wl-user-info');
-  var userEmail = document.getElementById('wl-user-email');
-
-  function startCheckout(plan) {
-    var returnUrl = location.origin + location.pathname + '?checkout=success' + (WLApp.getPartner() && !WLApp.hostPartner() ? '&p=' + encodeURIComponent(WLApp.getPartner()) : '');
-    WLApp.api('/billing/checkout', { method: 'POST', body: { plan: plan === 'bundle' ? 'bundle' : 'single', success_url: returnUrl, cancel_url: location.origin + location.pathname } })
-      .then(function (data) { if (data.url) location.href = data.url; })
-      .catch(function (err) {
-        WLApp.showError(document.getElementById('wl-form-error'), WLApp.genErrorMessage(err));
-        if (err && err.data && err.data.error === 'already_member') WLApp.api('/me').then(function (d) { applyTierUI(d); }).catch(function () {});
-      });
-  }
-
-  function applyTierUI(me) {
-    var tier = me.tier || 'free';
-    var limits = me.limits || {};
-    var remaining = me.remaining || {};
-    var badge = document.getElementById('wl-tier-badge');
-    badge.textContent = WLApp.t('your_tier') + ': ' + (tier === 'member' ? WLApp.t('tier_member') : WLApp.t('tier_free'));
-
-    var remainingLabel = document.getElementById('wl-remaining-label');
-    var manageBtn = document.getElementById('wl-manage-sub-btn');
-    var upgradeCard = document.getElementById('wl-upgrade-card');
-    var photoField = document.getElementById('wl-photo-field');
-
-    if (tier === 'member') {
-      var remainingCount = (remaining.today !== undefined) ? remaining.today : remaining.month;
-      var remainingWord = (remaining.today !== undefined) ? WLApp.t('plans_remaining_today') : WLApp.t('plans_remaining_month');
-      remainingLabel.textContent = (remainingCount !== undefined ? remainingCount + ' ' + remainingWord : '');
-      manageBtn.classList.remove('wl-hidden');
-      upgradeCard.classList.add('wl-hidden');
-      photoField.classList.remove('wl-hidden');
-    } else {
-      remainingLabel.textContent = (remaining.month !== undefined ? remaining.month + ' ' + WLApp.t('plans_remaining_month') : '');
-      manageBtn.classList.add('wl-hidden');
-      upgradeCard.classList.remove('wl-hidden');
-      document.getElementById('wl-upgrade-price').textContent = (siteConfig && siteConfig.member_price_label) || '';
-      document.getElementById('wl-upgrade-btn').textContent = WLApp.planCta(siteConfig);
-      WLApp.deadEnd(me, document.getElementById('wl-generate-btn'), document.getElementById('wl-dead-end'));
-      photoField.classList.add('wl-hidden');
-    }
-  }
-
-  document.getElementById('wl-manage-sub-btn').addEventListener('click', function () {
-    WLApp.api('/billing/portal', { method: 'POST', body: { return_url: location.href } })
-      .then(function (data) { if (data.url) location.href = data.url; })
-      .catch(function () {});
-  });
-  document.getElementById('wl-upgrade-btn').addEventListener('click', function () { startCheckout('single'); });
-
-
-  function prefillCoachProfile(profile, complete) {
-    if (!profile) return;
-    var form = document.getElementById('wl-profile-form');
-    ['first_name', 'height_cm', 'weight_kg', 'age', 'gender', 'fitness_goal', 'days_per_week', 'target_weight_kg', 'weekly_food_budget', 'postal_code', 'city', 'nearest_gym', 'training_location', 'experience_level'].forEach(function (name) {
-      if (profile[name] === undefined || profile[name] === null) return;
-      var field = form.elements[name];
-      if (field) field.value = profile[name];
+  // ---- photo (members): camera or gallery, one file wins ----
+  var photoFile = null;
+  ['photo_camera', 'photo'].forEach(function (name) {
+    form.elements[name].addEventListener('change', function () {
+      var f = this.files && this.files[0];
+      if (f) { photoFile = f; el('wl-photo-name').textContent = f.name + ' (' + Math.round(f.size / 1024) + ' KB)'; }
     });
-    if (profile.postal_code) checkPostal();
-    if (profile.country) countrySelect.value = profile.country;
-    injuriesEl.innerHTML = '';
-    if (Array.isArray(profile.injuries)) profile.injuries.slice(0, 5).forEach(addInjuryRow);
-    WLApp.setChecked(document.getElementById('wl-allergies'), profile.allergies);
-    WLApp.setChecked(document.getElementById('wl-diet'), profile.diet);
-    form.elements.pregnant.checked = profile.pregnant === true;
-    togglePregnant();
-    var savedLine = document.getElementById('wl-profile-saved-line');
-    if (complete) {
-      savedLine.textContent = WLApp.t('profile_saved') + (profile.saved_at ? ' (' + new Date(profile.saved_at).toLocaleDateString() + ')' : '');
-      savedLine.classList.remove('wl-hidden');
-    }
-  }
-
-  function showApp(user) {
-    signinSection.classList.add('wl-hidden');
-    appSection.classList.remove('wl-hidden');
-    userInfo.classList.remove('wl-hidden');
-    userEmail.textContent = (user && user.email) || '';
-    loadPlans();
-    WLApp.api('/me').then(function (data) {
-      applyTierUI(data);
-      WLApp.termsGate(data, document.getElementById('wl-terms-gate'), document.getElementById('wl-form-section'));
-      WLApp.accountSection(document.getElementById('wl-account'), data);
-      prefillCoachProfile((data.user || data).profile, data.profile_complete && data.profile_complete.coach);
-      var upgrade = new URLSearchParams(location.search).get('upgrade');
-      if ((upgrade === '1' || upgrade === 'bundle') && data.tier !== 'member') {
-        startCheckout(upgrade === 'bundle' ? 'bundle' : 'single');
-      }
-    }).catch(function () {});
-  }
-
-  document.getElementById('wl-signout').addEventListener('click', function (e) {
-    e.preventDefault();
-    WLApp.signOut();
   });
 
-  if (WLApp.getToken()) {
-    WLApp.api('/me').then(function (data) {
-      showApp(data.user);
-    }).catch(function () {
-      WLApp.clearToken();
-    });
-  } else {
-    WLApp.initSignIn(document.getElementById('wl-gsi-btn'), document.getElementById('wl-email-signin'), showApp, function () {
-      WLApp.showError(document.getElementById('wl-signin-error'), WLApp.t('error_generic'));
-    });
-  }
+  var wiz = F.wizard(form, {});
 
-  document.getElementById('wl-profile-form').addEventListener('submit', function (e) {
-    e.preventDefault();
-    var form = e.target;
+  // ---- profile <-> form ----
+  function profileFromForm() {
     var fd = new FormData(form);
-    var injuries = readInjuries();
-    var profile = {
+    var p = {
       first_name: fd.get('first_name') || undefined,
       pregnant: fd.get('gender') === 'female' && form.elements.pregnant.checked ? true : undefined,
       height_cm: Number(fd.get('height_cm')),
@@ -457,102 +298,199 @@
       nearest_gym: fd.get('nearest_gym') || undefined,
       training_location: fd.get('training_location'),
       experience_level: fd.get('experience_level'),
-      allergies: WLApp.checkedValues(document.getElementById('wl-allergies')),
-      diet: WLApp.checkedValues(document.getElementById('wl-diet')),
-      language: WLApp.lang,
-      injuries: injuries,
+      allergies: A.checkedValues(el('wl-allergies')),
+      diet: A.checkedValues(el('wl-diet')),
+      language: A.lang,
+      injuries: readInjuries(),
       diet_restrictions: []
     };
+    Object.keys(p).forEach(function (k) { if (p[k] === undefined) delete p[k]; });
+    return p;
+  }
+  function fillForm(profile) {
+    if (!profile) return;
+    ['first_name', 'height_cm', 'weight_kg', 'age', 'gender', 'fitness_goal', 'days_per_week', 'target_weight_kg', 'weekly_food_budget', 'postal_code', 'city', 'nearest_gym', 'training_location', 'experience_level'].forEach(function (k) {
+      if (profile[k] === undefined || profile[k] === null) return;
+      if (form.elements[k]) form.elements[k].value = profile[k];
+    });
+    if (profile.country) countrySelect.value = profile.country;
+    injuriesEl.innerHTML = '';
+    if (Array.isArray(profile.injuries)) profile.injuries.slice(0, 5).forEach(addInjuryRow);
+    A.setChecked(el('wl-allergies'), profile.allergies);
+    A.setChecked(el('wl-diet'), profile.diet);
+    form.elements.pregnant.checked = profile.pregnant === true;
+    togglePregnant();
+    checkPostal();
+    wiz.sync();
+  }
 
-    var errorEl = document.getElementById('wl-form-error');
-    errorEl.innerHTML = '';
-    var btn = document.getElementById('wl-generate-btn');
-    btn.disabled = true;
+  function showOnly(ids) {
+    ['wl-form-section', 'wl-email-step', 'wl-progress', 'wl-result', 'wl-return', 'wl-free-used'].forEach(function (id) { el(id).classList.toggle('wl-hidden', ids.indexOf(id) === -1); });
+  }
 
-    WLApp.api('/coach/profile', { method: 'POST', body: profile })
-      .then(function () {
-        document.getElementById('wl-progress').classList.remove('wl-hidden');
-        document.getElementById('wl-result').classList.add('wl-hidden');
-
-        var genFd = new FormData();
-        var photo = fd.get('photo');
-        if (photo && photo.size > 0) genFd.append('photo', photo);
-        genFd.append('language', WLApp.lang);
-        if (profile.postal_code) genFd.append('postal_code', profile.postal_code);
-        if (profile.country) genFd.append('country', profile.country);
-
-        return WLApp.api('/coach/generate', { method: 'POST', formData: genFd });
-      })
-      .then(function (data) {
-        document.getElementById('wl-progress').classList.add('wl-hidden');
-        document.getElementById('wl-result').classList.remove('wl-hidden');
-        var pdfLink = document.getElementById('wl-pdf-link');
-        pdfLink.href = data.pdf_url;
-        pdfLink.setAttribute('data-plan-id', data.plan_id || '');
-        var noteEl = document.getElementById('wl-result-note');
-        if (noteEl) {
-          var notes = [];
-          if (data.scan_error) notes.push(WLApp.t('photo_unreadable_msg'));
-          if (data.checks && data.checks.meals_removed) notes.push(WLApp.tf('meals_removed_msg', { n: data.checks.meals_removed }));
-          noteEl.textContent = notes.join(' ');
-          noteEl.classList.toggle('wl-hidden', !notes.length);
-        }
+  // ---- generation: save the profile, then the plan as a background job ----
+  function generate(profile, opts) {
+    opts = opts || {};
+    el('wl-form-error').innerHTML = '';
+    showOnly(['wl-progress']);
+    var canPhoto = me && me.limits && me.limits.photoScan;
+    return F.generateWithProgress(el('wl-progress'), PRODUCT, {
+      path: '/coach/generate',
+      withPhoto: Boolean(opts.photo && canPhoto),
+      before: function () { return A.api('/coach/profile', { method: 'POST', body: profile }); },
+      build: function () {
+        var fd = new FormData();
+        if (opts.photo && canPhoto) fd.append('photo', opts.photo);
+        fd.append('language', A.lang);
+        fd.append('async', '1');
+        fd.append('return_url', F.returnUrl());
+        if (profile.postal_code) fd.append('postal_code', profile.postal_code);
+        if (profile.country) fd.append('country', profile.country);
+        return { formData: fd, withPhoto: Boolean(opts.photo && canPhoto) };
+      }
+    })
+      .then(function (res) {
+        F.clearDraft(PRODUCT);
+        showOnly(['wl-result']);
+        F.renderCoachResult(el('wl-result'), res, { sent: true, photoLost: opts.photoLost });
+        window.scrollTo({ top: el('wl-result').offsetTop - 12, behavior: 'smooth' });
         loadPlans();
-        WLApp.api('/me').then(function (d) { applyTierUI(d); }).catch(function () {});
+        refreshMe();
       })
       .catch(function (err) {
-        document.getElementById('wl-progress').classList.add('wl-hidden');
-        WLApp.showError(errorEl, WLApp.genErrorMessage(err));
-      })
-      .finally(function () {
-        btn.disabled = false;
+        var code = err && err.data && err.data.error;
+        showOnly(code === 'quota_exceeded' ? ['wl-free-used', 'wl-form-section'] : ['wl-form-section']);
+        if (code === 'quota_exceeded' || code === 'terms_required') refreshMe();
+        A.showError(el('wl-form-error'), esc(code === 'job_lost' ? A.t('job_lost') : A.genErrorMessage(err)));
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       });
-  });
+  }
 
-  document.getElementById('wl-pdf-link').addEventListener('click', function (e) {
-    var id = this.getAttribute('data-plan-id');
-    if (!id) return;
+  form.addEventListener('submit', function (e) {
     e.preventDefault();
-    WLApp.openPlan(id);
+    if (!form.checkValidity()) { form.reportValidity(); return; }
+    var profile = profileFromForm();
+    if (A.getToken()) { generate(profile, { photo: photoFile }); return; }
+    F.saveDraft(PRODUCT, { payload: profile });
+    showOnly(['wl-email-step']);
+    F.emailStep(el('wl-email-step'), {
+      product: PRODUCT, nudge: false,
+      draft: function () { return { payload: profile, pending: true, hadPhoto: Boolean(photoFile) }; },
+      onSignedIn: function (user) { afterSignIn(user); refreshMe().then(function () { generate(profile, { photo: photoFile }); }); }
+    });
+    window.scrollTo({ top: el('wl-email-step').offsetTop - 12, behavior: 'smooth' });
   });
 
+  // ---- signed-in chrome ----
+  function startCheckout() {
+    var ret = location.origin + location.pathname + '?checkout=success' + (A.getPartner() && !A.hostPartner() ? '&p=' + encodeURIComponent(A.getPartner()) : '');
+    A.api('/billing/checkout', { method: 'POST', body: { plan: 'bundle', success_url: ret, cancel_url: location.origin + location.pathname } })
+      .then(function (d) { if (d.url) location.href = d.url; })
+      .catch(function (err) { A.showError(el('wl-form-error'), A.genErrorMessage(err)); if (err && err.data && err.data.error === 'already_member') refreshMe(); });
+  }
+  el('wl-upgrade-btn').addEventListener('click', startCheckout);
+  el('wl-manage-sub-btn').addEventListener('click', function () {
+    A.api('/billing/portal', { method: 'POST', body: { return_url: location.href } }).then(function (d) { if (d.url) location.href = d.url; }).catch(function () {});
+  });
+  el('wl-signout').addEventListener('click', function (e) { e.preventDefault(); F.clearDraft(PRODUCT); A.signOut(); });
+
+  function applyTierUI(m) {
+    me = m;
+    var tier = m.tier || 'free';
+    var remaining = m.remaining || {};
+    el('wl-thin-bar').classList.remove('wl-hidden');
+    el('wl-tier-badge').textContent = A.t('your_tier') + ': ' + (tier === 'member' ? A.t('tier_member') : A.t('tier_free'));
+    el('wl-photo-q').classList.toggle('wl-hidden', tier !== 'member');
+    if (tier === 'member') {
+      var n = remaining.today !== undefined ? remaining.today : remaining.month;
+      el('wl-remaining-label').textContent = n !== undefined ? n + ' ' + (remaining.today !== undefined ? A.t('plans_remaining_today') : A.t('plans_remaining_month')) : '';
+      el('wl-manage-sub-btn').classList.remove('wl-hidden');
+      el('wl-tier-section').classList.add('wl-hidden');
+    } else {
+      el('wl-remaining-label').textContent = remaining.month !== undefined ? remaining.month + ' ' + A.t('plans_remaining_month') : '';
+      el('wl-manage-sub-btn').classList.add('wl-hidden');
+      el('wl-tier-section').classList.remove('wl-hidden');
+      el('wl-upgrade-price').textContent = (siteConfig && siteConfig.member_price_label) || '';
+      el('wl-upgrade-btn').textContent = A.planCta(siteConfig);
+    }
+    var used = tier !== 'member' && remaining.month === 0;
+    if (used) F.freeUsedCard(el('wl-free-used'), m); else el('wl-free-used').classList.add('wl-hidden');
+  }
+  function refreshMe() {
+    return A.api('/me').then(function (d) { applyTierUI(d); A.termsGate(d, el('wl-terms-gate'), null); return d; }).catch(function () { return null; });
+  }
+  function afterSignIn(user) {
+    el('wl-user-info').classList.remove('wl-hidden');
+    el('wl-user-email').textContent = (user && user.email) || '';
+    el('wl-plans-section').classList.remove('wl-hidden');
+    el('wl-account').classList.remove('wl-hidden');
+  }
   function loadPlans() {
-    var listEl = document.getElementById('wl-plans-list');
-    WLApp.api('/plans').then(function (data) {
+    var listEl = el('wl-plans-list');
+    A.api('/plans').then(function (data) {
       var plans = (data.plans || []).filter(function (p) { return p.product === 'coach'; });
-      if (!plans.length) {
-        listEl.innerHTML = '<p>' + WLApp.t('no_plans_yet') + '</p>';
+      if (!plans.length) { listEl.innerHTML = '<p class="wl-muted">' + esc(A.t('no_plans_yet')) + '</p>'; return; }
+      listEl.innerHTML = '';
+      var ul = document.createElement('ul'); ul.className = 'wl-stops';
+      plans.forEach(function (p) {
+        var li = document.createElement('li');
+        var head = document.createElement('div'); head.className = 'wl-stop-head';
+        var left = document.createElement('span'); left.textContent = A.formatDate(p.created_at) + (p.summary && p.summary.today ? ' · ' + A.tf('res_today', { day: p.summary.today }) : '');
+        var a = document.createElement('a'); a.href = '#'; a.textContent = A.t('open_pdf');
+        a.addEventListener('click', function (e) { e.preventDefault(); A.openPlan(p.id); });
+        head.appendChild(left); head.appendChild(a); li.appendChild(head); ul.appendChild(li);
+      });
+      listEl.appendChild(ul);
+    }).catch(function () { listEl.innerHTML = '<p class="wl-muted">' + esc(A.t('no_plans_yet')) + '</p>'; });
+  }
+
+  // ---- boot ----
+  A.fetchConfig().then(function (c) { siteConfig = c; applyBrand(c); }).catch(function () { A.showError(el('wl-config-error'), A.t('service_unavailable')); });
+
+  if (F.qp('checkout') === 'success') {
+    var banner = el('wl-checkout-banner');
+    F.dropParams(['checkout']);
+    if (A.getToken()) {
+      banner.innerHTML = '<div class="wl-alert wl-alert-success">' + esc(A.t('checkout_activating')) + '</div>';
+      A.pollForMembership(function (u) { if (u.tier === 'member') { banner.innerHTML = '<div class="wl-alert wl-alert-success">' + esc(A.t('checkout_thanks')) + '</div>'; refreshMe(); } });
+    }
+  }
+
+  F.handleMagicLink(PRODUCT).then(function () {
+    if (!A.getToken()) { var d = F.loadDraft(PRODUCT); if (d && d.payload) fillForm(d.payload); return; }
+    return A.api('/me').then(function (data) {
+      afterSignIn(data.user);
+      applyTierUI(data);
+      A.termsGate(data, el('wl-terms-gate'), null);
+      A.accountSection(el('wl-account'), data);
+      loadPlans();
+      var profile = (data.user || data).profile || {};
+      var complete = data.profile_complete && data.profile_complete.coach;
+      if (complete) fillForm(profile);
+      var draft = F.loadDraft(PRODUCT);
+      var planId = F.qp('plan');
+      if (draft && draft.payload && draft.pending && draft.at && Date.now() - draft.at < 3 * 3600 * 1000) {
+        fillForm(draft.payload);
+        F.clearDraft(PRODUCT);
+        generate(draft.payload, { photoLost: Boolean(draft.hadPhoto) });
         return;
       }
-      // plan id/created_at are API data - build rows via DOM, never innerHTML.
-      listEl.innerHTML = '<table class="wl-table"><thead><tr><th>' + WLApp.t('date_label') + '</th><th></th></tr></thead></table>';
-      var tbody = document.createElement('tbody');
-      plans.forEach(function (p) {
-        var tr = document.createElement('tr');
-        var dateTd = document.createElement('td');
-        dateTd.textContent = new Date(p.created_at).toLocaleDateString();
-        tr.appendChild(dateTd);
-        var linkTd = document.createElement('td');
-        var a = document.createElement('a');
-        a.href = '#';
-        a.className = 'wl-open-plan';
-        a.dataset.planId = p.id;
-        a.textContent = WLApp.t('open_pdf');
-        linkTd.appendChild(a);
-        tr.appendChild(linkTd);
-        tbody.appendChild(tr);
-      });
-      listEl.querySelector('table').appendChild(tbody);
-      listEl.querySelectorAll('.wl-open-plan').forEach(function (a) {
-        a.addEventListener('click', function (e) {
-          e.preventDefault();
-          WLApp.openPlan(a.getAttribute('data-plan-id'));
-        });
-      });
-    }).catch(function () {
-      listEl.innerHTML = '<p>' + WLApp.t('no_plans_yet') + '</p>';
-    });
-  }
+      if (planId) {
+        F.dropParams(['plan']);
+        return A.api('/plans/' + encodeURIComponent(planId)).then(function (p) {
+          showOnly(['wl-result']);
+          F.renderCoachResult(el('wl-result'), { plan_id: p.id, pdf_key: p.pdf_key, summary: Object.assign({}, p.summary && p.summary.transformation || {}, p.summary || {}), checks: p.summary && p.summary.checks }, {});
+          if (complete) F.returnCard(el('wl-return'), { product: PRODUCT, onRedo: function () { generate(profileFromForm(), { photo: photoFile }); }, onEdit: function () { showOnly(['wl-form-section']); wiz.restart(); } });
+        }).catch(function () { showOnly(['wl-form-section']); });
+      }
+      if (complete) {
+        showOnly(['wl-return']);
+        F.returnCard(el('wl-return'), { product: PRODUCT, onRedo: function () { generate(profileFromForm(), { photo: photoFile }); }, onEdit: function () { showOnly(['wl-form-section']); wiz.restart(); } });
+        if (data.tier !== 'member' && data.remaining && data.remaining.month === 0) el('wl-free-used').classList.remove('wl-hidden');
+      }
+    }).catch(function () { A.clearToken(); });
+  });
+})();
 </script>
 </body>
 </html>

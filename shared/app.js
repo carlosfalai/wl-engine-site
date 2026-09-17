@@ -911,6 +911,13 @@
 
   var lang = getLang();
   function t(key) { return (DICT[lang] && DICT[lang][key]) || (DICT.fr[key]) || key; }
+  // Other shared files (flow.js) add their own strings here, fr/en/es.
+  function addDict(extra) {
+    Object.keys(extra || {}).forEach(function (l) {
+      DICT[l] = DICT[l] || {};
+      Object.keys(extra[l]).forEach(function (k) { DICT[l][k] = extra[l][k]; });
+    });
+  }
 
   function applyI18n() {
     document.documentElement.lang = lang;
@@ -1228,6 +1235,9 @@
           .catch(function (err) {
             var code = err && err.data && err.data.error;
             if (code === 'code_recently_sent') { msg.innerHTML = '<div class="wl-alert wl-alert-warn">' + escapeHtml(t('code_wait')) + '</div>'; setStage('code'); }
+            // A shared connection (office, family, gym Wi-Fi) can trip the
+            // limiter: say to retry in a few minutes, not "service down".
+            else if (err && (err.status === 429 || code === 'rate_limited' || code === 'too_many_codes')) showError(msg, escapeHtml(t('rate_limited_retry')));
             else showError(msg, escapeHtml(code === 'invalid_email' ? t('email_invalid') : t('service_unavailable')));
           })
           .finally(function () { btn.disabled = false; });
@@ -1338,9 +1348,12 @@
     return t('error_generic');
   }
 
-  function formatDate(iso) {
-    try { return new Date(iso + (iso.length === 10 ? 'T12:00:00Z' : '')).toLocaleDateString(lang === 'fr' ? 'fr-CA' : (lang === 'es' ? 'es' : 'en-CA'), { year: 'numeric', month: 'long', day: 'numeric' }); }
-    catch (e) { return iso; }
+  // "17 septembre 2026", never "9/17/2026" in French. `short` drops the year.
+  function formatDate(iso, short) {
+    try {
+      var d = new Date(iso + (String(iso).length === 10 ? 'T12:00:00Z' : ''));
+      return d.toLocaleDateString(lang === 'fr' ? 'fr-CA' : (lang === 'es' ? 'es' : 'en-CA'), short ? { month: 'long', day: 'numeric' } : { year: 'numeric', month: 'long', day: 'numeric' });
+    } catch (e) { return iso; }
   }
 
   // Sign out everywhere: the server bumps the account's token version, so
@@ -1415,10 +1428,41 @@
     });
   }
 
-  // A PDF link is signed for one hour: always ask for a fresh one on click.
-  function openPlan(planId) {
-    api('/plans/' + encodeURIComponent(planId) + '/pdf').then(function (d) { if (d.url) window.open(d.url, '_blank'); })
-      .catch(function () { window.alert(t('error_generic')); });
+  // The PDF opens from a friendly address on the product's own domain
+  // (https://panier.bot/plan/<id>?k=…, valid as long as the plan is kept);
+  // elsewhere, a fresh one-hour signed link.
+  function planUrl(planId, key) {
+    if (key && hostPartner()) return location.origin + '/plan/' + encodeURIComponent(planId) + '?k=' + encodeURIComponent(key);
+    return '';
+  }
+  function openPlan(planId, key) {
+    var friendly = planUrl(planId, key);
+    if (friendly) { window.open(friendly, '_blank'); return; }
+    // Open the tab first (a popup blocked after an async call is lost on iOS).
+    var win = window.open('', '_blank');
+    api('/plans/' + encodeURIComponent(planId) + '/pdf').then(function (d) {
+      var url = planUrl(planId, d.key) || d.url;
+      if (win && url) win.location.href = url; else if (url) window.open(url, '_blank');
+    }).catch(function () { if (win) win.close(); window.alert(t('error_generic')); });
+  }
+
+  // Home-screen icon: the manifest that matches this product's domain.
+  function initManifest() {
+    var p = hostPartner();
+    if (!p || document.querySelector('link[rel=manifest]')) return;
+    var name = p === 'GYMBRO' ? 'gymbro' : 'panier';
+    var link = document.createElement('link');
+    link.rel = 'manifest';
+    link.href = '/shared/manifest-' + name + '.webmanifest';
+    document.head.appendChild(link);
+    var apple = document.createElement('link');
+    apple.rel = 'apple-touch-icon';
+    apple.href = '/shared/icons/' + name + '-180.png';
+    document.head.appendChild(apple);
+    var theme = document.createElement('meta');
+    theme.name = 'theme-color';
+    theme.content = p === 'GYMBRO' ? '#0B1F3A' : '#16A34A';
+    document.head.appendChild(theme);
   }
 
   // Legal pages: one block per language, the domain and contact filled in.
@@ -1521,6 +1565,9 @@
     termsGate: termsGate,
     accountSection: accountSection,
     openPlan: openPlan,
+    planUrl: planUrl,
+    initManifest: initManifest,
+    addDict: addDict,
     planCta: planCta,
     deadEnd: deadEnd
   };
