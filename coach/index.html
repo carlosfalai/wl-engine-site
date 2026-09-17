@@ -457,7 +457,11 @@
   }
 
   F.handleMagicLink(PRODUCT).then(function () {
-    if (!A.getToken()) { var d = F.loadDraft(PRODUCT); if (d && d.payload) fillForm(d.payload); return; }
+    if (!A.getToken()) {
+      var d = F.loadDraft(PRODUCT); if (d && d.payload) fillForm(d.payload);
+      F.signInAgain(el('wl-email-step'), PRODUCT, ['wl-form-section']);
+      return;
+    }
     return A.api('/me').then(function (data) {
       afterSignIn(data.user);
       applyTierUI(data);

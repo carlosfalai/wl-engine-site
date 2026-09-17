@@ -93,6 +93,7 @@
       loc_found_stores: 'Trouvé : {list}',
       loc_checking: 'Recherche des magasins près de chez vous...',
       loc_none: 'Aucune circulaire ici : les prix seront estimés.',
+      link_used_msg: 'Ce lien a déjà servi ou est expiré. Entrez votre courriel pour en recevoir un nouveau.',
       chip_custom: 'Autre',
       yes: 'Oui', no: 'Non',
     },
@@ -180,6 +181,7 @@
       loc_found_stores: 'Found: {list}',
       loc_checking: 'Looking for stores near you...',
       loc_none: 'No flyers here: prices will be estimated.',
+      link_used_msg: 'This link was already used or has expired. Enter your email to get a new one.',
       chip_custom: 'Other',
       yes: 'Yes', no: 'No',
     },
@@ -267,6 +269,7 @@
       loc_found_stores: 'Encontrado: {list}',
       loc_checking: 'Buscando tiendas cerca de ti...',
       loc_none: 'No hay folletos aquí: los precios serán estimados.',
+      link_used_msg: 'Este enlace ya se usó o venció. Escribe tu correo para recibir uno nuevo.',
       chip_custom: 'Otro',
       yes: 'Sí', no: 'No',
     }
@@ -302,7 +305,21 @@
     var draft = loadDraft(product) || {};
     return A.api('/auth/email/magic', { method: 'POST', body: { token: token, partner: A.getPartner(), accept_terms: draft.terms === true } })
       .then(function (data) { A.setToken(data.token); dropParams(['ml']); return data.user; })
-      .catch(function () { dropParams(['ml']); return null; });
+      .catch(function () { dropParams(['ml']); linkFailed = true; return null; });
+  }
+  // A link that was already used (or expired) and no session: ask for the
+  // e-mail again right away instead of showing an empty form.
+  var linkFailed = false;
+  function signInAgain(container, product, hideIds) {
+    if (!linkFailed || A.getToken()) return false;
+    (hideIds || []).forEach(function (id) { var n = document.getElementById(id); if (n) n.classList.add('wl-hidden'); });
+    container.classList.remove('wl-hidden');
+    emailStep(container, { product: product, nudge: false, draft: function () { return loadDraft(product) || {}; }, onSignedIn: function () { location.reload(); } });
+    var note = document.createElement('div');
+    note.className = 'wl-alert wl-alert-warn';
+    note.textContent = t('link_used_msg');
+    container.insertBefore(note, container.firstChild);
+    return true;
   }
 
   // ---------- money / date ----------
@@ -734,6 +751,7 @@
     saveDraft: saveDraft, loadDraft: loadDraft, clearDraft: clearDraft,
     qp: qp, dropParams: dropParams, returnUrl: returnUrl,
     handleMagicLink: handleMagicLink,
+    signInAgain: signInAgain,
     wizard: wizard,
     emailStep: emailStep,
     generateWithProgress: generateWithProgress,
