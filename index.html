@@ -5,6 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" id="wl-favicon" type="image/svg+xml" href="/shared/icons/default.svg">
 <title>Accueil</title>
+<meta name="description" id="wl-meta-description" content="GymBro et Panier : coach d’entraînement et planificateur d’épicerie par IA. Plans personnalisés livrés en PDF, gratuits ou membre.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="GymBro + Panier">
+<meta property="og:title" id="wl-og-title" content="GymBro + Panier">
+<meta property="og:description" id="wl-og-description" content="Coach d’entraînement et planificateur d’épicerie par IA. Plans personnalisés livrés en PDF.">
+<meta property="og:image" id="wl-og-image" content="https://app.healthyplan.ca/shared/art/gymbro-hero.jpg">
+<meta property="og:url" id="wl-og-url" content="https://app.healthyplan.ca/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" id="wl-twitter-title" content="GymBro + Panier">
+<meta name="twitter:description" id="wl-twitter-description" content="Coach d’entraînement et planificateur d’épicerie par IA. Plans personnalisés livrés en PDF.">
+<meta name="twitter:image" id="wl-twitter-image" content="https://app.healthyplan.ca/shared/art/gymbro-hero.jpg">
 <link rel="stylesheet" href="shared/ui.css">
 <link rel="stylesheet" href="shared/landing.css">
 </head>
@@ -12,7 +23,7 @@
 <div class="wl-app">
   <header class="wl-header">
     <div class="wl-brand">
-      <img data-brand-logo style="display:none" alt="logo">
+      <img data-brand-logo style="display:none" alt="logo" src="data:,">
       <div>
         <div class="wl-brand-name" data-brand-name></div>
         <div class="wl-brand-tagline" data-brand-tagline></div>
@@ -27,7 +38,10 @@
   <div id="wl-config-error"></div>
   <div id="wl-checkout-banner"></div>
 
-  <!-- Partner (agency-billed) landing: default, shown unless billing_mode === 'member' -->
+  <!-- Partner (agency-billed) landing: default, shown unless billing_mode === 'member'.
+       Removed outright (not just hidden) on gymbro.bot/panier.bot — see the
+       inline script — so its two demo <video> tags never exist in the DOM
+       on those hosts at all. -->
   <section id="wl-partner-landing">
     <section class="wl-hero">
       <h1 data-brand-name></h1>
@@ -39,9 +53,12 @@
         <span class="wl-badge" data-i18n="coach_title">Coach</span>
         <h2 data-i18n="coach_title">Coach</h2>
         <p data-i18n="coach_desc">Plan d'entraînement hebdomadaire personnalisé, livré en PDF.</p>
-        <video id="wl-coach-hero-video" controls poster="videos/coach-fr.jpg" preload="none">
-          <source id="wl-coach-hero-video-src" src="videos/coach-fr.mp4" type="video/mp4">
-        </video>
+        <div class="wl-video-wrap" id="wl-coach-video-wrap">
+          <video id="wl-coach-hero-video" poster="videos/gymbro-pitch-fr.jpg" preload="none">
+            <source id="wl-coach-hero-video-src" src="" type="video/mp4">
+          </video>
+          <button class="wl-play-btn" type="button" id="wl-coach-play-btn" aria-label="Lire la vidéo"></button>
+        </div>
         <div class="wl-video-fallback" style="display:none">Coach</div>
         <a class="wl-btn wl-btn-block" id="wl-coach-link" href="coach/" data-i18n="signin">Se connecter avec Google</a>
       </div>
@@ -49,16 +66,21 @@
         <span class="wl-badge" data-i18n="panier_title">Panier</span>
         <h2 data-i18n="panier_title">Panier</h2>
         <p data-i18n="panier_desc">Le panier d'épicerie parfait selon votre budget, livré en PDF.</p>
-        <video id="wl-panier-hero-video" controls poster="videos/panier-fr.jpg" preload="none">
-          <source id="wl-panier-hero-video-src" src="videos/panier-fr.mp4" type="video/mp4">
-        </video>
+        <div class="wl-video-wrap" id="wl-panier-video-wrap">
+          <video id="wl-panier-hero-video" poster="videos/panier-pitch-fr.jpg" preload="none">
+            <source id="wl-panier-hero-video-src" src="" type="video/mp4">
+          </video>
+          <button class="wl-play-btn" type="button" id="wl-panier-play-btn" aria-label="Lire la vidéo"></button>
+        </div>
         <div class="wl-video-fallback" style="display:none">Panier</div>
         <a class="wl-btn wl-btn-block" id="wl-panier-link" href="panier/" data-i18n="signin">Se connecter avec Google</a>
       </div>
     </section>
   </section>
 
-  <!-- Consumer landing: shown when /config says billing_mode === 'member' -->
+  <!-- Consumer landing: shown immediately on gymbro.bot/panier.bot (product
+       is known from the hostname alone), or once /config resolves
+       billing_mode === 'member' elsewhere (app.healthyplan.ca?p=...). -->
   <section id="wl-consumer-landing" class="wl-hidden">
     <section class="wl-hero wl-landing-hero">
       <div class="wl-hero-copy">
@@ -71,11 +93,15 @@
           <a class="wl-btn wl-btn-outline" href="#wl-how" data-i18n="how_title">Comment ça marche</a>
         </div>
       </div>
-      <div class="wl-video-frame" id="wl-video-frame" data-tag="">
-        <video id="wl-consumer-video" controls preload="none">
-          <source id="wl-consumer-video-src" src="" type="video/mp4">
-        </video>
-        <div class="wl-video-fallback" id="wl-consumer-video-fallback" style="display:none"></div>
+      <div class="wl-video-frame-wrap wl-video-wrap" id="wl-video-frame-wrap">
+        <div class="wl-video-frame" id="wl-video-frame" data-tag="">
+          <video id="wl-consumer-video" preload="none">
+            <source id="wl-consumer-video-src" src="" type="video/mp4">
+          </video>
+          <div class="wl-video-fallback" id="wl-consumer-video-fallback" style="display:none"></div>
+        </div>
+        <button class="wl-play-btn" type="button" id="wl-consumer-play-btn" aria-label="Lire la vidéo"></button>
+        <p class="wl-video-note wl-hidden" id="wl-video-note" data-i18n="video_language_note"></p>
       </div>
     </section>
 
@@ -97,12 +123,14 @@
       <p class="wl-muted" id="wl-examples-body"></p>
       <div class="wl-examples-gallery">
         <div class="wl-examples-stack wl-hidden" id="wl-examples-coach">
-          <img src="exemples/preview-coach-2.jpg" alt="" loading="lazy" width="300" height="389">
-          <img src="exemples/preview-coach-1.jpg" alt="" loading="lazy" width="300" height="389">
+          <img class="wl-examples-photo" src="shared/art/gymbro-plan-800.jpg" alt="" loading="lazy" width="320" height="220">
+          <img src="exemples/preview-coach-2.jpg" alt="" loading="lazy" width="250" height="324">
+          <img src="exemples/preview-coach-1.jpg" alt="" loading="lazy" width="250" height="324">
         </div>
         <div class="wl-examples-stack wl-hidden" id="wl-examples-panier">
-          <img src="exemples/preview-panier-2.jpg" alt="" loading="lazy" width="300" height="389">
-          <img src="exemples/preview-panier-1.jpg" alt="" loading="lazy" width="300" height="389">
+          <img class="wl-examples-photo" src="shared/art/panier-route-800.jpg" alt="" loading="lazy" width="320" height="220">
+          <img src="exemples/preview-panier-2.jpg" alt="" loading="lazy" width="250" height="324">
+          <img src="exemples/preview-panier-1.jpg" alt="" loading="lazy" width="250" height="324">
         </div>
         <div class="wl-examples-copy">
           <p><a class="wl-btn wl-btn-outline" id="wl-example-link" href="#" target="_blank" rel="noopener" data-i18n="see_example">Voir un exemple de plan (PDF)</a></p>
@@ -119,7 +147,7 @@
           <h2 data-i18n="tier_free">Gratuit</h2>
           <ul>
             <li data-i18n="per_month_plan">1 plan par mois</li>
-            <li data-i18n="no_photo_scan">Sans analyse photo</li>
+            <li id="wl-photo-scan-li" data-i18n="no_photo_scan">Sans analyse photo</li>
             <li id="wl-free-sponsor-line" class="wl-hidden" data-i18n="sponsor_line">Offert grâce à un commanditaire</li>
           </ul>
           <a class="wl-btn wl-btn-outline wl-btn-block" id="wl-free-cta" href="#" data-i18n="start_free">Commencer gratuitement</a>
@@ -128,21 +156,14 @@
           <span class="wl-tier-badge" data-i18n="tier_member_badge">Recommandé</span>
           <span class="wl-badge" data-i18n="tier_member">Membre</span>
           <h2 data-i18n="tier_member">Membre</h2>
-          <p class="wl-tier-price" id="wl-member-price"></p>
+          <p class="wl-tier-price" id="wl-member-price"><span class="wl-price-skeleton" id="wl-price-skeleton"></span></p>
+          <p class="wl-plan-includes" data-i18n="plan_single_title">Un seul abonnement : GymBro + Panier</p>
           <ul>
             <li data-i18n="per_day_plans">3 plans par jour</li>
-            <li data-i18n="photo_scan_included">Analyse photo incluse</li>
+            <li id="wl-photo-scan-member-li" data-i18n="photo_scan_included">Analyse photo incluse</li>
             <li data-i18n="history_included">Historique complet</li>
           </ul>
           <a class="wl-btn wl-btn-block" id="wl-member-cta" href="#" data-i18n="become_member">Devenir membre</a>
-          <div class="wl-bundle-box wl-hidden" id="wl-bundle-box">
-            <span class="wl-bundle-ribbon" data-i18n="bundle_best_value">Meilleure valeur</span>
-            <h4 data-i18n="bundle_title">Les deux : GymBro + Panier</h4>
-            <p class="wl-tier-price" id="wl-bundle-price" style="margin:0"></p>
-            <p class="wl-bundle-upsell" id="wl-bundle-upsell"></p>
-            <p class="wl-muted" data-i18n="bundle_body"></p>
-            <a class="wl-btn wl-btn-outline wl-btn-block" id="wl-bundle-cta" href="#" data-i18n="become_member_both">Prendre les deux</a>
-          </div>
         </div>
       </section>
     </section>
@@ -183,29 +204,129 @@
     revealEls.forEach(function (el) { io.observe(el); });
   })();
 
-  if (WLApp.hostPartner()) {
-    document.getElementById('wl-partner-landing').classList.add('wl-hidden');
+  // Click-to-load video (launch-audit fix, 2026-09-17): every <video> on
+  // this page starts with no <source src> and preload="none" — nothing is
+  // fetched (these pitch videos are 5-8 MB) until the visitor presses this
+  // button, on every breakpoint including desktop. setSrc() fills in the
+  // real source right before load()+play() are called.
+  function wireDeferredVideo(wrapId, videoEl, sourceEl, btnId, setSrc) {
+    var wrap = document.getElementById(wrapId);
+    var btn = document.getElementById(btnId);
+    if (!wrap || !btn || !videoEl || !sourceEl) return;
+    function start() {
+      if (wrap.classList.contains('wl-video-playing')) return;
+      setSrc();
+      videoEl.setAttribute('controls', '');
+      videoEl.setAttribute('playsinline', '');
+      videoEl.load();
+      wrap.classList.add('wl-video-playing');
+      videoEl.play().catch(function () {});
+    }
+    btn.addEventListener('click', start);
+    videoEl.addEventListener('click', start);
+  }
+
+  // og:title / og:description / og:image / twitter:* / meta description —
+  // updated per-host once we know which product (or the dual partner
+  // landing) is showing. Static defaults in <head> cover crawlers that
+  // never run JS; og:url and og:image must be absolute per spec, so both
+  // are built from location.origin (this one file is served identically
+  // from gymbro.bot, panier.bot and app.healthyplan.ca).
+  function updateMeta(title, description, imagePath) {
+    var absImage = location.origin + imagePath;
+    var absUrl = location.href;
+    document.title = title;
+    var set = function (id, value) { var el = document.getElementById(id); if (el) el.content = value; };
+    set('wl-meta-description', description);
+    set('wl-og-title', title);
+    set('wl-og-description', description);
+    set('wl-og-image', absImage);
+    set('wl-og-url', absUrl);
+    set('wl-twitter-title', title);
+    set('wl-twitter-description', description);
+    set('wl-twitter-image', absImage);
+  }
+
+  // Everything here depends only on which PRODUCT is showing (coach vs
+  // panier) — never on the exact price or tagline, which still come from
+  // /config. Called immediately (synchronously, from the hostname alone)
+  // on gymbro.bot/panier.bot, and again once /config resolves on
+  // app.healthyplan.ca?p=... where the host alone doesn't say which
+  // product a partner sells. Safe to call twice.
+  function populateProductStatic(product) {
+    document.body.setAttribute('data-product', product);
+
+    document.getElementById('wl-hero-eyebrow').textContent = WLApp.t(product === 'panier' ? 'hero_eyebrow_panier' : 'hero_eyebrow_coach');
+    document.getElementById('wl-hero-benefit').textContent = WLApp.t(product === 'panier' ? 'hero_benefit_panier' : 'hero_benefit_coach');
+    document.getElementById('wl-video-frame').setAttribute('data-tag', WLApp.t(product === 'panier' ? 'video_frame_tag_panier' : 'video_frame_tag_coach'));
+    document.getElementById('wl-examples-body').textContent = WLApp.t(product === 'panier' ? 'examples_body_panier' : 'examples_body_coach');
+    document.getElementById(product === 'panier' ? 'wl-examples-panier' : 'wl-examples-coach').classList.remove('wl-hidden');
+    document.getElementById(product === 'panier' ? 'wl-examples-coach' : 'wl-examples-panier').classList.add('wl-hidden');
+
+    // Panier has no photo-scan feature — GymBro-only line on both tiers.
+    var hasPhotoScan = product !== 'panier';
+    document.getElementById('wl-photo-scan-li').classList.toggle('wl-hidden', !hasPhotoScan);
+    document.getElementById('wl-photo-scan-member-li').classList.toggle('wl-hidden', !hasPhotoScan);
+
+    // The pitch video: only French exists today. Poster loads now
+    // (lightweight jpg); the real .mp4 is only fetched once the visitor
+    // presses the play button. Non-French visitors get a one-line note.
+    var videoBase = product === 'panier' ? 'panier-pitch-fr' : 'gymbro-pitch-fr';
+    document.getElementById('wl-consumer-video-fallback').textContent = product === 'panier' ? 'Panier' : 'GymBro';
+    var consumerVideo = document.getElementById('wl-consumer-video');
+    consumerVideo.poster = 'videos/' + videoBase + '.jpg';
+    wireDeferredVideo('wl-video-frame-wrap', consumerVideo, document.getElementById('wl-consumer-video-src'), 'wl-consumer-play-btn',
+      function () { document.getElementById('wl-consumer-video-src').src = 'videos/' + videoBase + '.mp4'; });
+    document.getElementById('wl-video-note').classList.toggle('wl-hidden', WLApp.lang === 'fr');
+
+    var stepPrefix = product === 'panier' ? 'panier_step' : 'coach_step';
+    document.getElementById('wl-how-steps').innerHTML = [1, 2, 3].map(function (n) { return '<li>' + WLApp.escapeHtml(WLApp.t(stepPrefix + n)) + '</li>'; }).join('');
+    // Only French examples exist for now.
+    document.getElementById('wl-example-link').href = 'exemples/' + (product === 'panier' ? 'panier' : 'gymbro') + '-exemple-fr.pdf';
+    document.getElementById('wl-example-caption').textContent = WLApp.t(product === 'panier' ? 'example_caption_panier' : 'example_caption_coach');
+
+    var productPath = (product === 'panier' ? 'panier/' : 'coach/');
+    document.getElementById('wl-free-cta').href = WLApp.withPartnerParam(productPath);
+    document.getElementById('wl-member-cta').href = WLApp.withPartnerParam(productPath + '?upgrade=1');
+
+    updateMeta(
+      (product === 'panier' ? 'Panier' : 'GymBro') + ' — ' + WLApp.t(product === 'panier' ? 'hero_eyebrow_panier' : 'hero_eyebrow_coach'),
+      WLApp.t(product === 'panier' ? 'hero_benefit_panier' : 'hero_benefit_coach'),
+      '/shared/art/' + (product === 'panier' ? 'panier-hero.jpg' : 'gymbro-hero.jpg')
+    );
+  }
+
+  var hostProduct = WLApp.hostPartner() === 'PANIER' ? 'panier' : (WLApp.hostPartner() ? 'coach' : '');
+  if (hostProduct) {
+    // gymbro.bot / panier.bot: the product is known from the hostname
+    // alone — render the whole static page NOW instead of waiting on the
+    // network. The old behaviour showed an empty shell (blank video, no
+    // steps, dead "#" links) for however long /config took in the real
+    // world, which is much slower than a local test ever showed.
+    document.getElementById('wl-partner-landing').remove();
+    var partnersLinkEl = document.getElementById('wl-partners-link');
+    if (partnersLinkEl) partnersLinkEl.remove();
+    var footEl = document.querySelector('.wl-footer'); if (footEl) footEl.remove();
     document.getElementById('wl-consumer-landing').classList.remove('wl-hidden');
-    ['wl-partners-link'].forEach(function (id) { var el = document.getElementById(id); if (el) el.classList.add('wl-hidden'); });
-    var foot = document.querySelector('.wl-footer'); if (foot) foot.classList.add('wl-hidden');
+    populateProductStatic(hostProduct);
   }
 
   WLApp.initLangToggle(document.getElementById('wl-lang-btn'));
 
-  WLApp.initLocalizedVideo(
-    document.getElementById('wl-coach-hero-video'),
-    document.getElementById('wl-coach-hero-video-src'),
-    'coach'
-  );
-  WLApp.initLocalizedVideo(
-    document.getElementById('wl-panier-hero-video'),
-    document.getElementById('wl-panier-hero-video-src'),
-    'panier'
-  );
+  // Partner-landing demo videos (app.healthyplan.ca only — removed above
+  // on gymbro.bot/panier.bot): poster is already set in the markup; the
+  // localized .mp4 is only resolved and fetched once the visitor presses
+  // play.
+  wireDeferredVideo('wl-coach-video-wrap',
+    document.getElementById('wl-coach-hero-video'), document.getElementById('wl-coach-hero-video-src'), 'wl-coach-play-btn',
+    function () { WLApp.initLocalizedVideo(document.getElementById('wl-coach-hero-video'), document.getElementById('wl-coach-hero-video-src'), 'gymbro-pitch'); });
+  wireDeferredVideo('wl-panier-video-wrap',
+    document.getElementById('wl-panier-hero-video'), document.getElementById('wl-panier-hero-video-src'), 'wl-panier-play-btn',
+    function () { WLApp.initLocalizedVideo(document.getElementById('wl-panier-hero-video'), document.getElementById('wl-panier-hero-video-src'), 'panier-pitch'); });
 
   ['wl-coach-link', 'wl-panier-link'].forEach(function (id) {
     var el = document.getElementById(id);
-    el.href = WLApp.withPartnerParam(el.getAttribute('href'));
+    if (el) el.href = WLApp.withPartnerParam(el.getAttribute('href'));
   });
 
   if (new URLSearchParams(location.search).get('checkout') === 'success') {
@@ -233,62 +354,27 @@
     applyBrand(config);
 
     if (config.billing_mode === 'member') {
-      document.getElementById('wl-partner-landing').classList.add('wl-hidden');
-      var partnersLink = document.getElementById('wl-partners-link');
-      if (partnersLink) partnersLink.classList.add('wl-hidden');
-      var adminFooter = document.querySelector('.wl-footer');
-      if (adminFooter) adminFooter.classList.add('wl-hidden');
-      var consumer = document.getElementById('wl-consumer-landing');
-      consumer.classList.remove('wl-hidden');
-
-      // product type drives which product page + video is shown, and which
-      // of the two landing personalities (dark/orange GymBro, warm/green
-      // Panier — see shared/landing.css) is switched on via data-product.
-      var product = config.type === 'panier' ? 'panier' : 'coach';
-      document.body.setAttribute('data-product', product);
-
-      document.getElementById('wl-hero-eyebrow').textContent = WLApp.t(product === 'panier' ? 'hero_eyebrow_panier' : 'hero_eyebrow_coach');
-      document.getElementById('wl-hero-benefit').textContent = WLApp.t(product === 'panier' ? 'hero_benefit_panier' : 'hero_benefit_coach');
-      document.getElementById('wl-video-frame').setAttribute('data-tag', WLApp.t(product === 'panier' ? 'video_frame_tag_panier' : 'video_frame_tag_coach'));
-      document.getElementById('wl-examples-body').textContent = WLApp.t(product === 'panier' ? 'examples_body_panier' : 'examples_body_coach');
-      var examplesEl = document.getElementById(product === 'panier' ? 'wl-examples-panier' : 'wl-examples-coach');
-      if (examplesEl) examplesEl.classList.remove('wl-hidden');
-
-      // Pitch videos (2026-09-17) exist in French only for now: every language plays them.
-      var videoBase = product === 'panier' ? 'panier-pitch-fr' : 'gymbro-pitch-fr';
-      document.getElementById('wl-consumer-video-fallback').textContent = config.name || '';
-      var consumerVideo = document.getElementById('wl-consumer-video');
-      document.getElementById('wl-consumer-video-src').src = 'videos/' + videoBase + '.mp4';
-      consumerVideo.poster = 'videos/' + videoBase + '.jpg';
-      consumerVideo.setAttribute('playsinline', '');
-      consumerVideo.load();
-
-      var stepPrefix = product === 'panier' ? 'panier_step' : 'coach_step';
-      document.getElementById('wl-how-steps').innerHTML = [1, 2, 3].map(function (n) { return '<li>' + WLApp.escapeHtml(WLApp.t(stepPrefix + n)) + '</li>'; }).join('');
-      var exLang = WLApp.lang === 'fr' ? 'fr' : 'en';
-      // Only French examples exist for now.
-      document.getElementById('wl-example-link').href = 'exemples/' + (product === 'panier' ? 'panier' : 'gymbro') + '-exemple-fr.pdf';
-      document.getElementById('wl-example-caption').textContent = WLApp.t(product === 'panier' ? 'example_caption_panier' : 'example_caption_coach');
-
-      var productPath = (product === 'panier' ? 'panier/' : 'coach/');
-      var freeCta = document.getElementById('wl-free-cta');
-      var memberCta = document.getElementById('wl-member-cta');
-      freeCta.href = WLApp.withPartnerParam(productPath);
-      memberCta.href = WLApp.withPartnerParam(productPath + '?upgrade=1');
-
-      document.getElementById('wl-member-price').textContent = config.member_price_label || '';
-      var bundle = WLApp.bundleInfo(config);
-      if (bundle) {
-        document.getElementById('wl-bundle-price').textContent = bundle.label;
-        document.getElementById('wl-bundle-upsell').textContent = bundle.upsell;
-        document.getElementById('wl-bundle-cta').href = WLApp.withPartnerParam(productPath + '?upgrade=bundle');
-        document.getElementById('wl-bundle-box').classList.remove('wl-hidden');
+      if (!hostProduct) {
+        // app.healthyplan.ca?p=... : the host alone didn't say which
+        // product this is, so the static parts are only populated now.
+        document.getElementById('wl-partner-landing').classList.add('wl-hidden');
+        var partnersLink = document.getElementById('wl-partners-link');
+        if (partnersLink) partnersLink.classList.add('wl-hidden');
+        var adminFooter = document.querySelector('.wl-footer');
+        if (adminFooter) adminFooter.classList.add('wl-hidden');
+        document.getElementById('wl-consumer-landing').classList.remove('wl-hidden');
+        populateProductStatic(config.type === 'panier' ? 'panier' : 'coach');
       }
 
+      var skeleton = document.getElementById('wl-price-skeleton');
+      if (skeleton) skeleton.remove();
+      document.getElementById('wl-member-price').textContent = config.member_price_label || '';
+
       if (config.sponsors_enabled) {
+        var product2 = config.type === 'panier' ? 'panier' : 'coach';
         var params = new URLSearchParams();
         if (WLApp.getPartner()) params.set('partner', WLApp.getPartner());
-        params.set('product', product);
+        params.set('product', product2);
         WLApp.api('/sponsors?' + params.toString()).then(function (data) {
           var sponsors = data.sponsors || [];
           var stripEl = document.getElementById('wl-sponsors-strip');
@@ -304,6 +390,8 @@
       } else {
         document.getElementById('wl-sponsors-section').classList.add('wl-hidden');
       }
+    } else if (!hostProduct) {
+      updateMeta('GymBro + Panier', WLApp.t('coach_desc') + ' ' + WLApp.t('panier_desc'), '/shared/art/gymbro-hero.jpg');
     }
   }).catch(function () {
     WLApp.showError(document.getElementById('wl-config-error'), WLApp.t('service_unavailable'));
