@@ -62,6 +62,8 @@
       res_over: '{d} au-dessus du budget',
       res_open_pdf: 'Ouvrir le PDF complet',
       res_pdf_help: 'Les menus de la semaine, la liste à cocher et le trajet sont dans le PDF.',
+      res_pdf_help_coach: 'Tous les exercices en détail, vos repas et votre épicerie sont dans le PDF.',
+      res_filtered: 'Filtré selon : {list}.',
       res_sent: 'Une copie vous a été envoyée par courriel.',
       res_today: 'Aujourd’hui : {day}',
       res_week: 'Votre semaine',
@@ -147,6 +149,8 @@
       res_over: '{d} over budget',
       res_open_pdf: 'Open the full PDF',
       res_pdf_help: 'The week\'s menus, the checklist and the route are in the PDF.',
+      res_pdf_help_coach: 'Every exercise in detail, your meals and your groceries are in the PDF.',
+      res_filtered: 'Filtered for: {list}.',
       res_sent: 'A copy was emailed to you.',
       res_today: 'Today: {day}',
       res_week: 'Your week',
@@ -232,6 +236,8 @@
       res_over: '{d} por encima del presupuesto',
       res_open_pdf: 'Abrir el PDF completo',
       res_pdf_help: 'Los menús de la semana, la lista y la ruta están en el PDF.',
+      res_pdf_help_coach: 'Todos los ejercicios en detalle, tus comidas y tu compra están en el PDF.',
+      res_filtered: 'Filtrado según: {list}.',
       res_sent: 'Te enviamos una copia por correo.',
       res_today: 'Hoy: {day}',
       res_week: 'Tu semana',
@@ -357,6 +363,9 @@
           });
           grid.appendChild(b);
         });
+        // Nothing is chosen until the person taps (a select would silently
+        // pre-pick its first option).
+        if (!sel.hasAttribute('data-keep-default')) sel.selectedIndex = -1;
         native.classList.add('wl-q-native', 'wl-q-hidden');
         q.insertBefore(grid, native);
         syncTap(q);
@@ -642,7 +651,7 @@
     if (s.dropped_small_stop && s.dropped_small_stop.length) notes.push(tf('dropped_msg', { items: s.dropped_small_stop.join(', ') }));
     if (s.prices_stale && s.priceDate) notes.push(tf('stale_prices_msg', { date: s.priceDate }));
     if (notes.length) html += '<p class="wl-muted" style="margin:10px 0 0">' + esc(notes.join(' · ')) + '</p>';
-    html += '<p class="wl-safety-line">' + (s.declared ? esc(s.declared) + ' — ' : '') + esc(t('allergy_check_label')) + '</p>';
+    html += '<p class="wl-safety-line">' + (s.declared ? esc(tf('res_filtered', { list: s.declared })) + ' ' : '') + esc(t('allergy_check_label')) + '</p>';
     html += '<div class="wl-result-actions"><a class="wl-btn" id="wl-res-pdf" href="#" target="_blank" rel="noopener">' + esc(t('res_open_pdf')) + '</a></div>';
     html += '<p class="wl-muted" style="margin:8px 0 0">' + esc(t('res_pdf_help')) + (opts.sent ? ' ' + esc(t('res_sent')) : '') + '</p>';
     html += '</div>';
@@ -681,7 +690,7 @@
     if (notes.length) html += '<p class="wl-muted" style="margin:10px 0 0">' + esc(notes.join(' ')) + '</p>';
     html += '<p class="wl-safety-line">' + esc(t('privacy_note_coach')) + '</p>';
     html += '<div class="wl-result-actions"><a class="wl-btn" id="wl-res-pdf" href="#" target="_blank" rel="noopener">' + esc(t('res_open_pdf')) + '</a></div>';
-    html += '<p class="wl-muted" style="margin:8px 0 0">' + esc(t('res_pdf_help')) + (opts.sent ? ' ' + esc(t('res_sent')) : '') + '</p></div>';
+    html += '<p class="wl-muted" style="margin:8px 0 0">' + esc(t('res_pdf_help_coach')) + (opts.sent ? ' ' + esc(t('res_sent')) : '') + '</p></div>';
     container.innerHTML = html;
     wirePdf(container, res);
   }

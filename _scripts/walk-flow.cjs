@@ -26,7 +26,9 @@ const shot = async (page, name) => { n++; const f = path.join(out, `${product}-$
   const page = await ctx.newPage();
   page.on('console', (m) => { if (m.type() === 'error') console.log('console error:', m.text()); });
   page.on('pageerror', (e) => console.log('page error:', e.message));
-  await page.route('https://api.healthyplan.ca/**', async (route) => {
+  const LIVE = /^https:/.test(base);
+  // Live domains: no interception, so real CORS and CSP are what gets tested.
+  if (!LIVE) await page.route('https://api.healthyplan.ca/**', async (route) => {
     const req = route.request();
     if (req.method() === 'OPTIONS') return route.fulfill({ status: 204, headers: { 'access-control-allow-origin': '*', 'access-control-allow-headers': '*', 'access-control-allow-methods': '*' } });
     const res = await route.fetch();
@@ -34,7 +36,7 @@ const shot = async (page, name) => { n++; const f = path.join(out, `${product}-$
     delete headers['content-encoding']; delete headers['content-length'];
     route.fulfill({ status: res.status(), headers, body: await res.body() });
   });
-  await page.goto(`${base}/${product === 'panier' ? 'panier' : 'coach'}/?p=${partner}&lang=fr`);
+  await page.goto(`${base}/${product === 'panier' ? 'panier' : 'coach'}/${LIVE ? "?lang=fr" : "?p=" + partner + "&lang=fr"}`);
   await page.waitForTimeout(1500);
   await shot(page, 'q1');
   const wizCount = async () => (await page.textContent('.wl-wiz-count').catch(() => '')) || '';
