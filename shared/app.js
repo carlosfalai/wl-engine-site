@@ -20,6 +20,12 @@
 
   var DICT = {
     fr: {
+      bundle_title: 'Les deux : GymBro + Panier',
+      bundle_body: 'Un seul abonnement débloque les deux applications, avec le même compte.',
+      bundle_upsell_coach: 'GymBro + Panier pour {diff} de plus',
+      bundle_upsell_panier: 'Ajoute ton coach GymBro pour {diff} de plus',
+      become_member_both: 'Prendre les deux',
+      single_app_label: 'Cette application seule',
       trimmed_for_budget_msg: 'Retirés pour respecter votre budget : {items}',
       email_signin_title: 'Connexion par courriel',
       email_signin_hint: 'Pas de mot de passe : on vous envoie un code à 6 chiffres.',
@@ -267,6 +273,12 @@
       date_label: 'Date',
     },
     en: {
+      bundle_title: 'Both: GymBro + Panier',
+      bundle_body: 'One subscription unlocks both apps, on the same account.',
+      bundle_upsell_coach: 'GymBro + Panier for {diff} more',
+      bundle_upsell_panier: 'Add your GymBro coach for {diff} more',
+      become_member_both: 'Get both',
+      single_app_label: 'This app only',
       trimmed_for_budget_msg: 'Removed to stay within your budget: {items}',
       email_signin_title: 'Sign in with email',
       email_signin_hint: 'No password: we email you a 6-digit code.',
@@ -514,6 +526,12 @@
       date_label: 'Date',
     },
     es: {
+      bundle_title: 'Los dos: GymBro + Panier',
+      bundle_body: 'Una sola suscripción desbloquea las dos aplicaciones, con la misma cuenta.',
+      bundle_upsell_coach: 'GymBro + Panier por {diff} más',
+      bundle_upsell_panier: 'Añade tu coach GymBro por {diff} más',
+      become_member_both: 'Llevar los dos',
+      single_app_label: 'Solo esta aplicación',
       trimmed_for_budget_msg: 'Retirados para respetar tu presupuesto: {items}',
       email_signin_title: 'Acceso por correo',
       email_signin_hint: 'Sin contraseña: te enviamos un código de 6 dígitos.',
@@ -833,7 +851,15 @@
   }
 
   // ---------- partner resolution ----------
+  // Consumer domains carry their product in the address itself: no ?p=.
+  var HOST_PARTNERS = { 'gymbro.bot': 'GYMBRO', 'www.gymbro.bot': 'GYMBRO', 'panier.bot': 'PANIER', 'www.panier.bot': 'PANIER' };
+  function hostPartner() {
+    return HOST_PARTNERS[String(location.hostname || '').toLowerCase()] || '';
+  }
+
   function getPartner() {
+    var fromHost = hostPartner();
+    if (fromHost) return fromHost;
     var q = new URLSearchParams(location.search).get('p');
     if (q) {
       try { localStorage.setItem('wl_partner', q); } catch (e) {}
@@ -846,7 +872,7 @@
 
   function withPartnerParam(path) {
     var p = getPartner();
-    if (!p) return path;
+    if (!p || hostPartner()) return path;
     var sep = path.indexOf('?') === -1 ? '?' : '&';
     return path + sep + 'p=' + encodeURIComponent(p);
   }
@@ -1131,6 +1157,23 @@
     Array.prototype.slice.call(container.querySelectorAll('input[type=checkbox]')).forEach(function (i) { i.checked = (values || []).indexOf(i.value) !== -1; });
   }
 
+  // ---------- GymBro + Panier bundle ----------
+  // Amount text without ",00" when whole ("1 $", "$1", "5 $").
+  function shortMoney(cents, currency) {
+    var locale = lang === 'en' ? 'en-CA' : (lang === 'es' ? 'es' : 'fr-CA');
+    var whole = cents % 100 === 0;
+    try {
+      return new Intl.NumberFormat(locale, { style: 'currency', currency: (currency || 'cad').toUpperCase(), minimumFractionDigits: whole ? 0 : 2, maximumFractionDigits: whole ? 0 : 2 }).format(cents / 100);
+    } catch (e) { return (cents / 100) + ' $'; }
+  }
+  function bundleInfo(config) {
+    if (!config || !config.bundle || config.member_price_cents == null) return null;
+    var diff = config.bundle.amount_cents - config.member_price_cents;
+    if (diff <= 0) return null;
+    var key = config.type === 'panier' ? 'bundle_upsell_panier' : 'bundle_upsell_coach';
+    return { label: config.bundle.label, upsell: tf(key, { diff: shortMoney(diff, config.bundle.currency) }) };
+  }
+
   // ---------- postal / country detection ----------
   var CA_POSTAL = /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/;
   var US_ZIP = /^\d{5}(-\d{4})?$/;
@@ -1207,6 +1250,8 @@
   global.WLApp = {
     lang: lang,
     t: t,
+    hostPartner: hostPartner,
+    bundleInfo: bundleInfo,
     tf: tf,
     escapeHtml: escapeHtml,
     isGoogleConfigured: isGoogleConfigured,

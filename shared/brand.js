@@ -24,6 +24,10 @@
     if (colors.dark) root.style.setProperty('--color-dark', colors.dark);
 
     var name = config.name || (config.type === 'both' ? 'Coach + Panier' : '');
+
+    var icon = document.getElementById('wl-favicon');
+    var iconName = { GYMBRO: 'gymbro', PANIER: 'panier' }[String(config.code || '').toUpperCase()];
+    if (icon && iconName) icon.href = '/shared/icons/' + iconName + '.svg';
     var tagline = resolveTagline(config);
 
     document.querySelectorAll('[data-brand-name]').forEach(function (el) {

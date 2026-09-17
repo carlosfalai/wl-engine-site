@@ -318,3 +318,10 @@ img { max-width: 100%; }
 .wl-how li { margin: 6px 0; }
 .wl-example { font-size: 0.9em; color: #667085; margin: 6px 0 0; }
 @media (max-width: 560px) { .wl-injury-row { grid-template-columns: 1fr 1fr; } .wl-choices { grid-template-columns: 1fr 1fr; } }
+
+/* ---- video width + bundle offer (2026-09-17) ---- */
+video { max-width: 100%; height: auto; display: block; }
+.wl-hero video { width: 100%; max-width: 720px; margin: 16px auto 0; border-radius: var(--radius-xl); }
+.wl-bundle-box { margin-top: 12px; padding: 12px; border: 1px dashed var(--color-primary, #16A34A); border-radius: var(--radius-lg); }
+.wl-bundle-box h4 { margin: 0 0 4px; }
+.wl-bundle-upsell { font-weight: 600; color: var(--color-primary, #16A34A); margin: 6px 0; }

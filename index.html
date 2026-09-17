@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" id="wl-favicon" type="image/svg+xml" href="/shared/icons/default.svg">
 <title>Accueil</title>
 <link rel="stylesheet" href="shared/ui.css">
 </head>
@@ -95,6 +96,13 @@
           <li data-i18n="history_included">Historique complet</li>
         </ul>
         <a class="wl-btn wl-btn-block" id="wl-member-cta" href="#" data-i18n="become_member">Devenir membre</a>
+        <div class="wl-bundle-box wl-hidden" id="wl-bundle-box">
+          <h4 data-i18n="bundle_title">Les deux : GymBro + Panier</h4>
+          <p class="wl-tier-price" id="wl-bundle-price" style="margin:0"></p>
+          <p class="wl-bundle-upsell" id="wl-bundle-upsell"></p>
+          <p class="wl-muted" data-i18n="bundle_body"></p>
+          <a class="wl-btn wl-btn-outline wl-btn-block" id="wl-bundle-cta" href="#" data-i18n="become_member_both">Prendre les deux</a>
+        </div>
       </div>
     </section>
 
@@ -115,6 +123,12 @@
 <script src="shared/app.js"></script>
 <script>
   WLApp.applyI18n();
+  if (WLApp.hostPartner()) {
+    document.getElementById('wl-partner-landing').classList.add('wl-hidden');
+    document.getElementById('wl-consumer-landing').classList.remove('wl-hidden');
+    ['wl-partners-link'].forEach(function (id) { var el = document.getElementById(id); if (el) el.classList.add('wl-hidden'); });
+    var foot = document.querySelector('.wl-footer'); if (foot) foot.classList.add('wl-hidden');
+  }
 
   WLApp.initLangToggle(document.getElementById('wl-lang-btn'));
 
@@ -136,7 +150,7 @@
 
   if (new URLSearchParams(location.search).get('checkout') === 'success') {
     var checkoutBanner = document.getElementById('wl-checkout-banner');
-    var cleanUrl = location.pathname + (WLApp.getPartner() ? '?p=' + encodeURIComponent(WLApp.getPartner()) : '');
+    var cleanUrl = location.pathname + (WLApp.getPartner() && !WLApp.hostPartner() ? '?p=' + encodeURIComponent(WLApp.getPartner()) : '');
     history.replaceState(null, '', cleanUrl);
     if (WLApp.getToken()) {
       // The Stripe webhook that flips tier to 'member' can land after the
@@ -180,7 +194,8 @@
       var stepPrefix = product === 'panier' ? 'panier_step' : 'coach_step';
       document.getElementById('wl-how-steps').innerHTML = [1, 2, 3].map(function (n) { return '<li>' + WLApp.escapeHtml(WLApp.t(stepPrefix + n)) + '</li>'; }).join('');
       var exLang = WLApp.lang === 'fr' ? 'fr' : 'en';
-      document.getElementById('wl-example-link').href = 'exemples/' + (product === 'panier' ? 'panier' : 'gymbro') + '-exemple-' + exLang + '.pdf';
+      // Only French examples exist for now.
+      document.getElementById('wl-example-link').href = 'exemples/' + (product === 'panier' ? 'panier' : 'gymbro') + '-exemple-fr.pdf';
       document.getElementById('wl-example-caption').textContent = WLApp.t(product === 'panier' ? 'example_caption_panier' : 'example_caption_coach');
 
       var productPath = (product === 'panier' ? 'panier/' : 'coach/');
@@ -190,6 +205,13 @@
       memberCta.href = WLApp.withPartnerParam(productPath + '?upgrade=1');
 
       document.getElementById('wl-member-price').textContent = config.member_price_label || '';
+      var bundle = WLApp.bundleInfo(config);
+      if (bundle) {
+        document.getElementById('wl-bundle-price').textContent = bundle.label;
+        document.getElementById('wl-bundle-upsell').textContent = bundle.upsell;
+        document.getElementById('wl-bundle-cta').href = WLApp.withPartnerParam(productPath + '?upgrade=bundle');
+        document.getElementById('wl-bundle-box').classList.remove('wl-hidden');
+      }
 
       if (config.sponsors_enabled) {
         var params = new URLSearchParams();
