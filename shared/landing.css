@@ -1,0 +1,396 @@
+/* wl-engine-site — consumer landing redesign (gymbro.bot / panier.bot)
+   Loaded ONLY by index.html, on top of shared/ui.css. Scopes everything it
+   can under body[data-product="coach"|"panier"] so the partner landing
+   (app.healthyplan.ca without a host partner) and every other page
+   (coach/, panier/, admin/, partenaire/, commanditaires/) are untouched —
+   they never load this file and never get body[data-product] set.
+   See second-brain/06-playbooks/wl-engine-deploy.md, "Landing redesign
+   2026-09-17" for the design rationale and how to regenerate the preview
+   images this file references. */
+
+:root {
+  --wl-ease: cubic-bezier(.16, 1, .3, 1);
+  --wl-radius-frame: 28px;
+}
+
+/* ---------------------------------------------------------------------
+   Product palettes. --color-primary/accent/dark are already set at
+   runtime by brand.js from /config; these add the extra tones the
+   landing needs (deep background, surfaces, muted text) as sensible
+   defaults derived from the known GymBro/Panier brand colors, so the
+   page never looks broken before /config resolves.
+--------------------------------------------------------------------- */
+body[data-product="coach"] {
+  --l-bg: #0a1120;
+  --l-bg-2: #111b30;
+  --l-surface: rgba(255, 255, 255, 0.045);
+  --l-surface-strong: rgba(255, 255, 255, 0.08);
+  --l-border: rgba(255, 255, 255, 0.12);
+  --l-text: #f3f6fb;
+  --l-muted: #93a0ba;
+  /* var(--color-primary), not --color-accent: this is the same orange used
+     on every other GymBro surface (coach/ sign-in button, PDF header) — the
+     landing's highlight color must match the rest of the product. */
+  --l-accent: var(--color-primary, #f97316);
+  --l-accent-ink: #1c0f02;
+  --l-display: -apple-system, "Segoe UI", system-ui, sans-serif;
+}
+
+body[data-product="panier"] {
+  --l-bg: #faf7ee;
+  --l-bg-2: #ffffff;
+  --l-surface: #ffffff;
+  --l-surface-strong: #ffffff;
+  --l-border: #e3dbc6;
+  --l-text: #202b21;
+  --l-muted: #63715f;
+  /* var(--color-primary), not --color-accent: same green used on every
+     other Panier surface (panier/ sign-in button, PDF header). */
+  --l-accent: var(--color-primary, #16a34a);
+  --l-accent-ink: #ffffff;
+  --l-display: Georgia, "Iowan Old Style", "Palatino Linotype", ui-serif, serif;
+}
+
+body[data-product] { background: var(--l-bg); }
+body[data-product] .wl-app { max-width: 1180px; }
+
+/* ---------------------------------------------------------------------
+   Sticky translucent header (consumer editions only)
+--------------------------------------------------------------------- */
+body[data-product] .wl-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  margin: 0 -24px 0;
+  border-radius: 0;
+  background: color-mix(in srgb, var(--l-bg) 78%, transparent);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  backdrop-filter: blur(14px) saturate(140%);
+  border-bottom: 1px solid var(--l-border);
+  box-shadow: none;
+  padding: 14px 24px;
+}
+body[data-product="panier"] .wl-header { color: var(--l-text); }
+body[data-product="panier"] .wl-brand-name,
+body[data-product="panier"] .wl-brand-tagline,
+body[data-product="panier"] .wl-nav a { color: var(--l-text); }
+body[data-product] .wl-brand-name { font-family: var(--l-display); letter-spacing: -0.01em; }
+body[data-product] .wl-lang-toggle { border-color: color-mix(in srgb, var(--l-text) 35%, transparent); }
+@media (min-width: 900px) { body[data-product] .wl-header { margin: 0 0 0; border-radius: var(--radius-lg); top: 12px; } }
+
+/* ---------------------------------------------------------------------
+   Hero — thesis moment. Eyebrow, brand wordmark, tagline, benefit line,
+   one CTA that scrolls to pricing, one that scrolls to "how it works",
+   and the pitch video inside a signature product frame.
+--------------------------------------------------------------------- */
+body[data-product] .wl-landing-hero {
+  text-align: left;
+  padding: 56px 4px 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  gap: 48px;
+  align-items: center;
+  overflow: hidden;
+  position: relative;
+}
+@media (max-width: 880px) {
+  body[data-product] .wl-landing-hero { grid-template-columns: 1fr; text-align: center; padding-top: 36px; }
+  body[data-product] .wl-hero-copy { align-items: center; }
+}
+
+body[data-product] .wl-hero-copy { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
+body[data-product] .wl-landing-hero .wl-eyebrow {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--l-accent);
+  margin: 0 0 14px;
+  opacity: 0;
+  animation: wl-rise .7s var(--wl-ease) .05s forwards;
+}
+body[data-product] .wl-landing-hero h1[data-brand-name] {
+  font-family: var(--l-display);
+  color: var(--l-text);
+  margin: 0;
+  line-height: 0.95;
+  font-size: clamp(3rem, 8vw, 5.2rem);
+  opacity: 0;
+  animation: wl-rise .8s var(--wl-ease) .12s forwards;
+}
+body[data-product="coach"] .wl-landing-hero h1[data-brand-name] { font-weight: 850; letter-spacing: -0.03em; }
+body[data-product="panier"] .wl-landing-hero h1[data-brand-name] { font-weight: 500; letter-spacing: -0.01em; }
+
+body[data-product] .wl-landing-hero p[data-brand-tagline] {
+  color: var(--l-text);
+  opacity: 0.88;
+  font-size: 1.28rem;
+  max-width: 460px;
+  margin: 14px 0 0;
+  font-weight: 500;
+  animation: wl-rise .8s var(--wl-ease) .2s forwards;
+}
+body[data-product="panier"] .wl-landing-hero p[data-brand-tagline] { font-family: var(--l-display); font-style: italic; font-weight: 400; }
+
+body[data-product] .wl-hero-benefit {
+  color: var(--l-muted);
+  font-size: 1.02rem;
+  max-width: 460px;
+  margin: 14px 0 0;
+  opacity: 0;
+  animation: wl-rise .8s var(--wl-ease) .28s forwards;
+}
+
+body[data-product] .wl-hero-cta-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 30px;
+  opacity: 0;
+  animation: wl-rise .8s var(--wl-ease) .36s forwards;
+}
+body[data-product] .wl-hero-cta-row .wl-btn { padding: 14px 26px; font-size: 1rem; border-radius: 999px; }
+body[data-product] .wl-hero-cta-row .wl-btn:not(.wl-btn-outline) { background: var(--l-accent); color: var(--l-accent-ink); box-shadow: 0 10px 30px -10px color-mix(in srgb, var(--l-accent) 70%, transparent); }
+body[data-product] .wl-hero-cta-row .wl-btn:not(.wl-btn-outline):hover { filter: brightness(1.06); }
+
+/* Every outline button on the consumer landing uses the landing palette,
+   not var(--color-primary) — that variable is the partner's server-set
+   brand color, meant for the white-background partner pages, and can be
+   near-invisible against GymBro's dark background. */
+body[data-product] .wl-btn-outline { border-color: var(--l-border); color: var(--l-text); background: var(--l-surface); }
+body[data-product] .wl-btn-outline:hover { background: var(--l-surface-strong); color: var(--l-text); }
+body[data-product] .wl-bundle-upsell { color: var(--l-accent); }
+@media (max-width: 880px) { body[data-product] .wl-hero-cta-row { justify-content: center; } }
+
+@keyframes wl-rise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Ambient background glow, product-specific, decorative only */
+body[data-product="coach"] .wl-landing-hero::before {
+  content: ""; position: absolute; inset: -20% -10% auto -10%; height: 480px;
+  background: radial-gradient(60% 60% at 30% 30%, color-mix(in srgb, var(--l-accent) 22%, transparent), transparent 70%),
+              radial-gradient(50% 50% at 80% 10%, color-mix(in srgb, var(--color-dark, #0b1f3a) 65%, transparent), transparent 70%);
+  filter: blur(10px); z-index: -1; animation: wl-drift 14s ease-in-out infinite alternate;
+}
+body[data-product="panier"] .wl-landing-hero::before {
+  content: ""; position: absolute; inset: -10% -10% auto -10%; height: 380px;
+  background: radial-gradient(55% 55% at 25% 20%, color-mix(in srgb, var(--l-accent) 14%, transparent), transparent 72%);
+  z-index: -1;
+}
+@keyframes wl-drift { from { transform: translateY(0) scale(1); } to { transform: translateY(18px) scale(1.03); } }
+
+/* ---- Video frame: the signature moment, one per product ---- */
+body[data-product] .wl-video-frame { position: relative; }
+body[data-product] .wl-video-frame video,
+body[data-product] .wl-video-frame .wl-video-fallback {
+  width: 100%; max-width: 100%; margin: 0; display: block;
+  background: #000; aspect-ratio: 9 / 16; object-fit: cover;
+}
+body[data-product] .wl-video-frame .wl-video-fallback { align-items: center; justify-content: center; display: flex; color: var(--l-muted); font-weight: 600; }
+
+/* GymBro: dark device bezel with a breathing accent glow — an "intensity" frame */
+body[data-product="coach"] .wl-video-frame {
+  padding: 14px;
+  border-radius: 34px;
+  background: linear-gradient(180deg, #17233c, #0c1424);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.03) inset,
+              0 30px 70px -25px rgba(0, 0, 0, 0.7),
+              0 0 0 0 color-mix(in srgb, var(--l-accent) 55%, transparent);
+  animation: wl-pulse-glow 3.6s ease-in-out infinite;
+  max-width: 340px; margin: 0 auto;
+}
+body[data-product="coach"] .wl-video-frame video,
+body[data-product="coach"] .wl-video-frame .wl-video-fallback { border-radius: 22px; }
+@keyframes wl-pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(255,255,255,.03) inset, 0 30px 70px -25px rgba(0,0,0,.7), 0 0 40px -8px color-mix(in srgb, var(--l-accent) 35%, transparent); }
+  50% { box-shadow: 0 0 0 1px rgba(255,255,255,.03) inset, 0 30px 70px -25px rgba(0,0,0,.7), 0 0 62px -4px color-mix(in srgb, var(--l-accent) 65%, transparent); }
+}
+
+/* Panier: torn-receipt card — the video is "this week's list" tearing off the roll */
+body[data-product="panier"] .wl-video-frame {
+  padding: 16px 16px 30px;
+  background: #fff;
+  border: 1px solid var(--l-border);
+  box-shadow: 0 24px 60px -30px rgba(32, 43, 33, 0.35);
+  max-width: 320px; margin: 0 auto;
+  clip-path: polygon(
+    0% 0%, 100% 0%, 100% 92%,
+    92% 97%, 84% 92%, 76% 97%, 68% 92%, 60% 97%, 52% 92%, 44% 97%,
+    36% 92%, 28% 97%, 20% 92%, 12% 97%, 4% 92%, 0% 97%
+  );
+}
+body[data-product="panier"] .wl-video-frame video,
+body[data-product="panier"] .wl-video-frame .wl-video-fallback { border-radius: 6px; }
+body[data-product="panier"] .wl-video-frame::before {
+  content: attr(data-tag);
+  position: absolute; top: -11px; right: 22px;
+  background: var(--l-accent); color: #fff;
+  font-size: 0.66rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 5px 10px; border-radius: 999px; transform: rotate(3deg);
+  box-shadow: 0 6px 14px -6px rgba(0,0,0,.35);
+}
+
+/* ---------------------------------------------------------------------
+   Section dividers — the recurring signature motif under the hero
+--------------------------------------------------------------------- */
+body[data-product] .wl-signature-divider { height: 46px; margin: 8px 0 -8px; position: relative; overflow: hidden; }
+body[data-product="coach"] .wl-signature-divider svg { width: 100%; height: 100%; display: block; }
+body[data-product="coach"] .wl-signature-divider .wl-pulse-path {
+  fill: none; stroke: var(--l-accent); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+  opacity: 0.85; stroke-dasharray: 6 10; animation: wl-dash 3.2s linear infinite;
+}
+@keyframes wl-dash { to { stroke-dashoffset: -160; } }
+body[data-product="panier"] .wl-signature-divider {
+  border-top: 2px dashed var(--l-border);
+  display: flex; align-items: center; justify-content: center; gap: 22px; height: 1px; margin: 40px 0 30px;
+}
+body[data-product="panier"] .wl-signature-divider span {
+  width: 9px; height: 9px; border-radius: 50%; background: var(--l-bg); border: 2px solid var(--l-border);
+  transform: translateY(-6px);
+}
+body[data-product="panier"] .wl-signature-divider svg { display: none; }
+body[data-product="coach"] .wl-signature-divider span { display: none; }
+body[data-product="coach"] .wl-signature-divider { display: block; }
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-product] .wl-video-frame, body[data-product] .wl-landing-hero::before,
+  body[data-product] .wl-pulse-path, body[data-product] * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+}
+
+/* ---------------------------------------------------------------------
+   Scroll reveal (IntersectionObserver adds .wl-in; CSS does the rest)
+--------------------------------------------------------------------- */
+body[data-product] .wl-reveal { opacity: 0; transform: translateY(22px); transition: opacity .7s var(--wl-ease), transform .7s var(--wl-ease); }
+body[data-product] .wl-reveal.wl-in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { body[data-product] .wl-reveal { opacity: 1; transform: none; transition: none; } }
+
+/* ---------------------------------------------------------------------
+   "How it works" — horizontal stepper with a connecting line and a
+   distinct inline SVG icon per step (never emoji, never generic dots)
+--------------------------------------------------------------------- */
+body[data-product] #wl-how { background: var(--l-surface); border-color: var(--l-border); }
+body[data-product] #wl-how h2 { color: var(--l-text); font-family: var(--l-display); }
+body[data-product] #wl-how .wl-muted { color: var(--l-muted); }
+body[data-product] .wl-how {
+  list-style: none; padding: 30px 0 0; margin: 0;
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; counter-reset: wl-step; position: relative;
+}
+body[data-product] .wl-how::before {
+  content: ""; position: absolute; top: 22px; left: 12%; right: 12%; height: 1px;
+  background: repeating-linear-gradient(90deg, var(--l-border) 0 8px, transparent 8px 14px);
+  display: none;
+}
+@media (min-width: 760px) { body[data-product] .wl-how::before { display: block; } }
+body[data-product] .wl-how li {
+  counter-increment: wl-step; text-align: left; color: var(--l-text); font-size: 0.94rem; line-height: 1.5;
+  position: relative; padding-top: 6px;
+}
+body[data-product] .wl-how li::before {
+  content: ""; display: block; width: 44px; height: 44px; border-radius: 14px; margin-bottom: 16px;
+  background-color: var(--l-surface-strong); background-repeat: no-repeat; background-position: center; background-size: 22px;
+  border: 1px solid var(--l-border); position: relative; z-index: 1;
+}
+#wl-how.wl-in .wl-how li { animation: wl-rise .6s var(--wl-ease) backwards; }
+#wl-how.wl-in .wl-how li:nth-child(1) { animation-delay: .05s; }
+#wl-how.wl-in .wl-how li:nth-child(2) { animation-delay: .16s; }
+#wl-how.wl-in .wl-how li:nth-child(3) { animation-delay: .27s; }
+
+body[data-product="coach"] .wl-how li:nth-child(1)::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23F97316' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 8h3l1.5-2h7L17 8h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1Z'/%3E%3Ccircle cx='12' cy='14' r='3.5'/%3E%3C/svg%3E"); }
+body[data-product="coach"] .wl-how li:nth-child(2)::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23F97316' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='4' y1='6' x2='20' y2='6'/%3E%3Ccircle cx='9' cy='6' r='2'/%3E%3Cline x1='4' y1='12' x2='20' y2='12'/%3E%3Ccircle cx='15' cy='12' r='2'/%3E%3Cline x1='4' y1='18' x2='20' y2='18'/%3E%3Ccircle cx='11' cy='18' r='2'/%3E%3C/svg%3E"); }
+body[data-product="coach"] .wl-how li:nth-child(3)::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23F97316' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 3h7l4 4v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z'/%3E%3Cpath d='M14 3v4h4'/%3E%3Cline x1='8.5' y1='12' x2='15.5' y2='12'/%3E%3Cline x1='8.5' y1='15.5' x2='15.5' y2='15.5'/%3E%3C/svg%3E"); }
+
+body[data-product="panier"] .wl-how li:nth-child(1)::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2316A34A' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='5' width='14' height='15' rx='1'/%3E%3Cline x1='6.5' y1='9' x2='13.5' y2='9'/%3E%3Cline x1='6.5' y1='12.5' x2='13.5' y2='12.5'/%3E%3Cline x1='6.5' y1='16' x2='11' y2='16'/%3E%3Cpath d='M17 8h2.5a1 1 0 0 1 1 1v9a2 2 0 0 1-2 2H8'/%3E%3C/svg%3E"); }
+body[data-product="panier"] .wl-how li:nth-child(2)::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2316A34A' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 9h14l-1.4 9.2a2 2 0 0 1-2 1.8H8.4a2 2 0 0 1-2-1.8L5 9Z'/%3E%3Cpath d='M8 9V7a4 4 0 0 1 8 0v2'/%3E%3Cline x1='9' y1='13' x2='9.5' y2='17'/%3E%3Cline x1='15' y1='13' x2='14.5' y2='17'/%3E%3C/svg%3E"); }
+body[data-product="panier"] .wl-how li:nth-child(3)::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2316A34A' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 21s-6.5-6.1-6.5-11A6.5 6.5 0 0 1 18.5 10c0 4.9-6.5 11-6.5 11Z'/%3E%3Ccircle cx='12' cy='10' r='2.3'/%3E%3C/svg%3E"); }
+
+@media (max-width: 760px) { body[data-product] .wl-how { grid-template-columns: 1fr; gap: 22px; } }
+
+body[data-product] #wl-how .wl-example-inline { display: none; } /* link relocated to the examples gallery */
+
+/* ---------------------------------------------------------------------
+   "What you get" — tilted, stacked real example-plan previews
+--------------------------------------------------------------------- */
+body[data-product] .wl-examples-section h2 { color: var(--l-text); font-family: var(--l-display); }
+body[data-product] .wl-examples-section > p.wl-muted { color: var(--l-muted); max-width: 560px; }
+body[data-product] .wl-examples-gallery {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; margin-top: 32px;
+}
+@media (max-width: 760px) { body[data-product] .wl-examples-gallery { grid-template-columns: 1fr; } }
+body[data-product] .wl-examples-stack { position: relative; height: 340px; }
+body[data-product] .wl-examples-stack img {
+  position: absolute; width: 78%; max-width: 300px; border-radius: 10px; border: 1px solid var(--l-border);
+  box-shadow: 0 22px 44px -20px rgba(0, 0, 0, 0.4); background: #fff;
+  transition: transform .35s var(--wl-ease), box-shadow .35s var(--wl-ease);
+}
+body[data-product] .wl-examples-stack img:nth-child(1) { top: 0; left: 6%; transform: rotate(-6deg); z-index: 1; }
+body[data-product] .wl-examples-stack img:nth-child(2) { top: 18px; left: 22%; transform: rotate(4deg); z-index: 2; }
+body[data-product] .wl-examples-stack:hover img:nth-child(1) { transform: rotate(-9deg) translateY(-6px); }
+body[data-product] .wl-examples-stack:hover img:nth-child(2) { transform: rotate(6deg) translateY(-10px); }
+body[data-product] .wl-examples-copy { display: flex; flex-direction: column; align-items: flex-start; gap: 14px; }
+body[data-product] .wl-examples-copy p { color: var(--l-muted); margin: 0; }
+body[data-product] .wl-examples-copy .wl-example { color: var(--l-muted); font-size: 0.88rem; margin: 0; }
+
+.wl-examples-section.wl-reveal.wl-in .wl-examples-stack img { animation: wl-rise .7s var(--wl-ease) backwards; }
+.wl-examples-section.wl-reveal.wl-in .wl-examples-stack img:nth-child(2) { animation-delay: .12s; }
+
+/* ---------------------------------------------------------------------
+   Pricing — elevated member card, bundle as a distinct ribbon card
+--------------------------------------------------------------------- */
+body[data-product] #wl-pricing h2 { color: var(--l-text); font-family: var(--l-display); text-align: center; }
+body[data-product] #wl-pricing > p.wl-muted { text-align: center; margin: 0 auto; max-width: 480px; color: var(--l-muted); }
+body[data-product] .wl-pricing-grid { margin-top: 34px; }
+body[data-product] .wl-pricing-grid .wl-card {
+  background: var(--l-surface); border-color: var(--l-border); position: relative;
+}
+body[data-product] .wl-pricing-grid .wl-card h2 { color: var(--l-text); }
+body[data-product] .wl-pricing-grid .wl-card .wl-badge { border-color: var(--l-border); color: var(--l-muted); background: transparent; }
+body[data-product] .wl-pricing-grid .wl-card li,
+body[data-product] .wl-pricing-grid .wl-card p:not(.wl-tier-price):not(.wl-bundle-upsell) { color: var(--l-muted); }
+body[data-product] .wl-pricing-grid .wl-tier-price { color: var(--l-text); }
+#wl-pricing.wl-in .wl-pricing-grid .wl-card { animation: wl-rise .65s var(--wl-ease) backwards; }
+#wl-pricing.wl-in .wl-pricing-grid .wl-card:nth-child(2) { animation-delay: .1s; }
+
+body[data-product] .wl-pricing-grid .wl-card-member {
+  border-color: var(--l-accent);
+  box-shadow: 0 26px 60px -28px color-mix(in srgb, var(--l-accent) 55%, transparent);
+  transform: translateY(-6px);
+}
+@media (max-width: 720px) { body[data-product] .wl-pricing-grid .wl-card-member { transform: none; } }
+body[data-product] .wl-tier-badge {
+  position: absolute; top: -13px; right: 22px; background: var(--l-accent); color: var(--l-accent-ink);
+  font-size: 0.68rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 6px 12px; border-radius: 999px; box-shadow: 0 8px 16px -8px rgba(0,0,0,.35);
+}
+body[data-product] .wl-pricing-grid .wl-btn:not(.wl-btn-outline) { background: var(--l-accent); color: var(--l-accent-ink); }
+body[data-product] .wl-pricing-grid .wl-btn:not(.wl-btn-outline):hover { filter: brightness(1.06); }
+body[data-product] .wl-pricing-grid .wl-btn-outline { border-color: var(--l-border); color: var(--l-text); }
+body[data-product] .wl-pricing-grid .wl-btn-outline:hover { background: var(--l-surface-strong); color: var(--l-text); }
+
+body[data-product] .wl-bundle-box {
+  position: relative; margin-top: 20px; border: 1px solid var(--l-border); background: var(--l-surface-strong);
+  border-radius: var(--radius-lg); overflow: visible;
+}
+body[data-product] .wl-bundle-box h4 { color: var(--l-text); }
+body[data-product] .wl-bundle-ribbon {
+  position: absolute; top: -11px; left: 16px; background: var(--l-text); color: var(--l-bg);
+  font-size: 0.64rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 4px 10px; border-radius: 999px;
+}
+body[data-product="panier"] .wl-bundle-ribbon { background: #202b21; color: #fff; }
+
+/* ---------------------------------------------------------------------
+   Sponsors — clean logo band
+--------------------------------------------------------------------- */
+body[data-product] #wl-sponsors-section h2 { color: var(--l-text); font-family: var(--l-display); text-align: center; font-size: 1.1rem; opacity: .8; }
+body[data-product] #wl-sponsors-section { text-align: center; }
+body[data-product] .wl-sponsors-strip { justify-content: center; gap: 0; border-top: 1px solid var(--l-border); border-bottom: 1px solid var(--l-border); padding: 6px 0; margin-top: 18px; }
+body[data-product] .wl-sponsor-item {
+  background: transparent; border: none; border-radius: 0; padding: 14px 26px; min-width: 0;
+  border-right: 1px solid var(--l-border);
+}
+body[data-product] .wl-sponsor-item:last-child { border-right: none; }
+body[data-product] .wl-sponsor-item img { filter: grayscale(1); opacity: .65; transition: filter .25s, opacity .25s; }
+body[data-product] .wl-sponsor-item:hover img { filter: none; opacity: 1; }
+body[data-product] .wl-sponsor-name { color: var(--l-text); }
+body[data-product] .wl-sponsor-message { color: var(--l-muted); }
+body[data-product] #wl-sponsors-section a { color: var(--l-muted); font-size: 0.85rem; }

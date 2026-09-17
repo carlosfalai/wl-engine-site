@@ -6,6 +6,7 @@
 <link rel="icon" id="wl-favicon" type="image/svg+xml" href="/shared/icons/default.svg">
 <title>Accueil</title>
 <link rel="stylesheet" href="shared/ui.css">
+<link rel="stylesheet" href="shared/landing.css">
 </head>
 <body>
 <div class="wl-app">
@@ -59,54 +60,94 @@
 
   <!-- Consumer landing: shown when /config says billing_mode === 'member' -->
   <section id="wl-consumer-landing" class="wl-hidden">
-    <section class="wl-hero">
-      <h1 data-brand-name></h1>
-      <p data-brand-tagline></p>
-      <video id="wl-consumer-video" controls preload="none">
-        <source id="wl-consumer-video-src" src="" type="video/mp4">
-      </video>
-      <div class="wl-video-fallback" id="wl-consumer-video-fallback" style="display:none"></div>
+    <section class="wl-hero wl-landing-hero">
+      <div class="wl-hero-copy">
+        <p class="wl-eyebrow" id="wl-hero-eyebrow"></p>
+        <h1 data-brand-name></h1>
+        <p data-brand-tagline></p>
+        <p class="wl-hero-benefit" id="wl-hero-benefit"></p>
+        <div class="wl-hero-cta-row">
+          <a class="wl-btn" href="#wl-pricing" data-i18n="signin">Commencer</a>
+          <a class="wl-btn wl-btn-outline" href="#wl-how" data-i18n="how_title">Comment ça marche</a>
+        </div>
+      </div>
+      <div class="wl-video-frame" id="wl-video-frame" data-tag="">
+        <video id="wl-consumer-video" controls preload="none">
+          <source id="wl-consumer-video-src" src="" type="video/mp4">
+        </video>
+        <div class="wl-video-fallback" id="wl-consumer-video-fallback" style="display:none"></div>
+      </div>
     </section>
-    <section class="wl-section wl-card" id="wl-how">
+
+    <div class="wl-signature-divider" aria-hidden="true">
+      <svg viewBox="0 0 400 46" preserveAspectRatio="none">
+        <polyline class="wl-pulse-path" points="0,23 90,23 105,6 120,40 135,23 165,23 178,10 191,36 204,23 400,23"></polyline>
+      </svg>
+      <span></span><span></span><span></span>
+    </div>
+
+    <section class="wl-section wl-card wl-reveal" id="wl-how">
       <h2 data-i18n="how_title">Comment ça marche</h2>
       <ol class="wl-how" id="wl-how-steps"></ol>
-      <p style="margin:12px 0 0"><a class="wl-btn wl-btn-outline" id="wl-example-link" href="#" target="_blank" rel="noopener" data-i18n="see_example">Voir un exemple de plan (PDF)</a></p>
-      <p class="wl-example" id="wl-example-caption"></p>
       <p class="wl-muted" data-i18n="ai_disclaimer"></p>
     </section>
 
-    <section class="wl-grid">
-      <div class="wl-card">
-        <span class="wl-badge" data-i18n="tier_free">Gratuit</span>
-        <h2 data-i18n="tier_free">Gratuit</h2>
-        <ul>
-          <li data-i18n="per_month_plan">1 plan par mois</li>
-          <li data-i18n="no_photo_scan">Sans analyse photo</li>
-          <li id="wl-free-sponsor-line" class="wl-hidden" data-i18n="sponsor_line">Offert grâce à un commanditaire</li>
-        </ul>
-        <a class="wl-btn wl-btn-outline wl-btn-block" id="wl-free-cta" href="#" data-i18n="start_free">Commencer gratuitement</a>
-      </div>
-      <div class="wl-card">
-        <span class="wl-badge" data-i18n="tier_member">Membre</span>
-        <h2 data-i18n="tier_member">Membre</h2>
-        <p class="wl-tier-price" id="wl-member-price"></p>
-        <ul>
-          <li data-i18n="per_day_plans">3 plans par jour</li>
-          <li data-i18n="photo_scan_included">Analyse photo incluse</li>
-          <li data-i18n="history_included">Historique complet</li>
-        </ul>
-        <a class="wl-btn wl-btn-block" id="wl-member-cta" href="#" data-i18n="become_member">Devenir membre</a>
-        <div class="wl-bundle-box wl-hidden" id="wl-bundle-box">
-          <h4 data-i18n="bundle_title">Les deux : GymBro + Panier</h4>
-          <p class="wl-tier-price" id="wl-bundle-price" style="margin:0"></p>
-          <p class="wl-bundle-upsell" id="wl-bundle-upsell"></p>
-          <p class="wl-muted" data-i18n="bundle_body"></p>
-          <a class="wl-btn wl-btn-outline wl-btn-block" id="wl-bundle-cta" href="#" data-i18n="become_member_both">Prendre les deux</a>
+    <section class="wl-section wl-examples-section wl-reveal" id="wl-examples-section">
+      <h2 data-i18n="examples_title">Ce que vous recevez</h2>
+      <p class="wl-muted" id="wl-examples-body"></p>
+      <div class="wl-examples-gallery">
+        <div class="wl-examples-stack wl-hidden" id="wl-examples-coach">
+          <img src="exemples/preview-coach-2.jpg" alt="" loading="lazy" width="300" height="389">
+          <img src="exemples/preview-coach-1.jpg" alt="" loading="lazy" width="300" height="389">
+        </div>
+        <div class="wl-examples-stack wl-hidden" id="wl-examples-panier">
+          <img src="exemples/preview-panier-2.jpg" alt="" loading="lazy" width="300" height="389">
+          <img src="exemples/preview-panier-1.jpg" alt="" loading="lazy" width="300" height="389">
+        </div>
+        <div class="wl-examples-copy">
+          <p><a class="wl-btn wl-btn-outline" id="wl-example-link" href="#" target="_blank" rel="noopener" data-i18n="see_example">Voir un exemple de plan (PDF)</a></p>
+          <p class="wl-example" id="wl-example-caption"></p>
         </div>
       </div>
     </section>
 
-    <section class="wl-section" id="wl-sponsors-section">
+    <section class="wl-section" id="wl-pricing">
+      <h2 data-i18n="pricing_title">Choisissez votre forfait</h2>
+      <section class="wl-grid wl-pricing-grid wl-reveal">
+        <div class="wl-card">
+          <span class="wl-badge" data-i18n="tier_free">Gratuit</span>
+          <h2 data-i18n="tier_free">Gratuit</h2>
+          <ul>
+            <li data-i18n="per_month_plan">1 plan par mois</li>
+            <li data-i18n="no_photo_scan">Sans analyse photo</li>
+            <li id="wl-free-sponsor-line" class="wl-hidden" data-i18n="sponsor_line">Offert grâce à un commanditaire</li>
+          </ul>
+          <a class="wl-btn wl-btn-outline wl-btn-block" id="wl-free-cta" href="#" data-i18n="start_free">Commencer gratuitement</a>
+        </div>
+        <div class="wl-card wl-card-member">
+          <span class="wl-tier-badge" data-i18n="tier_member_badge">Recommandé</span>
+          <span class="wl-badge" data-i18n="tier_member">Membre</span>
+          <h2 data-i18n="tier_member">Membre</h2>
+          <p class="wl-tier-price" id="wl-member-price"></p>
+          <ul>
+            <li data-i18n="per_day_plans">3 plans par jour</li>
+            <li data-i18n="photo_scan_included">Analyse photo incluse</li>
+            <li data-i18n="history_included">Historique complet</li>
+          </ul>
+          <a class="wl-btn wl-btn-block" id="wl-member-cta" href="#" data-i18n="become_member">Devenir membre</a>
+          <div class="wl-bundle-box wl-hidden" id="wl-bundle-box">
+            <span class="wl-bundle-ribbon" data-i18n="bundle_best_value">Meilleure valeur</span>
+            <h4 data-i18n="bundle_title">Les deux : GymBro + Panier</h4>
+            <p class="wl-tier-price" id="wl-bundle-price" style="margin:0"></p>
+            <p class="wl-bundle-upsell" id="wl-bundle-upsell"></p>
+            <p class="wl-muted" data-i18n="bundle_body"></p>
+            <a class="wl-btn wl-btn-outline wl-btn-block" id="wl-bundle-cta" href="#" data-i18n="become_member_both">Prendre les deux</a>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <section class="wl-section wl-reveal" id="wl-sponsors-section">
       <h2 data-i18n="sponsors_strip_title">Offert grâce à nos commanditaires</h2>
       <div id="wl-sponsors-strip" class="wl-sponsors-strip"></div>
       <p><a href="commanditaires/" data-i18n="become_sponsor">Devenir commanditaire</a></p>
@@ -123,6 +164,25 @@
 <script src="shared/app.js"></script>
 <script>
   WLApp.applyI18n();
+
+  // Scroll-reveal: any element carrying .wl-reveal fades/rises into place
+  // the first time it enters the viewport. Only landing.css elements use
+  // this class, so it has no effect on the partner landing or other pages.
+  (function () {
+    var revealEls = document.querySelectorAll('.wl-reveal');
+    if (!revealEls.length) return;
+    if (!('IntersectionObserver' in window)) {
+      revealEls.forEach(function (el) { el.classList.add('wl-in'); });
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) { entry.target.classList.add('wl-in'); io.unobserve(entry.target); }
+      });
+    }, { threshold: 0.15 });
+    revealEls.forEach(function (el) { io.observe(el); });
+  })();
+
   if (WLApp.hostPartner()) {
     document.getElementById('wl-partner-landing').classList.add('wl-hidden');
     document.getElementById('wl-consumer-landing').classList.remove('wl-hidden');
@@ -181,8 +241,19 @@
       var consumer = document.getElementById('wl-consumer-landing');
       consumer.classList.remove('wl-hidden');
 
-      // product type drives which product page + video is shown
+      // product type drives which product page + video is shown, and which
+      // of the two landing personalities (dark/orange GymBro, warm/green
+      // Panier — see shared/landing.css) is switched on via data-product.
       var product = config.type === 'panier' ? 'panier' : 'coach';
+      document.body.setAttribute('data-product', product);
+
+      document.getElementById('wl-hero-eyebrow').textContent = WLApp.t(product === 'panier' ? 'hero_eyebrow_panier' : 'hero_eyebrow_coach');
+      document.getElementById('wl-hero-benefit').textContent = WLApp.t(product === 'panier' ? 'hero_benefit_panier' : 'hero_benefit_coach');
+      document.getElementById('wl-video-frame').setAttribute('data-tag', WLApp.t(product === 'panier' ? 'video_frame_tag_panier' : 'video_frame_tag_coach'));
+      document.getElementById('wl-examples-body').textContent = WLApp.t(product === 'panier' ? 'examples_body_panier' : 'examples_body_coach');
+      var examplesEl = document.getElementById(product === 'panier' ? 'wl-examples-panier' : 'wl-examples-coach');
+      if (examplesEl) examplesEl.classList.remove('wl-hidden');
+
       // Pitch videos (2026-09-17) exist in French only for now: every language plays them.
       var videoBase = product === 'panier' ? 'panier-pitch-fr' : 'gymbro-pitch-fr';
       document.getElementById('wl-consumer-video-fallback').textContent = config.name || '';
