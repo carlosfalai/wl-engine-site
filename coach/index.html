@@ -400,18 +400,27 @@
     var remaining = m.remaining || {};
     el('wl-thin-bar').classList.remove('wl-hidden');
     el('wl-tier-badge').textContent = A.t('your_tier') + ': ' + (tier === 'member' ? A.t('tier_member') : A.t('tier_free'));
-    el('wl-photo-q').classList.toggle('wl-hidden', tier !== 'member');
+    // The photo question follows the photo allowance (members, or everyone
+    // while the service is free), not the tier name.
+    var canPhotoNow = m.limits ? Boolean(m.limits.photoScan) : tier === 'member';
+    el('wl-photo-q').classList.toggle('wl-hidden', !canPhotoNow);
+    var periodKey = m.free_cadence === 'week' ? 'plans_remaining_week' : 'plans_remaining_month';
     if (tier === 'member') {
       var n = remaining.today !== undefined ? remaining.today : remaining.month;
       el('wl-remaining-label').textContent = n !== undefined ? n + ' ' + (remaining.today !== undefined ? A.t('plans_remaining_today') : A.t('plans_remaining_month')) : '';
       el('wl-manage-sub-btn').classList.remove('wl-hidden');
       el('wl-tier-section').classList.add('wl-hidden');
     } else {
-      el('wl-remaining-label').textContent = remaining.month !== undefined ? remaining.month + ' ' + A.t('plans_remaining_month') : '';
+      el('wl-remaining-label').textContent = remaining.month !== undefined ? remaining.month + ' ' + A.t(periodKey) : '';
       el('wl-manage-sub-btn').classList.add('wl-hidden');
       el('wl-tier-section').classList.remove('wl-hidden');
-      el('wl-upgrade-price').textContent = (siteConfig && siteConfig.member_price_label) || '';
-      el('wl-upgrade-btn').textContent = A.planCta(siteConfig);
+      if (m.free_only || A.isFreeOnly(siteConfig)) {
+        // Free-only mode: nothing to buy — the Soutenir block takes the card's place.
+        A.supportBlock(el('wl-upgrade-card'), siteConfig && siteConfig.donations ? siteConfig : { donations: m.donations });
+      } else {
+        el('wl-upgrade-price').textContent = (siteConfig && siteConfig.member_price_label) || '';
+        el('wl-upgrade-btn').textContent = A.planCta(siteConfig);
+      }
     }
     var used = tier !== 'member' && remaining.month === 0;
     if (used) F.freeUsedCard(el('wl-free-used'), m); else el('wl-free-used').classList.add('wl-hidden');
@@ -445,7 +454,7 @@
   }
 
   // ---- boot ----
-  A.fetchConfig().then(function (c) { siteConfig = c; applyBrand(c); }).catch(function () { A.showError(el('wl-config-error'), A.t('service_unavailable')); });
+  A.fetchConfig().then(function (c) { siteConfig = c; applyBrand(c); if (me) applyTierUI(me); }).catch(function () { A.showError(el('wl-config-error'), A.t('service_unavailable')); });
 
   if (F.qp('checkout') === 'success') {
     var banner = el('wl-checkout-banner');

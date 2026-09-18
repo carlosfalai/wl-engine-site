@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" id="wl-favicon" type="image/svg+xml" href="/shared/icons/default.svg">
 <title>Accueil</title>
-<meta name="description" id="wl-meta-description" content="GymBro et Panier : coach d’entraînement et planificateur d’épicerie par IA. Plans personnalisés livrés en PDF, gratuits ou membre.">
+<meta name="description" id="wl-meta-description" content="GymBro et Panier : coach d’entraînement et planificateur d’épicerie par IA. Plans personnalisés livrés en PDF, gratuits.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="GymBro + Panier">
 <meta property="og:title" id="wl-og-title" content="GymBro + Panier">
@@ -369,6 +369,8 @@
       var skeleton = document.getElementById('wl-price-skeleton');
       if (skeleton) skeleton.remove();
       document.getElementById('wl-member-price').textContent = config.member_price_label || '';
+      // Free-only mode (2026-09-18): no member card, no price, a Soutenir block.
+      WLApp.applyFreeOnlyLanding(config);
 
       if (config.sponsors_enabled) {
         var product2 = config.type === 'panier' ? 'panier' : 'coach';

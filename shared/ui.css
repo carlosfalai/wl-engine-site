@@ -411,3 +411,12 @@ video { max-width: 100%; height: auto; display: block; }
 .wl-wiz-nav { flex-wrap: wrap; }
 .wl-wiz-nav .wl-btn { min-width: 160px; }
 .wl-nav #wl-user-email { word-break: break-all; font-weight: 600; }
+
+/* ---- free-only mode: Soutenir block (2026-09-18) ---- */
+.wl-support-card { border: 2px dashed var(--color-primary); text-align: center; }
+.wl-support-card h3 { margin-top: 0; color: var(--color-primary); }
+.wl-support-btns { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 12px 0 8px; }
+.wl-support-note { font-size: 0.85em; margin: 0; }
+.wl-pricing-grid-single { grid-template-columns: minmax(0, 480px); justify-content: center; }
+.wl-free-only-note { text-align: center; max-width: 560px; margin: 16px auto 0; }
+#wl-support { max-width: 560px; margin: 16px auto 0; }

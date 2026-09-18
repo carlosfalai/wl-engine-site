@@ -142,6 +142,18 @@
       example_caption_panier: 'Exemple fictif : famille de Rosemont (Montréal), 2 adultes et 1 enfant, 170 $ par semaine, allergie aux arachides.',
       example_caption_coach: 'Exemple fictif : 38 ans, 92 kg, perte de gras, 3 séances à la maison avec haltères, genou gauche fragile.',
       ai_disclaimer: 'Recommandation d’IA, pas un avis professionnel.',
+      free_now_title: 'Gratuit, pour l’instant',
+      free_only_note: 'GymBro et Panier sont offerts gratuitement pendant qu’on les améliore. Une offre payante viendra plus tard, annoncée d’avance.',
+      per_week_plan: '1 plan par semaine',
+      plans_remaining_week: 'plans restants cette semaine',
+      panier_free_line: 'Circulaires de la semaine, allergies filtrées',
+      support_title: 'Aide-nous à garder GymBro et Panier gratuits',
+      support_body: 'Le service est gratuit. Si vous voulez nous soutenir, un don de 5 $ couvre bien des plans.',
+      donate_once: 'Donner 5 $',
+      donate_monthly: 'Ou inscris-toi à la contribution de 5 $/mois',
+      no_receipt: 'Aucun reçu fiscal : nous ne sommes pas un organisme de bienfaisance.',
+      next_free_plan_msg_free: 'Prochain plan gratuit le {date}.',
+      quota_exceeded_msg_free: 'Limite atteinte pour cette semaine. Revenez la semaine prochaine.',
       video_language_note: 'Vidéo en français pour le moment.',
       hero_eyebrow_coach: 'Coach IA · plan sur mesure',
       hero_eyebrow_panier: 'IA · épicerie intelligente',
@@ -438,6 +450,18 @@
       example_caption_panier: 'Fictional example: a Rosemont (Montreal) family, 2 adults and 1 child, $170 a week, peanut allergy.',
       example_caption_coach: 'Fictional example: 38 years old, 92 kg, fat loss, 3 home sessions with dumbbells, sensitive left knee.',
       ai_disclaimer: 'AI recommendation, not professional advice.',
+      free_now_title: 'Free, for now',
+      free_only_note: 'GymBro and Panier are free while we improve them. A paid offer will come later, announced in advance.',
+      per_week_plan: '1 plan per week',
+      plans_remaining_week: 'plans left this week',
+      panier_free_line: 'This week’s flyers, allergies filtered',
+      support_title: 'Help us keep GymBro and Panier free',
+      support_body: 'The service is free. If you want to support us, a $5 donation covers a lot of plans.',
+      donate_once: 'Give $5',
+      donate_monthly: 'Or sign up for the $5/month contribution',
+      no_receipt: 'No tax receipt: we are not a charity.',
+      next_free_plan_msg_free: 'Next free plan on {date}.',
+      quota_exceeded_msg_free: 'Limit reached for this week. Come back next week.',
       video_language_note: 'Video currently in French only.',
       hero_eyebrow_coach: 'AI coach · a plan built for you',
       hero_eyebrow_panier: 'AI · smart grocery planning',
@@ -734,6 +758,18 @@
       example_caption_panier: 'Ejemplo ficticio: familia de Rosemont (Montreal), 2 adultos y 1 niño, 170 $ por semana, alergia a los cacahuetes.',
       example_caption_coach: 'Ejemplo ficticio: 38 años, 92 kg, pérdida de grasa, 3 sesiones en casa con mancuernas, rodilla izquierda delicada.',
       ai_disclaimer: 'Recomendación de IA, no consejo profesional.',
+      free_now_title: 'Gratis, por ahora',
+      free_only_note: 'GymBro y Panier son gratuitos mientras los mejoramos. Una oferta de pago llegará más adelante, anunciada con antelación.',
+      per_week_plan: '1 plan por semana',
+      plans_remaining_week: 'planes restantes esta semana',
+      panier_free_line: 'Folletos de la semana, alergias filtradas',
+      support_title: 'Ayúdanos a mantener GymBro y Panier gratis',
+      support_body: 'El servicio es gratuito. Si quieres apoyarnos, una donación de 5 $ cubre muchos planes.',
+      donate_once: 'Donar 5 $',
+      donate_monthly: 'O suscríbete a la contribución de 5 $/mes',
+      no_receipt: 'Sin recibo fiscal: no somos una organización benéfica.',
+      next_free_plan_msg_free: 'Próximo plan gratuito el {date}.',
+      quota_exceeded_msg_free: 'Límite alcanzado esta semana. Vuelve la próxima semana.',
       video_language_note: 'Video actualmente solo en francés.',
       hero_eyebrow_coach: 'Coach IA · un plan a tu medida',
       hero_eyebrow_panier: 'IA · compras inteligentes',
@@ -1090,13 +1126,25 @@
     poll();
   }
 
+  // The last /config answer, so helpers that render after it (error
+  // messages, the free-only "Soutenir" block) know the mode without every
+  // page passing it around.
+  var lastConfig = null;
+  function isFreeOnly(config) {
+    var c = config || lastConfig;
+    return Boolean(c && c.free_only);
+  }
+
   function fetchConfig() {
     var partner = getPartner();
     var params = new URLSearchParams();
     if (partner) params.set('partner', partner);
     params.set('host', location.hostname);
     params.set('lang', lang);
-    return api('/config?' + params.toString()).catch(function (err) {
+    return api('/config?' + params.toString()).then(function (config) {
+      lastConfig = config;
+      return config;
+    }).catch(function (err) {
       // fallback brand per spec — apply it directly here, then re-throw so each
       // page's own .catch() still runs and shows the "service unavailable" banner.
       var fallback = { code: partner || '', type: partner ? '' : 'both', name: partner ? '' : 'Coach + Panier', tagline: '', colors: {} };
@@ -1334,7 +1382,12 @@
   function genErrorMessage(err) {
     var data = (err && err.data) || {};
     var code = data.error;
-    if (code === 'quota_exceeded') return t('quota_exceeded_msg') + (data.next_free_plan ? ' ' + tf('next_free_plan_msg', { date: formatDate(data.next_free_plan) }) : '');
+    if (code === 'quota_exceeded') {
+      // Free-only mode: nothing to upgrade to, so the message only gives the date.
+      var free = isFreeOnly();
+      return t(free ? 'quota_exceeded_msg_free' : 'quota_exceeded_msg') + (data.next_free_plan ? ' ' + tf(free ? 'next_free_plan_msg_free' : 'next_free_plan_msg', { date: formatDate(data.next_free_plan) }) : '');
+    }
+    if (code === 'free_only') return t('free_only_note');
     if (code === 'upgrade_required') return t('upgrade_required_msg');
     if (code === 'rate_limited') return t('rate_limited_msg');
     if (code === 'terms_required') return t('terms_required_msg');
@@ -1377,9 +1430,58 @@
     var out = me && me.tier !== 'member' && remaining.month === 0;
     if (button) button.disabled = !!out;
     if (noteEl) {
-      noteEl.textContent = out && me.next_free_plan ? tf('next_free_plan_msg', { date: formatDate(me.next_free_plan) }) : '';
+      noteEl.textContent = out && me.next_free_plan ? tf(isFreeOnly() ? 'next_free_plan_msg_free' : 'next_free_plan_msg', { date: formatDate(me.next_free_plan) }) : '';
       noteEl.classList.toggle('wl-hidden', !out);
     }
+  }
+
+  // Free-only mode (2026-09-18): the service is given away for now; people
+  // who want to support it get the two donation links every project site
+  // uses. Replaces the "Devenir membre" card wherever it appeared.
+  function supportBlock(container, config) {
+    if (!container) return;
+    var d = (config && config.donations) || (lastConfig && lastConfig.donations) || {};
+    container.className = 'wl-card wl-support-card';
+    container.innerHTML =
+      '<h3>' + escapeHtml(t('support_title')) + '</h3>' +
+      '<p class="wl-muted">' + escapeHtml(t('support_body')) + '</p>' +
+      '<p class="wl-support-btns">' +
+        (d.once ? '<a class="wl-btn" href="' + escapeHtml(d.once) + '" target="_blank" rel="noopener">' + escapeHtml(t('donate_once')) + '</a> ' : '') +
+        (d.monthly ? '<a class="wl-btn wl-btn-outline" href="' + escapeHtml(d.monthly) + '" target="_blank" rel="noopener">' + escapeHtml(t('donate_monthly')) + '</a>' : '') +
+      '</p>' +
+      '<p class="wl-muted wl-support-note">' + escapeHtml(t('no_receipt')) + '</p>';
+    container.classList.remove('wl-hidden');
+  }
+
+  // Landing page in free-only mode: one card ("Gratuit, pour l'instant"),
+  // no member card, no price, the Soutenir block under it. Keeps the
+  // restyled landing untouched otherwise.
+  function applyFreeOnlyLanding(config) {
+    if (!isFreeOnly(config)) return;
+    var pricing = document.getElementById('wl-pricing');
+    if (!pricing) return;
+    var title = pricing.querySelector('h2');
+    if (title) title.textContent = t('free_now_title');
+    var memberCard = pricing.querySelector('.wl-card-member');
+    if (memberCard) memberCard.classList.add('wl-hidden');
+    var perMonth = pricing.querySelector('[data-i18n="per_month_plan"]');
+    if (perMonth && config.free_cadence === 'week') perMonth.textContent = t('per_week_plan');
+    var photoLi = document.getElementById('wl-photo-scan-li');
+    if (photoLi) {
+      // GymBro: the photo scan is open to everyone while it is free; Panier
+      // has no photo feature — say what it does instead.
+      photoLi.textContent = t(config.type === 'panier' ? 'panier_free_line' : 'photo_scan_included');
+      photoLi.classList.remove('wl-hidden');
+    }
+    var grid = pricing.querySelector('.wl-pricing-grid');
+    if (grid) grid.classList.add('wl-pricing-grid-single');
+    var note = document.createElement('p');
+    note.className = 'wl-muted wl-free-only-note';
+    note.textContent = t('free_only_note');
+    var support = document.createElement('div');
+    support.id = 'wl-support';
+    if (grid) { grid.insertAdjacentElement('afterend', note); note.insertAdjacentElement('afterend', support); } else { pricing.appendChild(note); pricing.appendChild(support); }
+    supportBlock(support, config);
   }
 
   // Terms of use + 18 gate. Shown until the account has accepted; the form
@@ -1569,6 +1671,9 @@
     initManifest: initManifest,
     addDict: addDict,
     planCta: planCta,
-    deadEnd: deadEnd
+    deadEnd: deadEnd,
+    isFreeOnly: isFreeOnly,
+    supportBlock: supportBlock,
+    applyFreeOnlyLanding: applyFreeOnlyLanding
   };
 })(window);

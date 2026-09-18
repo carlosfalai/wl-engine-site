@@ -89,6 +89,7 @@
       terms_and: 'et la',
       free_used_title: 'Plan gratuit utilisé',
       free_used_body: 'Votre prochain plan gratuit arrive le {date}. Membre : 3 plans par jour, GymBro et Panier.',
+      free_used_body_free: 'Votre prochain plan gratuit arrive le {date}. Le service est gratuit pendant qu’on l’améliore.',
       plan_ready_title: 'Votre plan est prêt',
       loc_found_stores: 'Trouvé : {list}',
       loc_checking: 'Recherche des magasins près de chez vous...',
@@ -177,6 +178,7 @@
       terms_and: 'and the',
       free_used_title: 'Free plan used',
       free_used_body: 'Your next free plan comes on {date}. Member: 3 plans a day, GymBro and Panier.',
+      free_used_body_free: 'Your next free plan comes on {date}. The service is free while we improve it.',
       plan_ready_title: 'Your plan is ready',
       loc_found_stores: 'Found: {list}',
       loc_checking: 'Looking for stores near you...',
@@ -265,6 +267,7 @@
       terms_and: 'y la',
       free_used_title: 'Plan gratuito usado',
       free_used_body: 'Tu próximo plan gratuito llega el {date}. Miembro: 3 planes al día, GymBro y Panier.',
+      free_used_body_free: 'Tu próximo plan gratuito llega el {date}. El servicio es gratuito mientras lo mejoramos.',
       plan_ready_title: 'Tu plan está listo',
       loc_found_stores: 'Encontrado: {list}',
       loc_checking: 'Buscando tiendas cerca de ti...',
@@ -733,7 +736,8 @@
 
   // Free allowance used: the button is off, the date and the plan are shown.
   function freeUsedCard(container, me) {
-    container.innerHTML = '<div class="wl-card"><h3 style="margin:0 0 6px;color:var(--color-primary)">' + esc(t('free_used_title')) + '</h3><p style="margin:0">' + esc(tf('free_used_body', { date: me.next_free_plan ? A.formatDate(me.next_free_plan) : '' })) + '</p></div>';
+    var bodyKey = (A.isFreeOnly && A.isFreeOnly()) || me.free_only ? 'free_used_body_free' : 'free_used_body';
+    container.innerHTML = '<div class="wl-card"><h3 style="margin:0 0 6px;color:var(--color-primary)">' + esc(t('free_used_title')) + '</h3><p style="margin:0">' + esc(tf(bodyKey, { date: me.next_free_plan ? A.formatDate(me.next_free_plan) : '' })) + '</p></div>';
     container.classList.remove('wl-hidden');
   }
 
