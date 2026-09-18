@@ -411,7 +411,7 @@
       el('wl-manage-sub-btn').classList.remove('wl-hidden');
       el('wl-tier-section').classList.add('wl-hidden');
     } else {
-      el('wl-remaining-label').textContent = remaining.month !== undefined ? remaining.month + ' ' + A.t(periodKey) : '';
+      el('wl-remaining-label').textContent = remaining.month !== undefined ? A.remainingLabel(remaining.month, periodKey) : '';
       el('wl-manage-sub-btn').classList.add('wl-hidden');
       el('wl-tier-section').classList.remove('wl-hidden');
       if (m.free_only || A.isFreeOnly(siteConfig)) {
@@ -466,6 +466,17 @@
   }
 
   F.handleMagicLink(PRODUCT).then(function () {
+    if (!A.getToken() && F.qp('plan') && F.qp('k')) {
+      // The one-tap link was already used (other device, double tap): the
+      // plan itself still opens from its key, with the e-mail box below.
+      return F.planByKey().then(function (p) {
+        if (!p) return;
+        F.dropParams(['plan', 'k']);
+        showOnly(['wl-result', 'wl-email-step']);
+        F.renderCoachResult(el('wl-result'), { plan_id: p.id, pdf_key: p.pdf_key, summary: p.summary }, {});
+        F.signInAgain(el('wl-email-step'), PRODUCT, ['wl-form-section']);
+      });
+    }
     if (!A.getToken()) {
       var d = F.loadDraft(PRODUCT); if (d && d.payload) fillForm(d.payload);
       F.signInAgain(el('wl-email-step'), PRODUCT, ['wl-form-section']);
@@ -489,7 +500,7 @@
         return;
       }
       if (planId) {
-        F.dropParams(['plan']);
+        F.dropParams(['plan', 'k']);
         return A.api('/plans/' + encodeURIComponent(planId)).then(function (p) {
           showOnly(['wl-result']);
           F.renderCoachResult(el('wl-result'), { plan_id: p.id, pdf_key: p.pdf_key, summary: Object.assign({}, p.summary && p.summary.transformation || {}, p.summary || {}), checks: p.summary && p.summary.checks }, {});

@@ -15,6 +15,12 @@
       var stored = localStorage.getItem('wl_lang');
       if (LANGS.indexOf(stored) !== -1) return stored;
     } catch (e) {}
+    // First visit: the browser's language (en-US -> en, es-MX -> es), French
+    // otherwise. The toggle stores the choice from then on.
+    try {
+      var nav = String((navigator.languages && navigator.languages[0]) || navigator.language || '').slice(0, 2).toLowerCase();
+      if (LANGS.indexOf(nav) !== -1) return nav;
+    } catch (e) {}
     return 'fr';
   }
 
@@ -146,6 +152,9 @@
       free_only_note: 'GymBro et Panier sont offerts gratuitement pendant qu’on les améliore. Une offre payante viendra plus tard, annoncée d’avance.',
       per_week_plan: '1 plan par semaine',
       plans_remaining_week: 'plans restants cette semaine',
+      plan_remaining_week: 'plan restant cette semaine',
+      plan_remaining_month: 'plan restant ce mois',
+      plan_remaining_today: 'plan restant aujourd’hui',
       panier_free_line: 'Circulaires de la semaine, allergies filtrées',
       support_title: 'Aide-nous à garder GymBro et Panier gratuits',
       support_body: 'Le service est gratuit. Si vous voulez nous soutenir, un don de 5 $ couvre bien des plans.',
@@ -454,6 +463,9 @@
       free_only_note: 'GymBro and Panier are free while we improve them. A paid offer will come later, announced in advance.',
       per_week_plan: '1 plan per week',
       plans_remaining_week: 'plans left this week',
+      plan_remaining_week: 'plan left this week',
+      plan_remaining_month: 'plan left this month',
+      plan_remaining_today: 'plan left today',
       panier_free_line: 'This week’s flyers, allergies filtered',
       support_title: 'Help us keep GymBro and Panier free',
       support_body: 'The service is free. If you want to support us, a $5 donation covers a lot of plans.',
@@ -762,6 +774,9 @@
       free_only_note: 'GymBro y Panier son gratuitos mientras los mejoramos. Una oferta de pago llegará más adelante, anunciada con antelación.',
       per_week_plan: '1 plan por semana',
       plans_remaining_week: 'planes restantes esta semana',
+      plan_remaining_week: 'plan restante esta semana',
+      plan_remaining_month: 'plan restante este mes',
+      plan_remaining_today: 'plan restante hoy',
       panier_free_line: 'Folletos de la semana, alergias filtradas',
       support_title: 'Ayúdanos a mantener GymBro y Panier gratis',
       support_body: 'El servicio es gratuito. Si quieres apoyarnos, una donación de 5 $ cubre muchos planes.',
@@ -1464,6 +1479,9 @@
     if (title) title.textContent = t('free_now_title');
     var memberCard = pricing.querySelector('.wl-card-member');
     if (memberCard) memberCard.classList.add('wl-hidden');
+    // One card left: its badge repeated its own title ("Gratuit Gratuit").
+    var freeBadge = pricing.querySelector('.wl-card:not(.wl-card-member) .wl-badge');
+    if (freeBadge) freeBadge.classList.add('wl-hidden');
     var perMonth = pricing.querySelector('[data-i18n="per_month_plan"]');
     if (perMonth && config.free_cadence === 'week') perMonth.textContent = t('per_week_plan');
     var photoLi = document.getElementById('wl-photo-scan-li');
@@ -1674,6 +1692,8 @@
     deadEnd: deadEnd,
     isFreeOnly: isFreeOnly,
     supportBlock: supportBlock,
-    applyFreeOnlyLanding: applyFreeOnlyLanding
+    applyFreeOnlyLanding: applyFreeOnlyLanding,
+    // "1 plan restant" / "2 plans restants": singular below 2.
+    remainingLabel: function (n, periodKey) { return n + ' ' + t((Number(n) === 1 ? periodKey.replace('plans_', 'plan_') : periodKey)); }
   };
 })(window);

@@ -345,8 +345,12 @@ body[data-product="coach"] .wl-signature-divider { display: block; }
 /* ---------------------------------------------------------------------
    Scroll reveal (IntersectionObserver adds .wl-in; CSS does the rest)
 --------------------------------------------------------------------- */
-body[data-product] .wl-reveal { opacity: 0; transform: translateY(22px); transition: opacity .7s var(--wl-ease), transform .7s var(--wl-ease); }
-body[data-product] .wl-reveal.wl-in { opacity: 1; transform: none; }
+/* Content is visible by default: a print, a reader mode, a crawler or an
+   in-app browser that never fires scroll events must not see a blank page.
+   The .wl-reveal-ready class is added by the landing script only when an
+   IntersectionObserver exists, and only then do sections start hidden. */
+body[data-product].wl-reveal-ready .wl-reveal { opacity: 0; transform: translateY(22px); transition: opacity .7s var(--wl-ease), transform .7s var(--wl-ease); }
+body[data-product].wl-reveal-ready .wl-reveal.wl-in { opacity: 1; transform: none; }
 @media (prefers-reduced-motion: reduce) { body[data-product] .wl-reveal { opacity: 1; transform: none; transition: none; } }
 
 /* ---------------------------------------------------------------------

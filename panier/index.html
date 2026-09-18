@@ -259,12 +259,15 @@
         var f = data.fields || {};
         if (!Object.keys(f).length) { msg.textContent = A.t('own_fail'); return; }
         ['budget', 'adults', 'children', 'allergies_other', 'goals', 'preferences', 'max_stores', 'postal_code'].forEach(function (k) { if (f[k] !== undefined && form.elements[k]) form.elements[k].value = f[k]; });
-        if (f.postal_code) { checkPostal(); nearbyDone = ''; }
+        if (f.postal_code) { postalInput.value = f.postal_code; try { checkPostal(); } catch (e) {} nearbyDone = ''; lastPoint = null; }
         if (f.allergies) A.setChecked(el('wl-allergies'), f.allergies);
         if (f.diet) A.setChecked(el('wl-diet'), f.diet);
-        wiz.sync();
+        try { wiz.sync(); } catch (e) {}
         msg.textContent = A.tf('own_ok', { summary: F.ownWordsSummary(f) });
-        wiz.goTo(form.elements.postal_code.value ? 'allergies' : 'location');
+        // Straight to the allergy boxes (the safety step) when the sentence
+        // gave a location; the store lookup runs in the background.
+        wiz.goTo(postalInput.value.trim() ? 'allergies' : 'location');
+        if (postalInput.value.trim()) { try { loadNearby(); } catch (e) {} }
       })
       .catch(function (err) { msg.textContent = err && err.status === 429 ? A.t('rate_limited_retry') : A.t('own_fail'); })
       .finally(function () { el('wl-own-btn').disabled = false; });
@@ -385,7 +388,7 @@
       el('wl-manage-sub-btn').classList.remove('wl-hidden');
       el('wl-tier-section').classList.add('wl-hidden');
     } else {
-      el('wl-remaining-label').textContent = remaining.month !== undefined ? remaining.month + ' ' + A.t(periodKey) : '';
+      el('wl-remaining-label').textContent = remaining.month !== undefined ? A.remainingLabel(remaining.month, periodKey) : '';
       el('wl-manage-sub-btn').classList.add('wl-hidden');
       el('wl-tier-section').classList.remove('wl-hidden');
       if (m.free_only || A.isFreeOnly(siteConfig)) {
@@ -442,6 +445,17 @@
   }
 
   F.handleMagicLink(PRODUCT).then(function () {
+    if (!A.getToken() && F.qp('plan') && F.qp('k')) {
+      // The one-tap link was already used (other device, double tap): the
+      // plan itself still opens from its key, with the e-mail box below.
+      return F.planByKey().then(function (p) {
+        if (!p) return;
+        F.dropParams(['plan', 'k']);
+        showOnly(['wl-result', 'wl-email-step']);
+        F.renderPanierResult(el('wl-result'), { plan_id: p.id, pdf_key: p.pdf_key, summary: p.summary }, {});
+        F.signInAgain(el('wl-email-step'), PRODUCT, ['wl-form-section']);
+      });
+    }
     if (!A.getToken()) {
       var d = F.loadDraft(PRODUCT); if (d && d.payload) fillForm(d.payload);
       F.signInAgain(el('wl-email-step'), PRODUCT, ['wl-form-section']);
@@ -467,7 +481,7 @@
         return;
       }
       if (planId) {
-        F.dropParams(['plan']);
+        F.dropParams(['plan', 'k']);
         return A.api('/plans/' + encodeURIComponent(planId)).then(function (p) {
           showOnly(['wl-result']);
           F.renderPanierResult(el('wl-result'), { plan_id: p.id, pdf_key: p.pdf_key, summary: p.summary }, {});

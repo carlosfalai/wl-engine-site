@@ -283,7 +283,16 @@
   // ---------- draft (survives the e-mail round trip, same device) ----------
   function draftKey(product) { return 'wl_draft_' + product; }
   function saveDraft(product, obj) { try { localStorage.setItem(draftKey(product), JSON.stringify(obj)); } catch (e) {} }
-  function loadDraft(product) { try { return JSON.parse(localStorage.getItem(draftKey(product)) || 'null'); } catch (e) { return null; } }
+  var DRAFT_MAX_AGE = 24 * 3600 * 1000;
+  function loadDraft(product) {
+    try {
+      var d = JSON.parse(localStorage.getItem(draftKey(product)) || 'null');
+      // A draft holds allergies, injuries and a postal code: on a shared
+      // device it must not outlive the day it was typed.
+      if (d && d.at && Date.now() - d.at > DRAFT_MAX_AGE) { localStorage.removeItem(draftKey(product)); return null; }
+      return d;
+    } catch (e) { return null; }
+  }
   function clearDraft(product) { try { localStorage.removeItem(draftKey(product)); } catch (e) {} }
 
   // ---------- query helpers ----------
@@ -313,8 +322,17 @@
   // A link that was already used (or expired) and no session: ask for the
   // e-mail again right away instead of showing an empty form.
   var linkFailed = false;
+  // The "plan ready" e-mail: ?plan=<id>&k=<key>. When the sign-in part of
+  // the link is spent (second device, a double tap) the plan is still shown
+  // from its key — never "this link was already used" with an empty box.
+  function planByKey() {
+    var id = qp('plan'), k = qp('k');
+    if (!id || !k) return Promise.resolve(null);
+    return A.api('/plans/' + encodeURIComponent(id) + '/view?k=' + encodeURIComponent(k)).catch(function () { return null; });
+  }
   function signInAgain(container, product, hideIds) {
     if (!linkFailed || A.getToken()) return false;
+    clearDraft(product);
     (hideIds || []).forEach(function (id) { var n = document.getElementById(id); if (n) n.classList.add('wl-hidden'); });
     container.classList.remove('wl-hidden');
     emailStep(container, { product: product, nudge: false, draft: function () { return loadDraft(product) || {}; }, onSignedIn: function () { location.reload(); } });
@@ -765,6 +783,7 @@
     returnCard: returnCard,
     freeUsedCard: freeUsedCard,
     ownWordsSummary: ownWordsSummary,
+    planByKey: planByKey,
     money: money,
     km: km
   };

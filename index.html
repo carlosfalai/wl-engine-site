@@ -7,7 +7,7 @@
 <title>Accueil</title>
 <meta name="description" id="wl-meta-description" content="GymBro et Panier : coach d’entraînement et planificateur d’épicerie par IA. Plans personnalisés livrés en PDF, gratuits.">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="GymBro + Panier">
+<meta property="og:site_name" id="wl-og-site-name" content="GymBro + Panier">
 <meta property="og:title" id="wl-og-title" content="GymBro + Panier">
 <meta property="og:description" id="wl-og-description" content="Coach d’entraînement et planificateur d’épicerie par IA. Plans personnalisés livrés en PDF.">
 <meta property="og:image" id="wl-og-image" content="https://app.healthyplan.ca/shared/art/gymbro-hero.jpg">
@@ -185,6 +185,7 @@
 <script src="shared/app.js"></script>
 <script>
   WLApp.applyI18n();
+  document.documentElement.lang = WLApp.lang;
 
   // Scroll-reveal: any element carrying .wl-reveal fades/rises into place
   // the first time it enters the viewport. Only landing.css elements use
@@ -196,6 +197,11 @@
       revealEls.forEach(function (el) { el.classList.add('wl-in'); });
       return;
     }
+    // Sections start visible (landing.css); hide them for the rise-in only
+    // now that the observer is there, and reveal anything already on screen
+    // at once. A safety timer reveals everything after 2,5 s regardless.
+    document.body.classList.add('wl-reveal-ready');
+    setTimeout(function () { revealEls.forEach(function (el) { el.classList.add('wl-in'); }); }, 2500);
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         if (entry.isIntersecting) { entry.target.classList.add('wl-in'); io.unobserve(entry.target); }
